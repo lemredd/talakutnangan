@@ -11,7 +11,8 @@
 				<tr
 					v-for="resource in list"
 					:key="resource.id"
-					class="resource-row">
+					class="resource-row"
+					:class="{ 'active': canDeselect(resource.id) }">
 					<td v-for="(data, i) in resource.data" :key="i">
 						{{ data }}
 					</td>
@@ -59,6 +60,7 @@
 </template>
 
 <style scoped lang="scss">
+	@import "@/variables.scss";
 	@import "@styles/btn.scss";
 	.resource-list {
 		margin-top: 1em;
@@ -71,6 +73,11 @@
 
 			.btn1 {
 				@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+			}
+
+			&.active {
+				background-color: $color-primary;
+				color: white;
 			}
 		}
 
