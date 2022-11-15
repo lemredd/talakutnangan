@@ -150,9 +150,9 @@ const hasSubmittedDepartment = ref<boolean>(true)
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
-function updateDepartment() {
+async function updateDepartment() {
 	hasSubmittedDepartment.value = false
-	fetcher.update(department.value.data.id, {
+	await fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
 		"fullName": department.value.data.fullName,
 		"mayAdmit": department.value.data.mayAdmit
