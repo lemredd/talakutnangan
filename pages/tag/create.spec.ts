@@ -1,5 +1,7 @@
 import { mount } from "@vue/test-utils"
+
 import RequestEnvironment from "$/singletons/request_environment"
+import { TAG_LINK } from "$/constants/template_links"
 
 import Page from "./create.page.vue"
 
@@ -37,7 +39,7 @@ describe("Page: /tag", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "POST")
-		expect(request).toHaveProperty("url", "/api/tag")
+		expect(request).toHaveProperty("url", TAG_LINK.unbound)
 		expect(request.json()).resolves.toStrictEqual({
 			"data": {
 				"type": "tag",
