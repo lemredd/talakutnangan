@@ -7,15 +7,39 @@
 			<span class="material-icons">chevron_left</span>
 			<span class="text">Previous</span>
 		</button>
+
+		<div v-if="pageLength < 4" class="limited-page-btn">
+			<button
+				v-for="pageCount in 4"
+				:key="pageCount"
+				class="page-count-btn btn"
+				:class="determineActiveness(pageCount)"
+				@click="updateOffset(pageCount)">
+				{{ pageCount }}
+			</button>
+		</div>
+		<div v-else class="unlimited-page-btn">
+			<button
+				v-for="pageCount in 4"
+				:key="pageCount"
+				class="page-count-btn btn"
+				:class="determineActiveness(pageCount)"
+				@click="updateOffset(pageCount)">
+				{{ pageCount }}
+			</button>
+			...
+			<button
+				class="page-count-btn btn"
+				:class="determineActiveness(pageLength)"
+				@click="updateOffset(pageLength)">
+				{{ pageLength }}
+			</button>
+		</div>
+
 		<button
-			v-for="pageCount in pageLength"
-			:key="pageCount"
-			class="page-count-btn btn"
-			:class="determineActiveness(pageCount)"
-			@click="updateOffset(pageCount)">
-			{{ pageCount }}
-		</button>
+			class="movement-btn next-btn"
 			:class="movementBtnClasses"
+			@click="goToNextPage">
 			<span class="text">Next</span>
 			<span class="material-icons">chevron_right</span>
 		</button>
@@ -75,6 +99,9 @@ type DefinedProps = {
 const props = defineProps<DefinedProps>()
 
 const pageLength = computed(
+	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
+)
+const condensedPageLength = computed(
 	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
 )
 
