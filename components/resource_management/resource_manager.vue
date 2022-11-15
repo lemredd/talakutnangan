@@ -29,7 +29,8 @@
 
 <style lang="scss">
 	.controls-bar {
-		@apply dark:bg-dark-100 bg-light-600 gap-y-4 flex flex-row flex-wrap justify-between;
+		@apply dark:bg-dark-100 bg-light-600 gap-y-4 flex flex-col
+		sm: flex-row flex-wrap justify-between;
 
 		.search-bar {
 			@apply dark:bg-dark-300 bg-gray-300 basis-full p-[.25em];

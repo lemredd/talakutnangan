@@ -151,7 +151,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"value": NULL_AS_STRING
 	},
 	...props.departments.data.map(data => ({
-		"label": data.fullName,
+		"label": data.acronym,
 		"value": data.id
 	}))
 ])
