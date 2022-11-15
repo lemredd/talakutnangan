@@ -32,8 +32,9 @@
 		}
 
 		select {
-			@apply flex-1 truncate;
+			@apply truncate w-max;
 			@apply dark:bg-transparent;
+			@apply border border-gray-600 border-opacity-20;
 			option {
 				@apply dark:bg-dark-500;
 			}
