@@ -10,7 +10,7 @@ import {
 } from "$/constants/template_page_paths"
 
 import { READ as READ_AUDIT_TRAIL } from "$/permissions/audit_trail_combinations"
-import { user, role, department, semester, auditTrail } from "$/permissions/permission_list"
+import { user, role, department, semester, tag, auditTrail } from "$/permissions/permission_list"
 import {
 	CREATE as CREATE_ROLES,
 	UPDATE as UPDATE_ROLES,
@@ -26,6 +26,11 @@ import {
 	UPDATE as UPDATE_SEMESTERS,
 	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_SEMESTERS
 } from "$/permissions/semester_combinations"
+import {
+	CREATE as CREATE_TAGS,
+	UPDATE as UPDATE_TAGS,
+	ARCHIVE_AND_RESTORE as ARCHIVE_AND_RESTORE_TAGS
+} from "$/permissions/tag_combinations"
 import {
 	IMPORT_USERS,
 	RESET_PASSWORD,
@@ -123,10 +128,11 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		],
 		"mustBeGuest": false,
 		"permissionCombinations": [
-			UPDATE_SEMESTERS,
-			ARCHIVE_AND_RESTORE_SEMESTERS
+			CREATE_TAGS,
+			UPDATE_TAGS,
+			ARCHIVE_AND_RESTORE_TAGS
 		],
-		"permissionGroup": semester
+		"permissionGroup": tag
 	},
 	{
 		"kinds": null,

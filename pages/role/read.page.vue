@@ -25,9 +25,11 @@
 			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
 		<div class="controls flex justify-between">
-			<button type="submit" class="btn btn-primary">
-				Submit
-			</button>
+			<Suspensible :is-loaded="hasSubmittedRole">
+				<button type="submit" class="update-user-btn btn btn-primary">
+					submit
+				</button>
+			</Suspensible>
 			<button
 				v-if="mayRestoreRole"
 				type="button"
@@ -65,16 +67,17 @@ import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents
 
 import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import FlagSelector from "@/role/flag_selector.vue"
-import fillSuccessMessages from "$@/helpers/fill_success_messages"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
@@ -129,8 +132,11 @@ const {
 const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
+const hasSubmittedRole = ref<boolean>(true)
+
 const fetcher: Fetcher = new Fetcher()
 async function updateRole() {
+	hasSubmittedRole.value = false
 	await fetcher.update(role.value.data.id, {
 		"auditTrailFlags": role.value.data.auditTrailFlags,
 		"commentFlags": role.value.data.commentFlags,
@@ -158,6 +164,7 @@ async function updateRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	hasSubmittedRole.value = true
 }
 
 async function archiveRole() {

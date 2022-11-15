@@ -12,6 +12,7 @@
 				<TextualField
 					v-model="userProfileData.name"
 					v-model:status="nameFieldStatus"
+					:disabled="mayEditProfile"
 					label="Display Name"
 					class="display-name-field"
 					type="text"/>
@@ -21,6 +22,7 @@
 		<div class="pictures">
 			<PicturePicker
 				resource-type="profile_picture"
+				:disabled="mayEditProfile"
 				@submit-file="submitProfilePicture">
 				<div class="content">
 					<div class="picture-picker-header">
@@ -45,6 +47,7 @@
 			<PicturePicker
 				v-if="!isUnReachableEmployee"
 				resource-type="signature"
+				:disabled="mayEditProfile"
 				@submit-file="submitSignature">
 				<div class="content">
 					<div class="picture-picker-header">
@@ -81,12 +84,13 @@
 				<input
 					id="dark-mode-toggle"
 					v-model="prefersDark"
+					:disabled="mayEditProfile"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
 			</label>
 			<button class="submit-btn btn btn-primary mt-4 mb-8" @click="updateUser">
-				submit
+				Save changes
 			</button>
 		</div>
 
@@ -97,6 +101,7 @@
 			<SchedulePickerGroup
 				v-for="day in DayValues"
 				:key="day"
+				:disabled="mayEditProfile"
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
@@ -194,11 +199,14 @@ import { ref, Ref, inject, computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
-import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
 import settingsTabInfos from "@/settings/settings_tab_infos"
+import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	UPDATE_OWN_DATA
+} from "$/permissions/user_combinations"
 
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
@@ -223,7 +231,8 @@ import { DayValues } from "$/types/database"
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
-const userProfile = pageContext.pageProps.userProfile as DeserializedUserDocument
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
@@ -315,6 +324,14 @@ function toggleDarkMode() {
 
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 }
+
+const mayEditProfile = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA
+	])
+
+	return isPermitted
+})
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
 </script>

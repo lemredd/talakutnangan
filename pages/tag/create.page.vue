@@ -11,22 +11,21 @@
 				v-model="name"
 				label="Tag name:"
 				status="enabled"
-				class="border-solid"
+				class="name border-solid"
 				type="text"/>
 		</Suspensible>
 		<input type="submit" value="Create tag"/>
 	</form>
 </template>
 
-<style>
+<style scoped lang="scss">
 </style>
 
 <script setup lang="ts">
 import { ref } from "vue"
 
-import type { UnitError } from "$/types/server"
-
 import Fetcher from "$@/fetchers/tag"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import NonSensitiveText from "@/fields/non-sensitive_text.vue"
@@ -51,19 +50,7 @@ async function createTag() {
 		if (receivedErrors.value.length) receivedErrors.value = []
 		successMessages.value.push("Tag has been created successfully!")
 	})
-	.catch(({ body }) => {
-		if (successMessages.value.length) successMessages.value = []
-		if (body) {
-			const { errors } = body
-			receivedErrors.value = errors.map((error: UnitError) => {
-				const readableDetail = error.detail
-
-				return readableDetail
-			})
-		} else {
-			receivedErrors.value = [ "an error occured" ]
-		}
-	})
+	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	isCurrentlyNotSubmitting.value = true
 }
 </script>

@@ -37,7 +37,7 @@
 				type="submit"
 				class="submit-btn btn btn-primary"
 				@click="updateUser">
-				submit
+				Save Changes
 			</button>
 			<button
 				type="reset"

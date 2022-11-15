@@ -100,7 +100,7 @@ describe("Page: semester/read", () => {
 		const orderInput = wrapper.find(".order select")
 		const startAtInput = wrapper.find(".start-at input")
 		const endAtInput = wrapper.find(".end-at input")
-		const submitBtn = wrapper.find("input[type=submit]")
+		const submitBtn = wrapper.find("button[type=submit]")
 
 		await nameInput.setValue(updatedSemester.data.name)
 		await orderInput.setValue(updatedSemester.data.semesterOrder)

@@ -49,6 +49,8 @@ export const READ_DEPARTMENT = "/department/read/:id"
  */
 export const READ_SEMESTER = "/semester/read/:id"
 
+export const READ_TAG = "/tag/read/:id"
+
 export const CONSULTATION_REPORT_PER_STUDENT = "/consultation/report/per_student"
 
 export const CONSULTATION_WEEKLY_REPORT = "/consultation/report/weekly"
