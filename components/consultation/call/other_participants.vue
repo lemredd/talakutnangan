@@ -2,9 +2,12 @@
 	<div class="other-participants">
 		<div
 			v-for="participant in otherParticipants"
-			:id="participant.remoteID"
 			:key="participant.remoteID"
 			class="track-container">
+			<div
+				:id="participant.remoteID"
+				class="participant-container">
+			</div>
 		</div>
 	</div>
 </template>
@@ -29,11 +32,14 @@
 			@apply m-1;
 			@apply bg-blue-gray-400 bg-opacity-20;
 
-			width: 100%;
-			height: 100%;
-			max-height:600px;
-			min-height:300px;
-			position: absolute;
+			.participant-container {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				max-height:600px;
+				min-height:300px;
+			}
 		}
 	}
 </style>
