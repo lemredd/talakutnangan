@@ -102,8 +102,9 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(
-	pageProps.post.data as DeserializedPostResource<"poster"|"posterRole"|"department">
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+const post = ref<DeserializedPostResource<AssociatedPostResource>>(
+	pageProps.post.data as DeserializedPostResource<AssociatedPostResource>
 )
 const mayViewArchivedOrRestore = computed<boolean>(() => {
 	const isOwned = post.value.poster.data.id === userProfile.data.id
@@ -170,9 +171,5 @@ function includeComment(newComment: DeserializedCommentResource<"user">): void {
 			"count": (comments.value.meta?.count || 0) + 1
 		}
 	}
-}
-
-function back() {
-	assignPath("/consultation")
 }
 </script>

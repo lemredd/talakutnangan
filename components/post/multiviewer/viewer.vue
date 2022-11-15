@@ -205,22 +205,24 @@ function isImage(type: string): boolean {
 	return type.includes("image")
 }
 
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+
 const props = defineProps<{
 	commentCount: number,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department">
+	modelValue: DeserializedPostResource<AssociatedPostResource>
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		post: DeserializedPostResource<"poster"|"posterRole"|"department"
-	>): void
-	(event: "archive", post: DeserializedPostResource<"poster"|"posterRole"|"department">): void
-	(event: "restore", post: DeserializedPostResource<"poster"|"posterRole"|"department">): void
+		post: DeserializedPostResource<AssociatedPostResource>
+	): void
+	(event: "archive", post: DeserializedPostResource<AssociatedPostResource>): void
+	(event: "restore", post: DeserializedPostResource<AssociatedPostResource>): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
+const post = ref<DeserializedPostResource<AssociatedPostResource>>(props.modelValue)
 const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
 
 const hasExistingAttachments = computed<boolean>(() => {
