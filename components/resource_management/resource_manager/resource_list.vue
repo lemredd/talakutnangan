@@ -122,7 +122,7 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const maySelect = computed<boolean>(() => props.mayArchive || props.mayRestore)
-const mayManage = computed<boolean>(() => props.mayEdit && maySelect.value)
+const mayManage = computed<boolean>(() => maySelect.value || props.mayEdit)
 
 function makePath(id: string): string {
 	if (props.templatePath) {
