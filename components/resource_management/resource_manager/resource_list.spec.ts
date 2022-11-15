@@ -141,7 +141,7 @@ describe("Component: Resource List", () => {
 				"selectedIDs": []
 			}
 		})
-		console.log(wrapper.html(), "\n\n\n")
+
 		const selectResourceButton = wrapper.find(".select-resource-btn")
 		const restoreResourceButton = wrapper.find(".restore-resource-btn")
 		await restoreResourceButton.trigger("click")
@@ -149,5 +149,69 @@ describe("Component: Resource List", () => {
 		expect(selectResourceButton.exists()).toBeTruthy()
 		const emitted = wrapper.emitted()
 		expect(emitted).toHaveProperty("restore.0.0", id)
+	})
+
+	it("should be selectable", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": true,
+				"mayEdit": false,
+				"mayRestore": false,
+				"selectedIDs": []
+			}
+		})
+
+		const selectResourceButton = wrapper.find(".select-resource-btn")
+		const activeRow = wrapper.find("tr.active")
+		await selectResourceButton.trigger("click")
+
+		expect(activeRow.exists()).toBeFalsy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("update:selectedIDs.0.0", [ id ])
+	})
+
+	it("should be deselectable", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": true,
+				"mayEdit": false,
+				"mayRestore": false,
+				"selectedIDs": [ id ]
+			}
+		})
+
+		const deselectResourceButton = wrapper.find(".deselect-resource-btn")
+		const activeRow = wrapper.find("tr.active")
+		await deselectResourceButton.trigger("click")
+
+		expect(activeRow.exists()).toBeTruthy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("update:selectedIDs.0.0", [])
 	})
 })
