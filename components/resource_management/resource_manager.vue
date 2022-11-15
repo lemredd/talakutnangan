@@ -7,6 +7,11 @@
 				v-model="slugText"
 				class="search-bar"/>
 			<SelectableOptionsField
+				v-if="hasSortNames"
+				v-model="sort"
+				label="Sort"
+				:options="sortNames!"/>
+			<SelectableOptionsField
 				v-if="hasRoleNames"
 				v-model="role"
 				label="Role"
@@ -56,11 +61,13 @@ import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
 const props = defineProps<{
 	isLoaded: boolean
+	chosenSort?: string,
 	chosenRole?: string,
 	chosenDepartment?: string,
 	existence?: string,
 	slug?: string,
 
+	sortNames?: OptionInfo[],
 	roleNames?: OptionInfo[],
 	departmentNames?: OptionInfo[]
 }>()
@@ -69,9 +76,18 @@ interface CustomEvents {
 	(e: "update:chosenDepartment", id: string): void
 	(e: "update:existence", existence: string): void
 	(e: "update:chosenRole", id: string): void
+	(e: "update:chosenSort", id: string): void
 	(e: "update:slug", slug: string): void
 }
 const emit = defineEmits<CustomEvents>()
+
+const hasSortNames = computed(() => Boolean(props.sortNames))
+const sort = computed<string>({
+	get(): string { return props.chosenSort as string },
+	set(newValue: string): void {
+		emit("update:chosenSort", newValue)
+	}
+})
 
 const hasRoleNames = computed(() => Boolean(props.roleNames))
 const role = computed<string>({
