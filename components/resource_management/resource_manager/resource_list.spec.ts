@@ -214,4 +214,68 @@ describe("Component: Resource List", () => {
 		const emitted = wrapper.emitted()
 		expect(emitted).toHaveProperty("update:selectedIDs.0.0", [])
 	})
+
+	it("can batch archive", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": true,
+				"mayEdit": false,
+				"mayRestore": false,
+				"selectedIDs": [ id ]
+			}
+		})
+
+		const batchResourceButton = wrapper.find(".batch-archive-resource-btn")
+		const activeRow = wrapper.find("tr.active")
+		await batchResourceButton.trigger("click")
+
+		expect(activeRow.exists()).toBeTruthy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("batchArchive")
+	})
+
+	it("can batch restore", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": false,
+				"mayEdit": false,
+				"mayRestore": true,
+				"selectedIDs": [ id ]
+			}
+		})
+
+		const batchResourceButton = wrapper.find(".batch-restore-resource-btn")
+		const activeRow = wrapper.find("tr.active")
+		await batchResourceButton.trigger("click")
+
+		expect(activeRow.exists()).toBeTruthy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("batchRestore")
+	})
 })
