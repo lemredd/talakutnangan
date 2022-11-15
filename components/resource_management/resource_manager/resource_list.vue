@@ -1,5 +1,8 @@
 <template>
 	<div class="resource-list">
+		<p v-if="hasSelected">
+			Selected {{ friendlyItemQuantity }}
+		</p>
 		<ResourceTable v-if="list.length">
 			<template #table-headers>
 				<th v-for="header in headers" :key="header">
@@ -100,6 +103,7 @@
 import { computed } from "vue"
 import type { TableData } from "$@/types/component"
 
+import pluralize from "$/string/pluralize"
 import specializePath from "$/helpers/specialize_path"
 
 import ResourceTable from "@/helpers/overflowing_table.vue"
@@ -121,8 +125,20 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const maySelect = computed<boolean>(() => props.mayArchive || props.mayRestore)
-const mayManage = computed<boolean>(() => maySelect.value || props.mayEdit)
+const maySelect = computed<boolean>(() => {
+	const { mayArchive, mayRestore } = props
+	return mayArchive || mayRestore
+})
+const mayManage = computed<boolean>(() => {
+	const shouldSelect = maySelect.value
+	const { mayEdit } = props
+
+	return shouldSelect || mayEdit
+})
+
+const itemQuantity = computed<number>(() => props.selectedIDs.length)
+const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
+const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
 
 function makePath(id: string): string {
 	if (props.templatePath) {
