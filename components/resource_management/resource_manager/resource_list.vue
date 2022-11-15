@@ -26,25 +26,25 @@
 						</a>
 						<span
 							v-if="mayArchive"
-							class="read-resource-btn btn"
+							class="archive-resource-btn btn"
 							@click="archive(resource.id)">
 							archive
 						</span>
 						<span
 							v-if="mayRestore"
-							class="read-resource-btn btn"
+							class="restore-resource-btn btn"
 							@click="restore(resource.id)">
 							restore
 						</span>
 						<span
 							v-if="canDeselect(resource.id)"
-							class="read-resource-btn btn"
+							class="deselect-resource-btn btn"
 							@click="deselect(resource.id)">
 							deselect
 						</span>
 						<span
 							v-if="canSelect(resource.id)"
-							class="read-resource-btn btn"
+							class="select-resource-btn btn"
 							@click="select(resource.id)">
 							select
 						</span>
@@ -97,7 +97,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import type { TableData } from "$@/types/component"
 
 import specializePath from "$/helpers/specialize_path"
