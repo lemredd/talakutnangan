@@ -8,6 +8,11 @@ describe("Component: Resource List", () => {
 	it("should have a read link", () => {
 		const templatePath = "a/read/:id"
 		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
 			"props": {
 				"headers": [ "Name" ],
 				"list": [
@@ -23,9 +28,9 @@ describe("Component: Resource List", () => {
 				templatePath
 			}
 		})
-		const readResourceBtn = wrapper.findAll(".read-resource-btn")
+		const readResourceButtons = wrapper.findAll(".read-resource-btn")
 
-		readResourceBtn.forEach(
+		readResourceButtons.forEach(
 			(btn, index) => expect(btn.attributes("href")).toEqual(specializePath(templatePath, {
 				"id": index + 1
 			}))
@@ -34,6 +39,11 @@ describe("Component: Resource List", () => {
 
 	it("should have no read link", () => {
 		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
 			"props": {
 				"headers": [ "Name" ],
 				"list": [
@@ -43,19 +53,26 @@ describe("Component: Resource List", () => {
 					}
 				],
 				"mayArchive": false,
-				"mayEdit": true,
+				"mayEdit": false,
 				"mayRestore": false,
 				"selectedIDs": []
 			}
 		})
 
-		const readResourceBtn = wrapper.find(".read-resource-btn")
+		const readResourceButton = wrapper.find(".read-resource-btn")
+		const selectResourceButton = wrapper.find(".select-resource-btn")
 
-		expect(readResourceBtn.exists()).toBeFalsy()
+		expect(readResourceButton.exists()).toBeFalsy()
+		expect(selectResourceButton.exists()).toBeFalsy()
 	})
 
 	it("should have no list", () => {
 		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
 			"props": {
 				"headers": [ "Name" ],
 				"list": [],
@@ -69,5 +86,68 @@ describe("Component: Resource List", () => {
 		const message = wrapper.find(".no-results")
 
 		expect(message.exists()).toBeTruthy()
+	})
+
+	it("should be archivable", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": true,
+				"mayEdit": false,
+				"mayRestore": false,
+				"selectedIDs": []
+			}
+		})
+		const selectResourceButton = wrapper.find(".select-resource-btn")
+		const archiveResourceButton = wrapper.find(".archive-resource-btn")
+		await archiveResourceButton.trigger("click")
+
+		expect(selectResourceButton.exists()).toBeTruthy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("archive.0.0", id)
+	})
+
+	it("should be restorable", async() => {
+		const id = "1"
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"ResourceTable": false
+				}
+			},
+			"props": {
+				"headers": [ "Name" ],
+				"list": [
+					{
+						"data": [ "Hello" ],
+						id
+					}
+				],
+				"mayArchive": false,
+				"mayEdit": false,
+				"mayRestore": true,
+				"selectedIDs": []
+			}
+		})
+		console.log(wrapper.html(), "\n\n\n")
+		const selectResourceButton = wrapper.find(".select-resource-btn")
+		const restoreResourceButton = wrapper.find(".restore-resource-btn")
+		await restoreResourceButton.trigger("click")
+
+		expect(selectResourceButton.exists()).toBeTruthy()
+		const emitted = wrapper.emitted()
+		expect(emitted).toHaveProperty("restore.0.0", id)
 	})
 })
