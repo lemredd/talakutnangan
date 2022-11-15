@@ -158,6 +158,6 @@ function select(id: string) {
 }
 
 function deselect(id: string) {
-	emit("update:selectedIDs", props.selectedIDs.filter(selectedID => selectedID === id))
+	emit("update:selectedIDs", props.selectedIDs.filter(selectedID => selectedID !== id))
 }
 </script>
