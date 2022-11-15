@@ -16,7 +16,10 @@ describe("Component: Resource List", () => {
 						"id": "1"
 					}
 				],
+				"mayArchive": false,
 				"mayEdit": true,
+				"mayRestore": false,
+				"selectedIDs": [],
 				templatePath
 			}
 		})
@@ -39,7 +42,10 @@ describe("Component: Resource List", () => {
 						"id": "1"
 					}
 				],
-				"mayEdit": true
+				"mayArchive": false,
+				"mayEdit": true,
+				"mayRestore": false,
+				"selectedIDs": []
 			}
 		})
 
@@ -53,7 +59,10 @@ describe("Component: Resource List", () => {
 			"props": {
 				"headers": [ "Name" ],
 				"list": [],
-				"mayEdit": false
+				"mayArchive": false,
+				"mayEdit": false,
+				"mayRestore": false,
+				"selectedIDs": []
 			}
 		})
 
