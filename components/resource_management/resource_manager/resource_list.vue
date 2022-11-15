@@ -2,6 +2,19 @@
 	<div class="resource-list">
 		<p v-if="hasSelected">
 			Selected {{ friendlyItemQuantity }}
+
+			<span
+				v-if="mayBatchArchive"
+				class="batch-archive-resource-btn btn"
+				@click="batchArchive">
+				Archive selected items
+			</span>
+			<span
+				v-if="mayBatchRestore"
+				class="batch-restore-resource-btn btn"
+				@click="batchRestore">
+				Restore selected items
+			</span>
 		</p>
 		<ResourceTable v-if="list.length">
 			<template #table-headers>
@@ -121,6 +134,8 @@ const props = defineProps<{
 interface CustomEvents {
 	(event: "archive", id: string): void,
 	(event: "restore", id: string): void,
+	(event: "batchArchive"): void,
+	(event: "batchRestore"): void,
 	(event: "update:selectedIDs", newSelection: string[]): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -140,6 +155,15 @@ const itemQuantity = computed<number>(() => props.selectedIDs.length)
 const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
 const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
 
+const mayBatchArchive = computed<boolean>(() => {
+	const { mayArchive } = props
+	return mayArchive && hasSelected.value
+})
+const mayBatchRestore = computed<boolean>(() => {
+	const { mayRestore } = props
+	return mayRestore && hasSelected.value
+})
+
 function makePath(id: string): string {
 	if (props.templatePath) {
 		return specializePath(props.templatePath, {
@@ -156,6 +180,14 @@ function archive(id: string) {
 
 function restore(id: string) {
 	emit("restore", id)
+}
+
+function batchArchive() {
+	emit("batchArchive")
+}
+
+function batchRestore() {
+	emit("batchRestore")
 }
 
 function canSelect(id: string) {
