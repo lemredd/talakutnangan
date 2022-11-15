@@ -54,14 +54,14 @@ import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "consultation">
 const { pageProps } = pageContext
-type DefinedProps = {
+defineProps<{
 	isShown: boolean
-}
-type CustomEvents = {
+}>()
+
+interface CustomEvents {
 	(event: "hide"): void
 	(event: "rescheduleConsultation"): void
 }
-defineProps<DefinedProps>()
 const emit = defineEmits<CustomEvents>()
 
 function hideOverlay() {
@@ -70,8 +70,8 @@ function hideOverlay() {
 
 const { consultation } = pageProps
 const employeeScheduleFetcher = new EmployeeScheduleFetcher()
-const chosenDay = ref("")
-const chosenTime = ref("")
+const chosenDay = ref<string>("")
+const chosenTime = ref<string>("")
 const scheduledStartAt = computed(() => {
 	const chosenDate = new Date(chosenDay.value)
 

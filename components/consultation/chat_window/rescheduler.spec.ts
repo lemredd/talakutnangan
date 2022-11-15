@@ -66,11 +66,11 @@ describe("Component: consultation rescheduler", () => {
 		await rescheduleBtn.trigger("click")
 		await flushPromises()
 
-		const mockedFetch = fetch as jest.Mock<any, any>
+		const castFetch = fetch as jest.Mock<any, any>
 		const [
 			[ unusedRequestForFetchingConsultantSchedule ],
 			[ requestForUpdatingConsultationSchedule ]
-		] = mockedFetch.mock.calls
+		] = castFetch.mock.calls
 		expect(requestForUpdatingConsultationSchedule).toHaveProperty("method", "PATCH")
 		expect(await requestForUpdatingConsultationSchedule.json()).toStrictEqual({
 			"data": {
@@ -148,13 +148,9 @@ describe("Component: consultation rescheduler", () => {
 		// Change day
 		const scheduler = wrapper.findComponent({ "name": "Scheduler" })
 		const newDate = new Date("2022-10-10T00:00:00.000Z").toJSON()
-		const newTime = convertTimeToMinutes("08:00")
+		const newTime = String(convertTimeToMinutes("08:00"))
 		await scheduler.vm.$emit("update:chosenDay", newDate)
 		await scheduler.vm.$emit("update:chosenTime", newTime)
-		await wrapper.setProps({
-			"chosenDate": newDate,
-			"chosenTime": newTime
-		})
 		await nextTick()
 
 		// Submit changes
@@ -162,11 +158,12 @@ describe("Component: consultation rescheduler", () => {
 		await rescheduleBtn.trigger("click")
 		await flushPromises()
 
-		const mockedFetch = fetch as jest.Mock<any, any>
+		const castFetch = fetch as jest.Mock<any, any>
+		expect(castFetch).toHaveBeenCalledTimes(2)
 		const [
 			[ unusedRequestForFetchingConsultantSchedule ],
 			[ requestForUpdatingConsultationSchedule ]
-		] = mockedFetch.mock.calls
+		] = castFetch.mock.calls
 		expect(requestForUpdatingConsultationSchedule).toHaveProperty("method", "PATCH")
 		expect(await requestForUpdatingConsultationSchedule.json()).toStrictEqual({
 			"data": {
