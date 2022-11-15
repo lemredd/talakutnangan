@@ -56,11 +56,13 @@ describe("Component: consultation rescheduler", () => {
 		await flushPromises()
 
 		// Change day
+		const castedWrapper = wrapper.vm as any
 		const scheduler = wrapper.findComponent({ "name": "Scheduler" })
 		const newDate = new Date("2022-10-10T00:00:00.000Z").toJSON()
 		const newTime = String(convertTimeToMinutes("08:00"))
 		await scheduler.vm.$emit("update:chosenDay", newDate)
 		await scheduler.vm.$emit("update:chosenTime", newTime)
+		await nextTick()
 		await wrapper.setProps({
 			"chosenDate": newDate,
 			"chosenTime": newTime
@@ -84,7 +86,7 @@ describe("Component: consultation rescheduler", () => {
 					"actionTaken": null,
 					"deletedAt": null,
 					"finishedAt": null,
-					"scheduledStartAt": newDate,
+					"scheduledStartAt": castedWrapper.scheduledStartAt,
 					"startedAt": null
 				},
 				"relationships": {
