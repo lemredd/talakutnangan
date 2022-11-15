@@ -645,6 +645,7 @@ describe("Component: consultation/chat_window", () => {
 			expect(sortedMessagesByTime[0]).toEqual(expectedFirstMessage)
 			expect(sortedMessagesByTime[sortedMessagesByTime.length - 1]).toEqual(expectedLastMessage)
 		})
+
 		it("should emit to load previous messages", async() => {
 			const scheduledStartAt = new Date()
 			const consultant = {
@@ -697,6 +698,9 @@ describe("Component: consultation/chat_window", () => {
 								"userProfile": consultant
 							}
 						}
+					},
+					"stubs": {
+						"Suspensible": false
 					}
 				},
 				"props": {
