@@ -2,23 +2,27 @@
 	<div class="other-participants">
 		<div
 			v-for="participant in otherParticipants"
-			:id="participant.remoteID"
 			:key="participant.remoteID"
 			class="track-container">
+			<div
+				:id="participant.remoteID"
+				class="participant-container">
+			</div>
 		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	.other-participants{
+	.other-participants {
 		@apply m-2;
 		@apply flex justify-center items-center;
 		position:relative;
 
 		@screen sm {
 			@apply my-2 flex-col;
+			min-height: calc(100vh - 75px);
 			overflow-y: scroll;
-			min-width: 40vh;
+			min-width: 40vw;
 		}
 
 		max-height:600px;
@@ -29,11 +33,14 @@
 			@apply m-1;
 			@apply bg-blue-gray-400 bg-opacity-20;
 
-			width: 100%;
-			height: 100%;
-			max-height:600px;
-			min-height:300px;
-			position: absolute;
+			.participant-container {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				max-height:600px;
+				min-height:300px;
+			}
 		}
 	}
 </style>

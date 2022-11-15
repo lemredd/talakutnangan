@@ -41,6 +41,7 @@
 			height: 100%;
 			min-height: $occupyHeight;
 			position: absolute;
+			inset: 0;
 
 			.preview-video {
 				@apply object-cover;
