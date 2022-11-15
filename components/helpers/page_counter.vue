@@ -8,9 +8,9 @@
 			<span class="text">Previous</span>
 		</button>
 
-		<div v-if="pageLength < 4" class="limited-page-btn">
+		<div v-if="pageLength < CONDENSE_LIMIT" class="limited-page-btn">
 			<button
-				v-for="pageCount in 4"
+				v-for="pageCount in CONDENSE_LIMIT"
 				:key="pageCount"
 				class="page-count-btn btn"
 				:class="determineActiveness(pageCount)"
@@ -20,7 +20,7 @@
 		</div>
 		<div v-else class="unlimited-page-btn">
 			<button
-				v-for="pageCount in 4"
+				v-for="pageCount in condensedPageLength"
 				:key="pageCount"
 				class="page-count-btn btn"
 				:class="determineActiveness(pageCount)"
@@ -83,7 +83,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -98,12 +98,17 @@ type DefinedProps = {
 }
 const props = defineProps<DefinedProps>()
 
+const currentPageCount = computed(() => props.modelValue / DEFAULT_LIST_LIMIT + 1)
+const CONDENSE_LIMIT = 4
 const pageLength = computed(
 	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
 )
-const condensedPageLength = computed(
-	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
-)
+const condensedPageLength = computed(() => [
+	currentPageCount.value,
+	currentPageCount.value + 1,
+	currentPageCount.value + 2,
+	currentPageCount.value + 3
+])
 
 const offset = computed({
 	get() { return props.modelValue },
@@ -115,8 +120,7 @@ function updateOffset(selectedOffset: number) {
 
 function determineActiveness(pageCountOfButton: number) {
 	const classes = []
-	const pageCountOfOffset = props.modelValue / DEFAULT_LIST_LIMIT + 1
-	const isActive = pageCountOfButton === pageCountOfOffset
+	const isActive = pageCountOfButton === currentPageCount.value
 
 	if (isActive) classes.push("btn-primary")
 	else classes.push("btn-inactive")
