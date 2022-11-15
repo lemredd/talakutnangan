@@ -1,5 +1,5 @@
 <template>
-	<div class="page-counter">
+	<div v-if="maxCount > DEFAULT_LIST_LIMIT" class="page-counter">
 		<button
 			class="movement-btn previous-btn"
 			:class="movementBtnClasses"
