@@ -75,16 +75,15 @@ const chosenTime = ref("")
 const scheduledStartAt = computed(() => {
 	const chosenDate = new Date(chosenDay.value)
 
-	if (chosenTime.value) {
-		const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
-		chosenDate.setHours(timeObject.hours)
-		chosenDate.setMinutes(timeObject.minutes)
-		chosenDate.setSeconds(0)
-		chosenDate.setMilliseconds(0)
-	}
+	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
+	chosenDate.setHours(timeObject.hours)
+	chosenDate.setMinutes(timeObject.minutes)
+	chosenDate.setSeconds(0)
+	chosenDate.setMilliseconds(0)
 
 	return chosenDate.toJSON()
 })
+
 const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 	"data": [],
 	"meta": {
