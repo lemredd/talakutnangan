@@ -36,5 +36,6 @@ export interface RawFullTimeString {
 
 export interface TableData {
 	id: string,
+	isSelected: boolean
 	data: string[]
 }
