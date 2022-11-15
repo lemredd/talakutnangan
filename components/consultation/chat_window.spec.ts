@@ -62,6 +62,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -116,6 +117,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -189,6 +191,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -245,6 +248,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -340,6 +344,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -425,6 +430,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -518,6 +524,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
 				})
@@ -635,6 +642,7 @@ describe("Component: consultation/chat_window", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"hasLoadedChatMessages": true,
 					"isConsultationListShown": false
 				}
 			})
@@ -706,6 +714,7 @@ describe("Component: consultation/chat_window", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"hasLoadedChatMessages": true,
 					"isConsultationListShown": false
 				}
 			})
