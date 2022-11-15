@@ -39,7 +39,7 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).end()
 		} else {
-			const testStudentEmail = "student@example.net"
+			const testStudentEmail = "example_student@example.net"
 			const testRole = "test_student"
 			const testStudentNumber = "000-0001"
 			const testDepartment = "Test Institute Department"
@@ -114,6 +114,7 @@ export default class extends DevController {
 
 				Log.success("controller", "created test student")
 
+				// eslint-disable-next-line require-atomic-updates
 				previousUser = createdUser
 			}
 

@@ -29,6 +29,7 @@
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
+					<li>Scheduled at: {{ readableScheduledAt }}</li>
 
 					<li>
 						<a
@@ -116,6 +117,7 @@ import type {
 import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
 import makeSwitch from "$@/helpers/make_switch"
+import formatToReadableTime from "$@/helpers/format_to_complete_friendly_time"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
@@ -335,6 +337,8 @@ function startConsultation() {
 }
 
 watchConsultation(consultation, registerListeners)
+
+const readableScheduledAt = formatToReadableTime(consultation.value.scheduledStartAt)
 
 const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
 	"id": consultationID.value
