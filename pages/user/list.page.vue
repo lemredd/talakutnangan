@@ -33,6 +33,10 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditUser"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -44,12 +48,18 @@
 		font-size: 1.75em;
 		text-transform: uppercase;
 	}
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
 import { computed, inject, onMounted, ref, watch, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
@@ -79,6 +89,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -160,6 +171,9 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 const chosenDepartment = ref("*")
 
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+const offset = ref(0)
 const slug = ref("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
@@ -176,10 +190,12 @@ async function fetchUserInfo() {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
 		"sort": [ "name" ]
-	}))
+	}), {
+		"mayContinue": () => Promise.resolve(false)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
@@ -222,13 +238,11 @@ async function resetUsersList() {
 }
 
 onMounted(async() => {
-	isLoaded.value = false
 	await loadRemainingRoles(roles, roleFetcher)
 	await loadRemainingDepartments(departments, departmentFetcher)
-	await fetchUserInfo()
 
 	watch(
-		[ chosenRole, slug, chosenDepartment, existence ],
+		[ chosenRole, slug, chosenDepartment, existence, offset ],
 		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
 	)
 })

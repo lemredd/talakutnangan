@@ -22,11 +22,21 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditTag"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
-<style>
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
@@ -34,6 +44,7 @@ import { inject, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedTagListDocument } from "$/types/documents/tag"
 
 import { READ_TAG } from "$/constants/template_page_paths"
@@ -49,6 +60,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import { tag as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
@@ -93,8 +105,10 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+const offset = ref(0)
 const receivedErrors = ref<string[]>([])
-
 async function fetchTagInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
@@ -104,7 +118,7 @@ async function fetchTagInfos(): Promise<number|void> {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
 		"sort": [ "name" ]
 	}))
@@ -124,5 +138,5 @@ async function refetchTags() {
 	await fetchTagInfos()
 }
 
-watch([ slug, existence ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
+watch([ slug, existence, offset ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
 </script>

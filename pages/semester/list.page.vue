@@ -24,23 +24,33 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditSemester"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch, computed } from "vue"
+import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type {
-	DeserializedSemesterResource,
 	DeserializedSemesterListDocument
 } from "$/types/documents/semester"
+
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
@@ -53,6 +63,7 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -66,14 +77,14 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
-const list = ref<DeserializedSemesterResource[]>(
-	pageProps.semesters.data as DeserializedSemesterResource[]
+const list = ref(
+	pageProps.semesters as DeserializedSemesterListDocument
 )
 const listDocument = ref<DeserializedSemesterListDocument>(
 	pageProps.semesters as DeserializedSemesterListDocument
 )
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.map(resource => ({
+	const data = list.value.data.map(resource => ({
 		"data": [
 			resource.name,
 			resource.semesterOrder,
@@ -89,6 +100,9 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+const offset = ref(0)
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(
@@ -101,7 +115,7 @@ async function fetchSemesterInfos() {
 			},
 			"page": {
 				"limit": 10,
-				"offset": list.value.length
+				"offset": offset.value
 			},
 			"sort": [ "name" ]
 		}),
@@ -136,14 +150,15 @@ const mayEditSemester = computed<boolean>(() => {
 })
 
 async function refetchSemester() {
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	isLoaded.value = false
 	await fetchSemesterInfos()
 }
 
-watch([ slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
-
-onMounted(() => {
-	isLoaded.value = true
-})
+watch([ slug, existence, offset ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
 </script>

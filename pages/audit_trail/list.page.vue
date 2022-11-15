@@ -1,9 +1,7 @@
 <template>
 	<ResourceManager
 		v-model:slug="slug"
-		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -84,10 +82,10 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const receivedErrors = ref<string[]>([])
 const castedResourceListMeta = list.value.meta as ResourceCount
 const resourceCount = computed(() => castedResourceListMeta.count)
 const offset = ref(0)
+const receivedErrors = ref<string[]>([])
 async function fetchAuditTrailInfos() {
 	await loadRemainingResource(
 		list,

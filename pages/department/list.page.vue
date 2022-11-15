@@ -22,12 +22,21 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditDepartment"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
@@ -35,6 +44,7 @@ import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -51,6 +61,7 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -85,6 +96,9 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+const castedResourceListMeta = list.value.meta as ResourceCount
+const resourceCount = computed(() => castedResourceListMeta.count)
+const offset = ref(0)
 const receivedErrors = ref<string[]>([])
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
@@ -114,7 +128,7 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
 		"sort": [ "fullName" ]
 	}), {
@@ -160,7 +174,7 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ slug, existence, offset ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))
