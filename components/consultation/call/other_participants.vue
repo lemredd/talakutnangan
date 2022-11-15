@@ -13,15 +13,16 @@
 </template>
 
 <style scoped lang="scss">
-	.other-participants{
+	.other-participants {
 		@apply m-2;
 		@apply flex justify-center items-center;
 		position:relative;
 
 		@screen sm {
 			@apply my-2 flex-col;
+			min-height: calc(100vh - 75px);
 			overflow-y: scroll;
-			min-width: 40vh;
+			min-width: 40vw;
 		}
 
 		max-height:600px;
