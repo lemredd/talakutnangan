@@ -126,9 +126,9 @@ const {
 
 const hasSubmittedSemester = ref<boolean>(true)
 
-function updateSemester() {
+async function updateSemester() {
 	hasSubmittedSemester.value = false
-	fetcher.update(semester.value.data.id, {
+	await fetcher.update(semester.value.data.id, {
 		"deletedAt": null,
 		"endAt": semester.value.data.endAt.toJSON(),
 		"name": semester.value.data.name,
@@ -148,6 +148,7 @@ function updateSemester() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	hasSubmittedSemester.value = true
 }
 
 async function archiveSemester() {
