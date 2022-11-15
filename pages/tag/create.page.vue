@@ -28,8 +28,8 @@ import Fetcher from "$@/fetchers/tag"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Suspensible from "@/helpers/suspensible.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import NonSensitiveText from "@/fields/non-sensitive_text.vue"
-import ListRedirector from "@/resource_management/list_redirector.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
