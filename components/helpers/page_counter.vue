@@ -15,7 +15,7 @@
 			@click="updateOffset(pageCount)">
 			{{ pageCount }}
 		</button>
-		<button class="movement-btn next-btn" @click="goToNextPage">
+			:class="movementBtnClasses"
 			<span class="text">Next</span>
 			<span class="material-icons">chevron_right</span>
 		</button>
@@ -30,8 +30,23 @@
 		.movement-btn {
 			@apply flex items-center;
 
-			&.previous-btn { @apply mr-2; }
-			&.next-btn { @apply ml-3; }
+			&.previous-btn {
+				@apply mr-2;
+
+				&.disabled-previous-btn {
+					@apply text-gray-400;
+					cursor: initial;
+				}
+			}
+			&.next-btn {
+				@apply ml-3;
+
+				&.disabled-next-btn {
+					@apply text-gray-400;
+					cursor: initial;
+				}
+			}
+
 		}
 
 		.page-count-btn {
@@ -88,7 +103,8 @@ const isAtLastPage = computed(() => {
 	return flooredMaxCount === props.modelValue
 })
 const movementBtnClasses = {
-	"disabled-previous-btn": {}
+	"disabled-next-btn": isAtLastPage.value,
+	"disabled-previous-btn": isAtFirstPage.value
 }
 function goToPreviousPage() {
 	if (!isAtFirstPage.value) emit("update:modelValue", props.modelValue - DEFAULT_LIST_LIMIT)
