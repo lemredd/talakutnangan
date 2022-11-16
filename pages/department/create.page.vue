@@ -48,7 +48,6 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
-
 const fullName = ref("")
 const acronym = ref("")
 const mayAdmit = ref(false)
@@ -78,6 +77,9 @@ function createDepartment() {
 		"mayAdmit": mayAdmit.value
 	})
 	.then(() => {
+		fullName.value = ""
+		acronym.value = ""
+		mayAdmit.value = false
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
