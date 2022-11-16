@@ -29,6 +29,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_USER"
 				:headers="headers"
 				:list="tableData"
@@ -59,6 +60,7 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_USER } from "$/constants/template_page_paths"
 
+import makeManagementInfo from "@/user/make_management_info"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
 	IMPORT_USERS,
@@ -117,18 +119,29 @@ const list = ref<DeserializedUserListDocument<"roles"|"department">>(
 	pageProps.users as DeserializedUserListDocument<"roles"|"department">
 )
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name,
-			resource.email,
-			resource.roles.data[0].name,
-			resource.department.data.acronym
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				resource.email,
+				resource.roles.data[0].name,
+				resource.department.data.acronym
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveUser,
+			"mayEdit": managementInfo.mayUpdateUser
+				|| managementInfo.mayArchiveUser
+				|| managementInfo.mayRestoreUser
+				|| managementInfo.mayUpdateAttachedRoles
+				|| managementInfo.mayResetPassword,
+			"mayRestore": managementInfo.mayRestoreUser
+		}
+	})
 
 	return data
 })
+const selectedIDs = ref<string[]>([])
 
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
