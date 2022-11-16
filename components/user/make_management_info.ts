@@ -57,7 +57,6 @@ export default function(
 		mayArchiveUser,
 		mayResetPassword,
 		mayRestoreUser,
-		mayUpdateAnyone,
 		mayUpdateAttachedRoles,
 		mayUpdateUser
 	}

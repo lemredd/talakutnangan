@@ -171,7 +171,6 @@ export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
 
 export interface UserManagementInfo {
 	isDeleted: boolean,
-	mayUpdateAnyone: boolean,
 	mayUpdateUser: boolean,
 	mayArchiveUser: boolean,
 	mayRestoreUser: boolean,
