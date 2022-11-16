@@ -76,7 +76,6 @@ import type {
 	DeserializedCommentResource
 } from "$/types/documents/comment"
 
-import assignPath from "$@/external/assign_path"
 import { comment as permissionGroup } from "$/permissions/permission_list"
 import {
 	CREATE_SOCIAL_COMMENT_ON_OWN_DEPARTMENT,
