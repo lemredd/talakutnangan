@@ -168,3 +168,13 @@ export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
 
 export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
 = T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
+
+export interface UserManagementInfo {
+	isDeleted: boolean,
+	mayUpdateAnyone: boolean,
+	mayUpdateUser: boolean,
+	mayArchiveUser: boolean,
+	mayRestoreUser: boolean,
+	mayUpdateAttachedRoles: boolean,
+	mayResetPassword: boolean
+}
