@@ -1,10 +1,10 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
-		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:sort-names="sortNames"
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -42,14 +42,12 @@
 </style>
 
 <script setup lang="ts">
-import { inject, ref, watch, computed } from "vue"
+import { inject, ref, watch, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
-import type {
-	DeserializedSemesterListDocument
-} from "$/types/documents/semester"
+import type { TableData, OptionInfo } from "$@/types/component"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
@@ -77,10 +75,7 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
-const list = ref(
-	pageProps.semesters as DeserializedSemesterListDocument
-)
-const listDocument = ref<DeserializedSemesterListDocument>(
+const list = ref<DeserializedSemesterListDocument>(
 	pageProps.semesters as DeserializedSemesterListDocument
 )
 const tableData = computed<TableData[]>(() => {
@@ -97,6 +92,42 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Ascending by order",
+		"value": "semesterOrder"
+	},
+	{
+		"label": "Ascending by start at",
+		"value": "startAt"
+	},
+	{
+		"label": "Ascending by end at",
+		"value": "endAt"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	},
+	{
+		"label": "Descending by order",
+		"value": "-semesterOrder"
+	},
+	{
+		"label": "Descending by start at",
+		"value": "-startAt"
+	},
+	{
+		"label": "Descending by end at",
+		"value": "-endAt"
+	}
+])
+const chosenSort = ref("name")
+
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
@@ -106,7 +137,7 @@ const offset = ref(0)
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(
-		listDocument,
+		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
 		() => ({
 			"filter": {
@@ -115,9 +146,9 @@ async function fetchSemesterInfos() {
 			},
 			"page": {
 				"limit": 10,
-				"offset": offset.value
+				"offset": list.value.data.length
 			},
-			"sort": [ "name" ]
+			"sort": [ chosenSort.value ]
 		}),
 		{
 			"mayContinue": () => Promise.resolve(false)
@@ -160,5 +191,5 @@ async function refetchSemester() {
 	await fetchSemesterInfos()
 }
 
-watch([ slug, existence, offset ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence, offset ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
 </script>

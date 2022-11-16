@@ -26,6 +26,7 @@ import { ref } from "vue"
 
 import Fetcher from "$@/fetchers/tag"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
@@ -47,8 +48,7 @@ async function createTag() {
 	})
 	.then(() => {
 		name.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Tag has been created successfully!")
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	isCurrentlyNotSubmitting.value = true

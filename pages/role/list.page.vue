@@ -1,10 +1,12 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
-		:department-names="departmentNames">
+		:department-names="departmentNames"
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -97,6 +99,18 @@ const tableData = computed<TableData[]>(() => {
 })
 
 const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	}
+])
+const chosenSort = ref("name")
+
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
@@ -148,7 +162,7 @@ async function fetchRoleInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": offset.value
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		mayContinue() { return Promise.resolve(false) },
 		async postOperations(deserializedData) {
@@ -196,7 +210,7 @@ async function refetchRoles() {
 }
 
 watch(
-	[ chosenDepartment, slug, existence, offset ],
+	[ chosenSort, chosenDepartment, slug, existence, offset ],
 	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
 )
 

@@ -51,7 +51,6 @@ import { ref, computed, watch } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
 import type {
-	DeserializedSemesterResource,
 	DeserializedSemesterListDocument
 } from "$/types/documents/semester"
 
@@ -98,9 +97,11 @@ const rawRangeEnd = computed<Date>({
 
 watch(chosenSemester, newValue => {
 	const resource = props.semesters.data
-	.find(semester => semester.id === newValue) as DeserializedSemesterResource
+	.find(semester => semester.id === newValue)
 
-	rawRangeBegin.value = resource.startAt
-	rawRangeEnd.value = resource.endAt
+	if (resource) {
+		rawRangeBegin.value = resource.startAt
+		rawRangeEnd.value = resource.endAt
+	}
 })
 </script>

@@ -16,7 +16,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	READ_ANYONE_ON_ALL_DEPARTMENTS, READ_ANYONE_ON_OWN_DEPARTMENT
+	READ_ANYONE_ON_ALL_DEPARTMENTS, READ_ANYONE_ON_OWN_DEPARTMENT, UPDATE_OWN_DATA
 } from "$/permissions/user_combinations"
 
 import Page from "./profile.page.vue"
@@ -386,7 +386,7 @@ describe("Page: settings/profile", () => {
 			const department = await new DepartmentFactory().mayNotAdmit()
 			.insertOne()
 			const role = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+			.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 			.insertOne()
 			const user = await new UserFactory().in(department)
 			.beUnreachableEmployee()
