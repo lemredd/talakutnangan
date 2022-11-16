@@ -142,5 +142,5 @@ async function refetchAuditTrail() {
 	await fetchAuditTrailInfos()
 }
 
-watch([ slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
 </script>
