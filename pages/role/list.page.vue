@@ -94,8 +94,8 @@ const sortNames = computed<OptionInfo[]>(() => [
 		"value": "name"
 	},
 	{
-		"label": "Dscending by Name",
-		"value": "name"
+		"label": "Descending by Name",
+		"value": "-name"
 	}
 ])
 const chosenSort = ref("name")
