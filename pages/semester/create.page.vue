@@ -79,6 +79,10 @@ function createSemester() {
 		"startAt": new Date(startAt.value).toJSON()
 	})
 	.then(() => {
+		name.value = ""
+		endAt.value = ""
+		startAt.value = ""
+		semesterOrder.value = "first"
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
