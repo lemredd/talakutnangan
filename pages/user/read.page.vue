@@ -224,7 +224,7 @@ const selectableDepartments = computed(() => departments.value.data.map(
 
 const { userProfile } = pageProps
 const managementInfo = computed<UserManagementInfo>(
-	() => makeManagementInfo(userProfile, user.value)
+	() => makeManagementInfo(userProfile, user.value.data)
 )
 
 const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)

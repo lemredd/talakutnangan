@@ -1,5 +1,5 @@
 import type { UserManagementInfo } from "$@/types/independent"
-import type { DeserializedUserDocument, DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedUserResource, DeserializedUserProfile } from "$/types/documents/user"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -12,13 +12,13 @@ import {
 
 export default function(
 	userProfile: DeserializedUserProfile<"roles"|"department">,
-	user: DeserializedUserDocument<"roles"|"department">
+	user: DeserializedUserResource<"roles"|"department">
 ): UserManagementInfo {
 	const ownDepartment = userProfile.data.department.data.id
-	const isOnSameDepartment = ownDepartment === user.data.department.data.id
+	const isOnSameDepartment = ownDepartment === user.department.data.id
 
-	const isDeleted = Boolean(user.data.deletedAt)
-	const doesViewOwn = user.data.id === userProfile.data.id
+	const isDeleted = Boolean(user.deletedAt)
+	const doesViewOwn = user.id === userProfile.data.id
 	const userRoles = userProfile.data.roles.data
 
 	const mayUpdateAnyone = permissionGroup.hasOneRoleAllowed(userRoles, [
