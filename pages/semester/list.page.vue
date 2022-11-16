@@ -129,15 +129,15 @@ const sortNames = computed<OptionInfo[]>(() => [
 	}
 ])
 const chosenSort = ref("name")
-
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+
+const offset = ref(0)
 const resourceCount = computed<number>(() => {
 	const castedResourceListMeta = list.value.meta as ResourceCount
 	return castedResourceListMeta.count
 })
 
-const offset = ref(0)
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(

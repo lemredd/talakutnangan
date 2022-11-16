@@ -91,8 +91,10 @@ const mayEditTag = computed<boolean>(() => {
 	return isPermitted
 })
 
-const headers = [ "Name" ]
+const isLoaded = ref<boolean>(true)
 const fetcher = new Fetcher()
+
+const headers = [ "Name" ]
 const list = ref<DeserializedTagListDocument>(pageProps.tags as DeserializedTagListDocument)
 const tableData = computed<TableData[]>(() => {
 	const data = list.value.data.map(resource => ({
@@ -116,13 +118,15 @@ const sortNames = computed<OptionInfo[]>(() => [
 	}
 ])
 const chosenSort = ref("name")
-
-const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function fetchTagInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
@@ -152,6 +156,13 @@ async function refetchTags() {
 	}
 	await fetchTagInfos()
 }
+const debouncedResetList = debounce(refetchTags, DEBOUNCED_WAIT_DURATION)
 
-watch([ chosenSort, slug, existence, offset ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 </script>
