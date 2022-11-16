@@ -9,7 +9,9 @@
 				<span class="number-symbol">#{{ consultation.id }}</span>
 				{{ consultation.reason }}
 			</div>
-			<small class="status-badge btn btn-primary" :class="statusBadgeClasses">
+			<small
+				class="status-badge btn btn-primary"
+				:class="statusBadgeClasses">
 				{{ statusBadge }}
 			</small>
 		</h3>
@@ -120,7 +122,6 @@ const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">
 
 	return activities
 })
-
 const {
 	isDone,
 	isOngoing,
@@ -129,10 +130,6 @@ const {
 } = makeConsultationStates(props as unknown as {
 	"consultation": DeserializedConsultationResource<"consultant"|"consultantRole">
 })
-const statusBadgeClasses = {
-	"finished": isDone.value,
-	"ongoing": isOngoing.value
-}
 const statusBadge = computed(() => {
 	let status = ""
 
@@ -142,6 +139,10 @@ const statusBadge = computed(() => {
 
 	return status
 })
+const statusBadgeClasses = computed(() => ({
+	"finished": isDone.value,
+	"ongoing": isOngoing.value
+}))
 
 const profilePictures = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
 	const activities = makeUniqueBy(ownedActivities.value, "user.data.id")
