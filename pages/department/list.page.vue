@@ -87,16 +87,28 @@ const tableData = computed<TableData[]>(() => {
 
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Name",
+		"label": "Ascending by name",
 		"value": "fullName"
 	},
 	{
-		"label": "Acronym",
+		"label": "Ascending by acronym",
 		"value": "acronym"
 	},
 	{
-		"label": "May admit",
+		"label": "Ascending by may admit",
 		"value": "mayAdmit"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-fullName"
+	},
+	{
+		"label": "Descending by acronym",
+		"value": "-acronym"
+	},
+	{
+		"label": "Descending by may admit",
+		"value": "-mayAdmit"
 	}
 ])
 const chosenSort = ref("fullName")
@@ -179,7 +191,7 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))
