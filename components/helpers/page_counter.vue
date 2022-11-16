@@ -108,7 +108,7 @@ const condensedPageLength = computed(() => [
 	currentPageCount.value + 1,
 	currentPageCount.value + 2,
 	currentPageCount.value + 3
-])
+].filter(pageNumber => pageNumber <= pageLength.value))
 
 const offset = computed({
 	get() { return props.modelValue },
