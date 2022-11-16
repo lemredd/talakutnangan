@@ -83,12 +83,20 @@ const tableData = computed<TableData[]>(() => {
 
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Created at",
+		"label": "Ascending by creation date",
+		"value": "createdAt"
+	},
+	{
+		"label": "Ascending by action name",
+		"value": "actionName"
+	},
+	{
+		"label": "Descending by creation date",
 		"value": "-createdAt"
 	},
 	{
-		"label": "Action name",
-		"value": "actionName"
+		"label": "Descending by action name",
+		"value": "-actionName"
 	}
 ])
 const chosenSort = ref("-createdAt")
