@@ -46,7 +46,7 @@ export default class extends PageMiddleware {
 				"limit": 10,
 				"offset": 0
 			},
-			"sort": [ "createdAt" ]
+			"sort": [ "name" ]
 		}) as TagListDocument
 
 		return {
