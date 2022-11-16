@@ -74,6 +74,8 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 
+const isLoaded = ref<boolean>(true)
+
 const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterListDocument>(
 	pageProps.semesters as DeserializedSemesterListDocument
@@ -128,11 +130,13 @@ const sortNames = computed<OptionInfo[]>(() => [
 ])
 const chosenSort = ref("name")
 
-const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const offset = ref(0)
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
