@@ -34,20 +34,20 @@
 					</td>
 					<td v-if="mayManage">
 						<a
-							v-if="mayEdit"
+							v-if="resource.mayEdit"
 							:href="makePath(resource.id)"
 							class="read-resource-btn btn"
 							type="button">
 							edit
 						</a>
 						<span
-							v-if="mayArchive"
+							v-if="resource.mayArchive"
 							class="archive-resource-btn btn"
 							@click="archive(resource.id)">
 							archive
 						</span>
 						<span
-							v-if="mayRestore"
+							v-if="resource.mayRestore"
 							class="restore-resource-btn btn"
 							@click="restore(resource.id)">
 							restore
@@ -123,9 +123,6 @@ import ResourceTable from "@/helpers/overflowing_table.vue"
 
 const props = defineProps<{
 	templatePath?: string
-	mayEdit: boolean
-	mayArchive: boolean
-	mayRestore: boolean
 	list: TableData[]
 	selectedIDs: string[]
 	headers: string[]
@@ -140,29 +137,21 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const maySelect = computed<boolean>(() => {
-	const { mayArchive, mayRestore } = props
-	return mayArchive || mayRestore
-})
-const mayManage = computed<boolean>(() => {
-	const shouldSelect = maySelect.value
-	const { mayEdit } = props
-
-	return shouldSelect || mayEdit
-})
+const maySelect = computed<boolean>(() => props.list.some(
+	data => data.mayArchive || data.mayRestore
+))
+const mayManage = computed<boolean>(() => maySelect.value || props.list.some(data => data.mayEdit))
 
 const itemQuantity = computed<number>(() => props.selectedIDs.length)
 const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
 const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
 
-const mayBatchArchive = computed<boolean>(() => {
-	const { mayArchive } = props
-	return mayArchive && hasSelected.value
-})
-const mayBatchRestore = computed<boolean>(() => {
-	const { mayRestore } = props
-	return mayRestore && hasSelected.value
-})
+const mayBatchArchive = computed<boolean>(() => hasSelected.value && props.list.some(
+	data => data.mayArchive
+))
+const mayBatchRestore = computed<boolean>(() => hasSelected.value && props.list.some(
+	data => data.mayRestore
+))
 
 function makePath(id: string): string {
 	if (props.templatePath) {
