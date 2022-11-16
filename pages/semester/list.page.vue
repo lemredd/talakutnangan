@@ -93,7 +93,7 @@ const sortNames = computed<OptionInfo[]>(() => [
 	},
 	{
 		"label": "Order",
-		"value": "order"
+		"value": "semesterOrder"
 	},
 	{
 		"label": "Start at",
@@ -161,7 +161,7 @@ async function refetchSemester() {
 	await fetchSemesterInfos()
 }
 
-watch([ slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
 
 onMounted(() => {
 	isLoaded.value = true
