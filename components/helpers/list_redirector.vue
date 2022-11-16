@@ -4,7 +4,7 @@
 			<span class="material-icons">
 				arrow_circle_left
 			</span>
-			{{ `${convertForSentence(resourceType)}s` }} List
+			{{ convertForSentence(resourceType) }} List
 		</a>
 	</div>
 </template>
