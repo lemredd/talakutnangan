@@ -32,8 +32,7 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_USER"
 				:headers="headers"
-				:list="tableData"
-				:may-edit="mayEditUser"/>
+				:list="tableData"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -60,26 +59,20 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_USER } from "$/constants/template_page_paths"
 
-import makeManagementInfo from "@/user/make_management_info"
-import { user as permissionGroup } from "$/permissions/permission_list"
-import {
-	IMPORT_USERS,
-	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
-	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT,
-	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
-} from "$/permissions/user_combinations"
-import resourceTabInfos from "@/resource_management/resource_tab_infos"
-
 import Fetcher from "$@/fetchers/user"
 import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/user/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
+import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+
+import { IMPORT_USERS } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
@@ -205,22 +198,6 @@ const mayCreateUser = computed<boolean>(() => {
 	])
 
 	return mayImportUsers
-})
-
-// TODO: Find way to assess each user if they can be edited
-const mayEditUser = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
-		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
-	])
-
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
-		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
-	])
-
-	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
 })
 
 async function resetUsersList() {
