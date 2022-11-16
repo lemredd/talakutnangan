@@ -202,6 +202,7 @@ const slug = ref("")
 const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 async function fetchUserInfo() {
+	isLoaded.value = false
 	await loadRemainingResource(list as Ref<DeserializedUserListDocument>, fetcher, () => ({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
@@ -251,7 +252,6 @@ const mayEditUser = computed<boolean>(() => {
 })
 
 async function resetUsersList() {
-	isLoaded.value = false
 	list.value = {
 		"data": [],
 		"meta": {
@@ -261,13 +261,22 @@ async function resetUsersList() {
 	await fetchUserInfo()
 }
 
+const debouncedResetList = debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+
+watch(
+	[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
+	clearOffset
+)
+
 onMounted(async() => {
 	await loadRemainingRoles(roles, roleFetcher)
 	await loadRemainingDepartments(departments, departmentFetcher)
-
-	watch(
-		[ chosenRole, slug, chosenDepartment, existence, chosenSort, offset ],
-		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
-	)
 })
 </script>
