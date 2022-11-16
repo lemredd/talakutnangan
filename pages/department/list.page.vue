@@ -193,7 +193,7 @@ const mayEditDepartment = computed<boolean>(() => {
 	return isPermitted
 })
 
-async function refetchRoles() {
+async function refetchDepartment() {
 	list.value = {
 		"data": [],
 		"meta": {
@@ -204,7 +204,15 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ chosenSort, slug, existence, offset ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchDepartment, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))
