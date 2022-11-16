@@ -29,14 +29,14 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-.attrib-label {
-	@apply block;
-}
+	@import "@styles/btn.scss";
+	.attrib-label {
+		@apply block;
+	}
 
-.flag-attrib{
-	@apply border-solid;
-}
+	.flag-attrib{
+		@apply border-solid;
+	}
 </style>
 
 <script setup lang="ts">
@@ -55,7 +55,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
-const role = ref<RoleAttributes<"deserialized">>({
+const INITIAL_VALUE: RoleAttributes<"deserialized"> = {
 	"auditTrailFlags": 0,
 	"commentFlags": 0,
 	"deletedAt": null,
@@ -67,7 +67,8 @@ const role = ref<RoleAttributes<"deserialized">>({
 	"semesterFlags": 0,
 	"tagFlags": 0,
 	"userFlags": 0
-})
+}
+const role = ref<RoleAttributes<"deserialized">>({ ...INITIAL_VALUE })
 
 const flagSelectors = makeFlagSelectorInfos(role)
 const roleFetcher = new Fetcher()
@@ -79,6 +80,7 @@ function createRole() {
 		...role.value,
 		"deletedAt": null
 	}).then(() => {
+		role.value = { ...INITIAL_VALUE }
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))

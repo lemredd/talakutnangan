@@ -1,11 +1,12 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
-		:role-names="[]">
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -87,6 +88,18 @@ const tableData = computed<TableData[]>(() => {
 })
 
 const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	}
+])
+const chosenSort = ref("name")
+
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
@@ -136,7 +149,7 @@ async function fetchRoleInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": list.value.data.length
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
@@ -182,7 +195,10 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch(
+	[ chosenSort, chosenDepartment, slug, existence ],
+	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+)
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.data.map(item => item.id))

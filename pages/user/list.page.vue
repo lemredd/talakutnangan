@@ -1,11 +1,13 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-role="chosenRole"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
+		:sort-names="sortNames"
 		:role-names="roleNames">
 		<template #header>
 			<TabbedPageHeader
@@ -74,6 +76,7 @@ import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
@@ -112,7 +115,7 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
-const headers = [ "Name", "E-mail", "Role", "Department" ]
+const headers = [ "Name", "E-mail", "Kind", "Department" ]
 const list = ref<DeserializedUserListDocument<"roles"|"department">>(
 	pageProps.users as DeserializedUserListDocument<"roles"|"department">
 )
@@ -121,7 +124,7 @@ const tableData = computed<TableData[]>(() => {
 		"data": [
 			resource.name,
 			resource.email,
-			resource.roles.data[0].name,
+			convertForSentence(resource.kind),
 			resource.department.data.acronym
 		],
 		"id": resource.id
@@ -130,9 +133,30 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by Name",
+		"value": "name"
+	},
+	{
+		"label": "Ascending by e-mail",
+		"value": "email"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	},
+	{
+		"label": "Descending by e-mail",
+		"value": "-email"
+	}
+])
+const chosenSort = ref("name")
+
 const roles = ref<DeserializedRoleListDocument>(
 	pageProps.roles as DeserializedRoleListDocument
 )
+
 const roleNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "All",
@@ -178,7 +202,7 @@ async function fetchUserInfo() {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": list.value.data.length
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}))
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
@@ -228,7 +252,7 @@ onMounted(async() => {
 	await fetchUserInfo()
 
 	watch(
-		[ chosenRole, slug, chosenDepartment, existence ],
+		[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
 		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
 	)
 })
