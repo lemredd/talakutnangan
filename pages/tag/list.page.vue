@@ -54,6 +54,7 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinati
 
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps = "tags"
