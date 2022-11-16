@@ -252,7 +252,7 @@ onMounted(async() => {
 	await fetchUserInfo()
 
 	watch(
-		[ chosenRole, slug, chosenDepartment, existence ],
+		[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
 		debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
 	)
 })
