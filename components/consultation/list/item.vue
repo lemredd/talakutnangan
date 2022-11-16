@@ -126,10 +126,8 @@ const {
 	isOngoing,
 	willSoonStart,
 	willStart
-} = makeConsultationStates({
-	"consultation": props.consultation as DeserializedConsultationResource<
-		"consultant"|"consultantRole"
-	>
+} = makeConsultationStates(props as unknown as {
+	"consultation": DeserializedConsultationResource<"consultant"|"consultantRole">
 })
 const statusBadgeClasses = {
 	"finished": isDone.value,
