@@ -139,15 +139,15 @@ const sortNames = computed<OptionInfo[]>(() => [
 		"value": "name"
 	},
 	{
-		"label": "Ascending by E-mail",
+		"label": "Ascending by e-mail",
 		"value": "email"
 	},
 	{
-		"label": "Descending by Name",
+		"label": "Descending by name",
 		"value": "-name"
 	},
 	{
-		"label": "Descending by E-mail",
+		"label": "Descending by e-mail",
 		"value": "-email"
 	}
 ])
