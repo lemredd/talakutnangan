@@ -13,7 +13,7 @@
 					v-model="value"
 					:value="option.value"
 					type="radio"/>
-				{{ option.label ?? option.value }}
+				<span>{{ option.label ?? option.value }}</span>
 			</label>
 		</div>
 	</div>
@@ -29,6 +29,10 @@
 
 		label {
 			@apply mr-4;
+			@apply flex flex-row flex-nowrap;
+
+			> * { @apply flex-none; }
+			span { @apply ml-1; }
 		}
 
 		@screen md {
