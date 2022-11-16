@@ -33,14 +33,11 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch, computed } from "vue"
+import { onMounted, inject, ref, watch, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData, OptionInfo } from "$@/types/component"
-import type {
-	DeserializedSemesterResource,
-	DeserializedSemesterListDocument
-} from "$/types/documents/semester"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
@@ -66,14 +63,11 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
-const list = ref<DeserializedSemesterResource[]>(
-	pageProps.semesters.data as DeserializedSemesterResource[]
-)
-const listDocument = ref<DeserializedSemesterListDocument>(
+const list = ref<DeserializedSemesterListDocument>(
 	pageProps.semesters as DeserializedSemesterListDocument
 )
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.map(resource => ({
+	const data = list.value.data.map(resource => ({
 		"data": [
 			resource.name,
 			resource.semesterOrder,
@@ -112,7 +106,7 @@ const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(
-		listDocument,
+		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
 		() => ({
 			"filter": {
@@ -121,7 +115,7 @@ async function fetchSemesterInfos() {
 			},
 			"page": {
 				"limit": 10,
-				"offset": list.value.length
+				"offset": list.value.data.length
 			},
 			"sort": [ chosenSort.value ]
 		}),
@@ -156,7 +150,12 @@ const mayEditSemester = computed<boolean>(() => {
 })
 
 async function refetchSemester() {
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	isLoaded.value = false
 	await fetchSemesterInfos()
 }
