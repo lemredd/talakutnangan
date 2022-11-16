@@ -6,8 +6,7 @@
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
 		:department-names="departmentNames"
-		:sort-names="sortNames"
-		:role-names="[]">
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -91,7 +90,11 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Name",
+		"label": "Ascending by Name",
+		"value": "name"
+	},
+	{
+		"label": "Dscending by Name",
 		"value": "name"
 	}
 ])
