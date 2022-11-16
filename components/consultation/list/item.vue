@@ -50,6 +50,9 @@
 				@apply bg-opacity-10;
 				background-color: $color-primary;
 
+				&.scheduled {
+					@apply bg-dark-50 bg-opacity-100;
+				}
 				&.ongoing {
 					@apply bg-green-500 bg-opacity-100;
 				}
@@ -141,7 +144,8 @@ const statusBadge = computed(() => {
 })
 const statusBadgeClasses = computed(() => ({
 	"finished": isDone.value,
-	"ongoing": isOngoing.value
+	"ongoing": isOngoing.value,
+	"scheduled": willSoonStart.value || willStart.value
 }))
 
 const profilePictures = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
