@@ -24,17 +24,17 @@
 		@apply flex flex-col flex-nowrap md:flex-row justify-start items-start;
 
 		div {
-			@apply flex-1 flex flex-col justify-start items-start;
-		}
-
-		@screen md {
-			div {
-				@apply flex-row;
-			}
+			@apply flex-1 flex flex-row justify-start items-start;
 		}
 
 		label {
-			@apply ml-4;
+			@apply mr-4;
+		}
+
+		@screen md {
+			.title {
+				@apply mr-4;
+			}
 		}
 	}
 </style>
