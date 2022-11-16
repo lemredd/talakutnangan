@@ -121,7 +121,7 @@ async function fetchAuditTrailInfos() {
 				"limit": DEFAULT_LIST_LIMIT,
 				"offset": offset.value
 			},
-			"sort": [ "-createdAt" ]
+			"sort": [ chosenSort.value ]
 		}),
 		{
 			"mayContinue": () => Promise.resolve(false)
