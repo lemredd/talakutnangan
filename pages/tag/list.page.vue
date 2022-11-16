@@ -140,5 +140,5 @@ async function refetchTags() {
 	await fetchTagInfos()
 }
 
-watch([ slug, existence ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
 </script>
