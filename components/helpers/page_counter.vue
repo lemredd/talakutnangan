@@ -1,11 +1,16 @@
 <template>
-	<div v-if="maxCount > DEFAULT_LIST_LIMIT" class="page-counter">
+	<div v-if="shouldShowPagination" class="page-counter">
+		<button
+			class="movement-btn previous-btn"
+			:class="movementBtnClasses"
+			@click="updateOffset(1)">
+			<span class="material-icons">keyboard_double_arrow_left</span>
+		</button>
 		<button
 			class="movement-btn previous-btn"
 			:class="movementBtnClasses"
 			@click="goToPreviousPage">
 			<span class="material-icons">chevron_left</span>
-			<span class="text">Previous</span>
 		</button>
 
 		<div v-if="pageLength < CONDENSE_LIMIT" class="limited-page-btn">
@@ -27,21 +32,19 @@
 				@click="updateOffset(pageCount)">
 				{{ pageCount }}
 			</button>
-			...
-			<button
-				class="page-count-btn btn"
-				:class="determineActiveness(pageLength)"
-				@click="updateOffset(pageLength)">
-				{{ pageLength }}
-			</button>
 		</div>
 
 		<button
 			class="movement-btn next-btn"
 			:class="movementBtnClasses"
 			@click="goToNextPage">
-			<span class="text">Next</span>
 			<span class="material-icons">chevron_right</span>
+		</button>
+		<button
+			class="movement-btn next-btn"
+			:class="movementBtnClasses"
+			@click="updateOffset(pageLength)">
+			<span class="material-icons">keyboard_double_arrow_right</span>
 		</button>
 	</div>
 </template>
@@ -97,6 +100,8 @@ type DefinedProps = {
 	modelValue: number
 }
 const props = defineProps<DefinedProps>()
+
+const shouldShowPagination = computed(() => props.maxCount > DEFAULT_LIST_LIMIT)
 
 const currentPageCount = computed(() => props.modelValue / DEFAULT_LIST_LIMIT + 1)
 const CONDENSE_LIMIT = 4
