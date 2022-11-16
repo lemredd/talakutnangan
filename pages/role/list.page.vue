@@ -195,7 +195,10 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
-watch([ chosenDepartment, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch(
+	[ chosenSort, chosenDepartment, slug, existence ],
+	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+)
 
 onMounted(async() => {
 	await countUsersPerRole(list.value.data.map(item => item.id))
