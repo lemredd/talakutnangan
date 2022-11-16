@@ -191,5 +191,13 @@ async function refetchSemester() {
 	await fetchSemesterInfos()
 }
 
-watch([ chosenSort, slug, existence, offset ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchSemester, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 </script>
