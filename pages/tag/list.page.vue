@@ -140,7 +140,9 @@ async function fetchTagInfos(): Promise<number|void> {
 			"offset": offset.value
 		},
 		"sort": [ chosenSort.value ]
-	}))
+	}), {
+		"mayContinue": () => Promise.resolve(false)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
@@ -156,6 +158,7 @@ async function refetchTags() {
 	}
 	await fetchTagInfos()
 }
+
 const debouncedResetList = debounce(refetchTags, DEBOUNCED_WAIT_DURATION)
 
 function clearOffset() {
