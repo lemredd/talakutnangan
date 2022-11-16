@@ -76,6 +76,7 @@ import Manager from "$/helpers/manager"
 import debounce from "$@/helpers/debounce"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
@@ -114,7 +115,7 @@ const determineTitle = computed(() => {
 	return "Administrator Configuration"
 })
 
-const headers = [ "Name", "E-mail", "Role", "Department" ]
+const headers = [ "Name", "E-mail", "Kind", "Department" ]
 const list = ref<DeserializedUserListDocument<"roles"|"department">>(
 	pageProps.users as DeserializedUserListDocument<"roles"|"department">
 )
@@ -123,7 +124,7 @@ const tableData = computed<TableData[]>(() => {
 		"data": [
 			resource.name,
 			resource.email,
-			resource.roles.data[0].name,
+			convertForSentence(resource.kind),
 			resource.department.data.acronym
 		],
 		"id": resource.id
