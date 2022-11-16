@@ -76,6 +76,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
+const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
@@ -122,13 +123,15 @@ const sortNames = computed<OptionInfo[]>(() => [
 	}
 ])
 const chosenSort = ref("fullName")
-
-const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
