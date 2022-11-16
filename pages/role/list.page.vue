@@ -83,6 +83,7 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
+const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "no. of users" ]
 const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
@@ -98,7 +99,6 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
 const sortNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "Ascending by name",
@@ -128,10 +128,14 @@ const departmentNames = computed<OptionInfo[]>(() => [
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const receivedErrors = ref<string[]>([])
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
+const receivedErrors = ref<string[]>([])
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -209,9 +213,18 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
+const debouncedResetList = debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+
 watch(
 	[ chosenSort, chosenDepartment, slug, existence, offset ],
-	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+	clearOffset
 )
 
 onMounted(async() => {
