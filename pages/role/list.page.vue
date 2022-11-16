@@ -90,11 +90,11 @@ const tableData = computed<TableData[]>(() => {
 const isLoaded = ref<boolean>(true)
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Ascending by Name",
+		"label": "Ascending by name",
 		"value": "name"
 	},
 	{
-		"label": "Descending by Name",
+		"label": "Descending by name",
 		"value": "-name"
 	}
 ])
