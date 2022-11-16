@@ -76,7 +76,7 @@
 </template>
 
 <style scoped lang="scss">
-	@import "@/variables.scss";
+	@import "@styles/variables.scss";
 	@import "@styles/btn.scss";
 	.resource-list {
 		margin-top: 1em;
