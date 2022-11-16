@@ -134,12 +134,20 @@ const tableData = computed<TableData[]>(() => {
 
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Name",
+		"label": "Ascending by Name",
 		"value": "name"
 	},
 	{
-		"label": "E-mail",
+		"label": "Ascending by E-mail",
 		"value": "email"
+	},
+	{
+		"label": "Descending by Name",
+		"value": "-name"
+	},
+	{
+		"label": "Descending by E-mail",
+		"value": "-email"
 	}
 ])
 const chosenSort = ref("name")
