@@ -11,6 +11,7 @@ import DatabaseError from "$!/errors/database"
 import User from "%/models/user"
 import Model from "%/models/post"
 import Comment from "%/models/comment"
+import PostTag from "%/models/post_tag"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import PostAttachment from "%/models/post_attachment"
@@ -89,7 +90,8 @@ export default class extends BaseManager<
 					}
 				},
 				"postAttachments": attachments,
-				department
+				department,
+				tags
 			} = relationships
 
 			const departmentID = department
@@ -140,6 +142,16 @@ export default class extends BaseManager<
 
 				model.postAttachments = await PostAttachment.findAll({
 					"where": IDMatcher,
+					...this.transaction.transactionObject
+				})
+			}
+
+			if (tags && tags.data.length > 0) {
+				const tagData = tags.data.map(tag => ({
+					"postID": model.id,
+					"tagID": tag.id
+				}))
+				const postTags = await PostTag.bulkCreate(tagData, {
 					...this.transaction.transactionObject
 				})
 			}
