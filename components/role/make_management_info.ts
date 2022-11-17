@@ -20,7 +20,9 @@ export default function(
 		ARCHIVE_AND_RESTORE
 	])
 
-	const mayRestoreRole = !mayArchiveRole
+	const mayRestoreRole = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	]) && isDeleted
 
 	return {
 		isDeleted,
