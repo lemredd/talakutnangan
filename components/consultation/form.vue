@@ -263,6 +263,19 @@ async function fetchConsultantSchedules(selectedConsultant: DeserializedUserReso
 		"sort": [ "dayName" ]
 	}))
 }
+watch(selectedConsultants, () => {
+	if (selectedConsultants.value.length) {
+		const [ selectedConsultant ] = selectedConsultants.value
+		fetchConsultantSchedules(selectedConsultant)
+	} else {
+		consultantSchedules.value = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}
+	}
+})
 
 const chosenDay = ref<string>("")
 const chosenTime = ref<string>("")
@@ -338,18 +351,4 @@ function addConsultation(): void {
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
-
-watch(selectedConsultants, () => {
-	if (selectedConsultants.value.length) {
-		const [ selectedConsultant ] = selectedConsultants.value
-		fetchConsultantSchedules(selectedConsultant)
-	} else {
-		consultantSchedules.value = {
-			"data": [],
-			"meta": {
-				"count": 0
-			}
-		}
-	}
-})
 </script>
