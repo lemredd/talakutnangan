@@ -3,6 +3,7 @@
 		v-model="slug"
 		:header="header"
 		:is-loaded="isLoaded"
+		:text-field-label="textFieldLabel"
 		:maximum-chips="maximumParticipants"
 		:unselected-chips="otherParticipantChips"
 		:selected-chips="selectedParticipantChips"
