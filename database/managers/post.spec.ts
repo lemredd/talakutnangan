@@ -1,5 +1,6 @@
 import Model from "%/models/post"
 import PostTag from "%/models/post_tag"
+import Department from "%/models/department"
 import PostAttachment from "%/models/post_attachment"
 
 import Factory from "~/factories/post"
@@ -87,6 +88,51 @@ describe("Database Manager: Post create operations", () => {
 
 		expect(await Model.count()).toBe(1)
 		expect(await PostTag.count()).toBe(3)
+		expect(await Department.count()).toBe(1)
+		expect(await PostAttachment.count()).toBe(1)
+		expect(data).toHaveProperty("data")
+		expect(data).toHaveProperty("data.attributes.content", model.content)
+	})
+
+	it("can create post without tags", async() => {
+		const department = await new DepartmentFactory().insertOne()
+		const attachment = await new PostAttachmentFactory().insertOne()
+		const model = await new Factory().makeOne()
+		const manager = new Manager()
+
+		const data = await manager.createUsingResource({
+			"attributes": {
+				"content": model.content
+			},
+			"relationships": {
+				"department": {
+					"data": {
+						"id": department.id
+					}
+				},
+				"postAttachments": {
+					"data": [
+						{
+							"id": attachment.id
+						}
+					]
+				},
+				"poster": {
+					"data": {
+						"id": model.poster?.id
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": model.posterRole?.id
+					}
+				}
+			}
+		} as any)
+
+		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(1)
 		expect(await PostAttachment.count()).toBe(1)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
@@ -124,6 +170,9 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(1)
+		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
@@ -156,6 +205,9 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(0)
+		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
