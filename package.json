@@ -1,7 +1,7 @@
 {
 	"name": "talakutnangan",
 	"description": "A capstone project aim to create a consultation platform through chat for MCC",
-	"version": "1.1.0",
+	"version": "1.2.0-dev",
 	"homepage": "https://github.com/lemredd/talakutnangan",
 	"keywords": [
 		"front-end",
