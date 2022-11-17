@@ -53,7 +53,7 @@ export default class extends DoubleBoundJSONController {
 				"constraints": {
 					"length": {
 						"maximum": 255,
-						"minimum": 8
+						"minimum": MINIMUM_PASSWORD_LENGTH
 					},
 					"same": {
 						"pointer": "meta.confirmPassword"
@@ -70,7 +70,7 @@ export default class extends DoubleBoundJSONController {
 						"constraints": {
 							"length": {
 								"maximum": 255,
-								"minimum": 8
+								"minimum": MINIMUM_PASSWORD_LENGTH
 							}
 						},
 						"pipes": [ required, string, length ]

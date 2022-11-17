@@ -32,17 +32,12 @@
 		}
 
 		select {
-			@apply flex-1 truncate;
+			@apply truncate w-max ml-2;
 			@apply dark:bg-transparent;
+			@apply border border-gray-400 border-opacity-20 dark:border-opacity-40;
 			option {
 				@apply dark:bg-dark-500;
 			}
-		}
-	}
-
-	@screen md {
-		.selectable {
-			@apply max-w-[70%] flex-row;
 		}
 	}
 </style>

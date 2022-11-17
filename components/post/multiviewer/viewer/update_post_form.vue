@@ -129,9 +129,10 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const userFetcher = new UserFetcher()
 
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
 const props = defineProps<{
 	isShown: boolean,
-	modelValue: DeserializedPostResource<"poster"|"posterRole"|"department"|"postAttachments">
+	modelValue: DeserializedPostResource<AssociatedPostResource>
 }>()
 
 interface CustomEvents {
@@ -139,7 +140,7 @@ interface CustomEvents {
 	(event: "submit"): void,
 	(
 		event: "update:modelValue",
-		content: DeserializedPostResource<"poster"|"posterRole"|"department">
+		content: DeserializedPostResource<AssociatedPostResource>
 	): void
 }
 const emit = defineEmits<CustomEvents>()

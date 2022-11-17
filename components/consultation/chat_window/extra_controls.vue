@@ -40,7 +40,10 @@
 		}
 
 		.additional-control{
-		@apply p-4 sm:p-2 hover:bg-light-600;
+		@apply p-4 sm:p-2;
+		&:hover {
+			@apply bg-gray-400 bg-opacity-10;
+		}
 		}
 	}
 </style>

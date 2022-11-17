@@ -33,21 +33,38 @@ export const localTracks: LocalTracks = {
 let localParticipantIDReference = ""
 
 export async function initiateVideoConferenceEngine(remoteParticipants: Ref<RemoteTracks[]>) {
-	if (!isUndefined(window)) {
-		// @ts-ignore
-		videoConferenceManager = await import("agora-rtc-sdk-ng") as VideoConferenceManager
-		videoConferenceEngine = videoConferenceManager.createClient({
-			"codec": "vp8",
-			"mode": "rtc"
-		})
+	await Stub.runConditionally(
+		async() => {
+			if (!isUndefined(window)) {
+				// @ts-ignore
+				videoConferenceManager = await import("agora-rtc-sdk-ng") as VideoConferenceManager
+				videoConferenceEngine = videoConferenceManager.createClient({
+					"codec": "vp8",
+					"mode": "rtc"
+				})
 
-		videoConferenceEngine.on(
-			"user-published",
-			(user: RemoteUser, mediaType: MediaType) => {
-				handleRemoteUserJoining(engine, user, mediaType, remoteParticipants)
+				videoConferenceEngine.on(
+					"user-published",
+					(user: RemoteUser, mediaType: MediaType) => {
+						handleRemoteUserJoining(engine, user, mediaType, remoteParticipants)
+					}
+				)
 			}
-		)
-	}
+		},
+		() => {
+			videoConferenceEngine = "this runs on test" as any
+
+			return [
+				Promise.resolve(),
+				{
+					"arguments": [
+						remoteParticipants
+					],
+					"functionName": "initiateVideoConferenceEngine"
+				}
+			]
+		}
+	)
 }
 
 export function joinAndPresentLocalTracks(
@@ -203,7 +220,6 @@ export function unmuteAudioTrack() {
 			if (!localTracks.localAudioTrack?.isPlaying) {
 				localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
 				await engine().publish(localTracks.localAudioTrack)
-				localTracks.localAudioTrack?.play()
 			}
 			localTracks.localAudioTrack?.setMuted(false)
 		},

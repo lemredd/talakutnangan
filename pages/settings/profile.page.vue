@@ -330,7 +330,7 @@ const mayEditProfile = computed<boolean>(() => {
 		UPDATE_OWN_DATA
 	])
 
-	return isPermitted
+	return !isPermitted
 })
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]

@@ -47,7 +47,7 @@
 		}
 
 		.multiviewer {
-			@apply flex-1 m-5;
+			@apply flex-1 mt-4;
 		}
 	}
 

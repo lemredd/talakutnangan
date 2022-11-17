@@ -1,12 +1,12 @@
 <template>
 	<div class="scheduler">
 		<div
-			v-if="consultantSchedules.data.length"
+			v-if="hasConsultantSchedules"
 			class="consultant-has-schedules">
 			<p>Please select the day and time from the consultant's available schedules</p>
 			<div class="required">
 				<SelectableOptionsField
-					v-model="chosenDay"
+					v-model="chosenDate"
 					class="selectable-day"
 					label="Day:"
 					:options="selectableDays"/>
@@ -45,7 +45,7 @@
 <style></style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
 import { Day, DayValues } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
@@ -84,16 +84,11 @@ const reorderedDays = computed<Day[]>(
 	() => [ ...DayValues.slice(dayIndex.value), ...DayValues.slice(0, dayIndex.value) ]
 )
 
-const chosenDay = computed({
-	get() { return props.chosenDay },
-	set(newValue: string) { emit("update:chosenDay", newValue) }
-})
-const customDate = ref("")
-const isCustomDate = computed(() => chosenDay.value === CUSTOM_DAY)
-const selectableDays = computed(() => {
+const hasConsultantSchedules = computed<boolean>(() => props.consultantSchedules.data.length > 0)
+const selectableDays = computed<OptionInfo[]>(() => {
 	const { consultantSchedules } = props
 	const dates: Date[] = []
-	if (consultantSchedules.data.length) {
+	if (hasConsultantSchedules.value) {
 		const consultantDays = makeUnique(
 			consultantSchedules.data.map(schedule => schedule.dayName)
 		)
@@ -107,6 +102,10 @@ const selectableDays = computed(() => {
 
 		for (const day of consultantDays) {
 			const dateCounter = new Date()
+			dateCounter.setHours(0)
+			dateCounter.setMinutes(0)
+			dateCounter.setSeconds(0)
+			dateCounter.setMilliseconds(0)
 			const reorderedDayIndex = reorderedDays.value.indexOf(day)
 			dateCounter.setDate(dateCounter.getDate() + reorderedDayIndex)
 
@@ -128,9 +127,32 @@ const selectableDays = computed(() => {
 		"value": CUSTOM_DAY
 	})
 
-
 	return actualSelectableDays as OptionInfo[]
 })
+watch(selectableDays, newValue => {
+	if (newValue.length > 1) {
+		emit("update:chosenDay", newValue[0].value)
+	}
+})
+
+const chosenDate = computed<string>({
+	get() {
+		if (selectableDays.value.find(day => day.value === props.chosenDay)) {
+			return props.chosenDay
+		}
+
+		return CUSTOM_DAY
+	},
+	set(newValue: string) {
+		if (newValue === CUSTOM_DAY) {
+			emit("update:chosenDay", new Date(castToCompatibleDate(new Date())).toJSON())
+		} else {
+			emit("update:chosenDay", newValue)
+		}
+	}
+})
+const isCustomDate = computed<boolean>(() => chosenDate.value === CUSTOM_DAY)
+const customDate = ref("")
 
 const chosenTime = computed({
 	get() { return props.chosenTime },
@@ -141,9 +163,9 @@ const selectableTimes = computed(() => {
 	const availableTimes: OptionInfo[] = []
 	const dayToDerive = isCustomDate.value && customDate.value
 		? customDate.value
-		: chosenDay.value
+		: chosenDate.value
 
-	if (consultantSchedules.data.length && dayToDerive) {
+	if (hasConsultantSchedules.value && dayToDerive) {
 		const convertedDate = new Date(dayToDerive)
 		const day = DayValues[convertedDate.getDay()]
 		const schedulesByDay = consultantSchedules.data.filter(
@@ -161,11 +183,12 @@ const selectableTimes = computed(() => {
 				const midday = getTimePart(time, "midday")
 				const label = `${timeString} ${midday}`
 
-				const comparableDate = new Date(chosenDay.value)
+				const comparableDate = new Date(dayToDerive)
 				comparableDate.setHours(timeObject.hours)
 				comparableDate.setMinutes(timeObject.minutes)
 				comparableDate.setSeconds(0)
 				comparableDate.setMilliseconds(0)
+
 				if (comparableDate > dateToday.value) {
 					availableTimes.push({
 						label,

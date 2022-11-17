@@ -22,7 +22,7 @@
 		@apply flex-col relative;
 
 		.overlay {
-			@apply dark:bg-white fixed bg-black z-500 opacity-30 block;
+			@apply fixed bg-black z-500 opacity-30 block;
 			inset:0;
 
 			content: " "
@@ -30,7 +30,7 @@
 
 		.dropdown-container {
 			@apply w-max;
-			@apply dark:bg-dark-400 fixed bg-white h-full z-501 h-min;
+			@apply bg-dark-400 fixed h-full z-501 h-min;
 			@apply flex flex-col flex-nowrap;
 
 			top: 50%;

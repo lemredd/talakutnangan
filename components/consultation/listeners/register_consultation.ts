@@ -26,6 +26,16 @@ export default function(
 			...consultation.value,
 			...deserializedConsultation.data
 		}
+
+		consultations.value = {
+			...consultations.value,
+			"data": [
+				consultation.value,
+				...consultations.value.data.filter(
+					consultationItem => consultationItem.id !== consultation.value.id
+				)
+			]
+		}
 	}
 
 	const consultationNamespace = makeConsultationNamespace(consultation.value.id)
