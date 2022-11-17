@@ -18,6 +18,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_DEPARTMENT"
 				:headers="headers"
 				:list="tableData"
@@ -47,6 +48,7 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_co
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import Fetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/department/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -58,30 +60,43 @@ import ResourceList from "@/resource_management/resource_manager/resource_list.v
 
 type RequiredExtraProps =
 	| "userProfile"
+	| "roles"
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
+
 const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.fullName,
-			resource.acronym,
-			resource.mayAdmit ? "Yes" : "No",
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.fullName,
+				resource.acronym,
+				resource.mayAdmit ? "Yes" : "No",
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveDepartment,
+			"mayEdit": managementInfo.mayUpdateDepartment
+				|| managementInfo.mayRestoreDepartment
+				|| managementInfo.mayArchiveDepartment,
+			"mayRestore": managementInfo.mayRestoreDepartment
+		}
+	})
 
 	return data
 })
-
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
@@ -127,8 +142,6 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 
 	isLoaded.value = true
 }
-
-const { userProfile } = pageProps
 
 const mayCreateDepartment = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
