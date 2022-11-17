@@ -11,14 +11,14 @@
 			</div>
 		</div>
 		<div class="controls">
-			<!-- TODO(lead/button): Apply functionality -->
-			<a
+			<span
 				v-if="isAllowedToCall"
-				:href="`../call/${consultation.id}`"
+				:href="path"
 				target="_blank"
-				class="material-icons">
+				class="material-icons"
+				@click="sendMessage">
 				video_camera_back
-			</a>
+			</span>
 			<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
 				storage
 			</button>
@@ -100,16 +100,18 @@ import type {
 } from "$/types/documents/chat_message"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { CONSULTATION_CALL } from "$/constants/template_page_paths"
 
 import twoDigits from "$/time/two_digits"
 import makeSwitch from "$@/helpers/make_switch"
 import makeUniqueBy from "$/helpers/make_unique_by"
+import specializePath from "$/helpers/specialize_path"
 import ChatMessageFetcher from "$@/fetchers/chat_message"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
 import Overlay from "@/helpers/overlay.vue"
-import Rescheduler from "./rescheduler.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
+import Rescheduler from "@/consultation/chat_window/rescheduler.vue"
 import FileOverlay from "@/consultation/chat_window/file_overlay.vue"
 import ExtraControls from "@/consultation/chat_window/extra_controls.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -244,6 +246,9 @@ function switchTab(event: Event) {
 const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
 	() => props.consultation
 )
+const path = computed<string>(() => specializePath(CONSULTATION_CALL, {
+	"id": consultation.value.id
+}))
 
 const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
 const actionTakenHeader = isCurrentUserConsultant.value
@@ -286,6 +291,10 @@ const {
 	"off": hideReschedulerOverlay,
 	"state": isReschedulerShown
 } = makeSwitch(false)
+
+function sendMessage() {
+
+}
 
 onMounted(async() => {
 	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
