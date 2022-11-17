@@ -20,7 +20,10 @@ export default function(
 		ARCHIVE_AND_RESTORE
 	]) && !isDeleted
 
-	const mayRestoreTag = !mayArchiveTag
+	const mayRestoreTag = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	]) && isDeleted
+
 	return {
 		isDeleted,
 		mayArchiveTag,

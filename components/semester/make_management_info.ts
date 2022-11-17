@@ -20,7 +20,9 @@ export default function(
 		ARCHIVE_AND_RESTORE
 	]) && !isDeleted
 
-	const mayRestoreSemester = !mayArchiveSemester
+	const mayRestoreSemester = permissionGroup.hasOneRoleAllowed(roles, [
+		ARCHIVE_AND_RESTORE
+	]) && isDeleted
 
 	return {
 		isDeleted,
