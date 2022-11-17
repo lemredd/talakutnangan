@@ -38,6 +38,10 @@
 	.picker {
 		@apply flex flex-col justify-start;
 
+		@screen sm {
+			@apply flex-row;
+		}
+
 		label {
 			@apply flex-1 flex flex-col justify-start my-2;
 

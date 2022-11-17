@@ -3,7 +3,7 @@
 		<h6 class="title">
 			{{ title }}
 		</h6>
-		<div>
+		<div class="options">
 			<label
 				v-for="option in options"
 				:key="option.value"
@@ -21,10 +21,10 @@
 
 <style scoped lang="scss">
 	.selectable-radio {
-		@apply flex flex-col flex-nowrap md:flex-row justify-start items-start;
+		@apply flex flex-col flex-nowrap sm:flex-row justify-start items-start;
 
-		div {
-			@apply flex-1 flex flex-row justify-start items-start;
+		.options {
+			@apply flex-1 flex-col md:flex-row justify-start items-start;
 		}
 
 		label {

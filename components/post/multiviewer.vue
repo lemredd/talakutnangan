@@ -1,17 +1,20 @@
 <template>
 	<div class="multiviewer">
 		<form class="filters">
-			<SelectableOptionsField
-				v-model="chosenDepartment"
-				label="Department"
-				class="filter"
-				:options="departmentNames"/>
-			<DateRangePicker
-				v-model:range-begin="rangeBegin"
-				v-model:range-end="rangeEnd"
-				:semesters="semesters"
-				class="picker"/>
-			<SelectableExistence v-model="existence" class="existence"/>
+			<h3>Filters</h3>
+			<div class="filter-field-container">
+				<SelectableOptionsField
+					v-model="chosenDepartment"
+					label="Department"
+					class="filter department"
+					:options="departmentNames"/>
+				<DateRangePicker
+					v-model:range-begin="rangeBegin"
+					v-model:range-end="rangeEnd"
+					:semesters="semesters"
+					class="picker"/>
+				<SelectableExistence v-model="existence" class="existence"/>
+			</div>
 		</form>
 
 		<Viewer
@@ -38,20 +41,33 @@
 	</div>
 </template>
 
+<style lang="scss">
+	.filter.department select {
+		margin: 0 !important;
+	}
+
+</style>
+
 <style scoped lang="scss">
 @import "@styles/btn.scss";
 @import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col;
 
-		.filters {
+		.filter-field-container {
 			@apply p-4 mb-4;
 			@apply border border-gray-400 rounded-md;
-			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
+			@apply flex flex-col flex-wrap items-stretch;
+			@screen sm {
+				@apply flex-row;
+			}
 			@apply bg-gray-300 bg-opacity-20;
 
+			@apply o
+			overflow-y: scroll;
+
 		.filter{
-			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
+			@apply flex flex-col flex-wrap;
 		}
 
 			.existence {
