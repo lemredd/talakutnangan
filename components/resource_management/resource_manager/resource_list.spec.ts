@@ -18,12 +18,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						"id": "1"
+						"id": "1",
+						"mayArchive": false,
+						"mayEdit": true,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": false,
-				"mayEdit": true,
-				"mayRestore": false,
 				"selectedIDs": [],
 				templatePath
 			}
@@ -49,12 +49,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						"id": "1"
+						"id": "1",
+						"mayArchive": false,
+						"mayEdit": false,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": false,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": []
 			}
 		})
@@ -76,9 +76,6 @@ describe("Component: Resource List", () => {
 			"props": {
 				"headers": [ "Name" ],
 				"list": [],
-				"mayArchive": false,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": []
 			}
 		})
@@ -101,12 +98,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": true,
+						"mayEdit": false,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": true,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": []
 			}
 		})
@@ -132,12 +129,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": false,
+						"mayEdit": false,
+						"mayRestore": true
 					}
 				],
-				"mayArchive": false,
-				"mayEdit": false,
-				"mayRestore": true,
 				"selectedIDs": []
 			}
 		})
@@ -164,12 +161,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": true,
+						"mayEdit": false,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": true,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": []
 			}
 		})
@@ -196,12 +193,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": true,
+						"mayEdit": false,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": true,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": [ id ]
 			}
 		})
@@ -228,12 +225,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": true,
+						"mayEdit": false,
+						"mayRestore": false
 					}
 				],
-				"mayArchive": true,
-				"mayEdit": false,
-				"mayRestore": false,
 				"selectedIDs": [ id ]
 			}
 		})
@@ -260,12 +257,12 @@ describe("Component: Resource List", () => {
 				"list": [
 					{
 						"data": [ "Hello" ],
-						id
+						id,
+						"mayArchive": false,
+						"mayEdit": false,
+						"mayRestore": true
 					}
 				],
-				"mayArchive": false,
-				"mayEdit": false,
-				"mayRestore": true,
 				"selectedIDs": [ id ]
 			}
 		})
