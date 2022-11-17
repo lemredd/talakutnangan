@@ -12,8 +12,7 @@
 			</span>
 			<span
 				v-if="chip.mayRemove"
-				id="close-btn"
-				class="material-icons"
+				class="close-btn material-icons"
 				@click="removeChip(chip.id)">
 				close
 			</span>
@@ -59,18 +58,19 @@
 		}
 	}
 
-	#close-btn {
+	.close-btn {
 		padding-left: 10px;
 		color: #888;
 		font-weight: bold;
 		float: right;
 		font-size: 20px;
 		cursor: pointer;
+
+		&:hover {
+			color: #000;
+		}
 	}
 
-	#close-btn:hover {
-		color: #000;
-	}
 </style>
 
 <script setup lang="ts">
@@ -87,7 +87,7 @@ const props = defineProps<{
 	isLoaded: boolean,
 	unselectedChips: ChipData[],
 	selectedChips: ChipData[],
-	maximumSelectedChips: number,
+	maximumChips: number,
 	textFieldLabel: string
 }>()
 
