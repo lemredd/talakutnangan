@@ -17,7 +17,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue"
 
-import type { UserKind } from "$/types/database"
 import type { ChipData } from "$@/types/component"
 import type { DeserializedTagResource } from "$/types/documents/tag"
 
@@ -33,8 +32,7 @@ const props = defineProps<{
 	header: string,
 	modelValue: DeserializedTagResource[],
 	maximumTags: number,
-	textFieldLabel: string,
-	kind: UserKind
+	textFieldLabel: string
 }>()
 
 interface CustomEvents {
