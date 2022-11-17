@@ -119,7 +119,6 @@ describe("PATCH /api/user/:id", () => {
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
-		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ "where": { "id": student.id } })
