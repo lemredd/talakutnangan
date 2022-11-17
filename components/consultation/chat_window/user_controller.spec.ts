@@ -8,7 +8,7 @@ import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 import RequestEnvironment from "$/singletons/request_environment"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 
-import Component from "./user_controller.vue"
+import Component from "../../helpers/filters/user_controller.vue"
 
 describe("Component: consultation/chat_window/user_controller", () => {
 	describe("States", () => {
