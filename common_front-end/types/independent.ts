@@ -184,3 +184,10 @@ export interface RoleManagementInfo {
 	mayArchiveRole: boolean,
 	mayRestoreRole: boolean
 }
+
+export interface DepartmentManagementInfo {
+	isDeleted: boolean,
+	mayUpdateDepartment: boolean,
+	mayArchiveDepartment: boolean,
+	mayRestoreDepartment: boolean
+}
