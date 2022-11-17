@@ -29,7 +29,7 @@
 		}
 	}
 
-	@media (min-width: 640px) {
+	@screen md {
 		.tabs {
 			flex-direction: row;
 		}

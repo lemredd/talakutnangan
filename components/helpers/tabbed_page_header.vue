@@ -26,7 +26,11 @@
 	}
 
 	main {
-		@apply flex justify-between items-center;
+		@apply flex flex-col flex-wrap;
+
+		@screen md {
+			@apply flex-row justify-between items-center;
+		}
 
 		.main-controls, .additional-controls {
 			padding-bottom: 1em;
