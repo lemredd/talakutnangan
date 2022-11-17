@@ -1,6 +1,6 @@
 import type { RoleManagementInfo } from "$@/types/independent"
-import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedRoleResource } from "$/types/documents/role"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -20,9 +20,7 @@ export default function(
 		ARCHIVE_AND_RESTORE
 	])
 
-	const mayRestoreRole = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
+	const mayRestoreRole = !mayArchiveRole
 
 	return {
 		isDeleted,
