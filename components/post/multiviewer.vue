@@ -1,6 +1,6 @@
 <template>
 	<div class="multiviewer">
-		<form>
+		<form class="filters">
 			<SelectableOptionsField
 				v-model="chosenDepartment"
 				label="Department"
@@ -44,9 +44,11 @@
 	.multiviewer {
 		@apply flex flex-col;
 
-		form {
+		.filters {
+			@apply p-4 mb-4;
+			@apply border border-gray-400 rounded-md;
 			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
-			@apply bg-gray-300 bg-opacity-20 p-4 mb-4 shadow-inner;
+			@apply bg-gray-300 bg-opacity-20;
 
 		.filter{
 			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
