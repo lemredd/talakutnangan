@@ -107,7 +107,7 @@ const slug = computed<string>({
 	}
 })
 const maySelectMore = computed<boolean>(
-	() => props.selectedChips.length < props.maximumSelectedChips
+	() => props.selectedChips.length < props.maximumChips
 )
 
 function addChip(id: string): void {
