@@ -1,5 +1,6 @@
 import Model from "%/models/post"
 import Factory from "~/factories/post"
+import TagFactory from "~/factories/tag"
 import UserFactory from "~/factories/user"
 import CommentFactory from "~/factories/comment"
 import DepartmentFactory from "~/factories/department"
@@ -41,6 +42,7 @@ describe("Database Manager: Post create operations", () => {
 	it("can create post", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const attachment = await new PostAttachmentFactory().insertOne()
+		const tags = await new TagFactory().insertMany(3)
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
 
@@ -70,6 +72,12 @@ describe("Database Manager: Post create operations", () => {
 					"data": {
 						"id": model.posterRole?.id
 					}
+				},
+				"tags": {
+					"data": tags.map(tag => ({
+						"id": tag.id,
+						"type": "tag"
+					}))
 				}
 			}
 		} as any)
@@ -79,7 +87,7 @@ describe("Database Manager: Post create operations", () => {
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
 
-	it("can create post without attachment", async() => {
+	it("can create post without attachment and tags", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
@@ -115,7 +123,7 @@ describe("Database Manager: Post create operations", () => {
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
 
-	it("can create post without attachment and department", async() => {
+	it("can create post without attachment, tags and department", async() => {
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
 
