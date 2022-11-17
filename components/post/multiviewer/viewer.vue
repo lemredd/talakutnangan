@@ -219,8 +219,12 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const isLoaded = ref<boolean>(false)
 const post = ref<DeserializedPostResource<"poster"|"posterRole"|"department">>(props.modelValue)
-const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
+const formattedContent = computed<string>(() => {
+	if (isLoaded.value) return convertMarkdownToHTML(post.value.content)
+	return ""
+})
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
@@ -360,4 +364,8 @@ async function restorePost(): Promise<void> {
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
+
+onMounted(() => {
+	isLoaded.value = true
+})
 </script>
