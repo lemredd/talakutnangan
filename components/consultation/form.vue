@@ -266,15 +266,11 @@ async function fetchConsultantSchedules(selectedConsultant: DeserializedUserReso
 }
 
 const chosenDay = ref("")
-const customDate = ref("")
-const isCustomDate = computed(() => chosenDay.value === "custom")
 
 const chosenTime = ref("")
 
 const scheduledStartAt = computed(() => {
-	const chosenDate = isCustomDate.value && customDate.value
-		? new Date(customDate.value)
-		: new Date(chosenDay.value)
+	const chosenDate = new Date(chosenDay.value)
 
 	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
