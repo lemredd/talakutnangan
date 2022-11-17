@@ -177,3 +177,10 @@ export interface UserManagementInfo {
 	mayUpdateAttachedRoles: boolean,
 	mayResetPassword: boolean
 }
+
+export interface RoleManagementInfo {
+	isDeleted: boolean,
+	mayUpdateRole: boolean,
+	mayArchiveRole: boolean,
+	mayRestoreRole: boolean
+}
