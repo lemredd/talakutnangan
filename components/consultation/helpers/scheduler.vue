@@ -102,6 +102,10 @@ const selectableDays = computed<OptionInfo[]>(() => {
 
 		for (const day of consultantDays) {
 			const dateCounter = new Date()
+			dateCounter.setHours(0)
+			dateCounter.setMinutes(0)
+			dateCounter.setSeconds(0)
+			dateCounter.setMilliseconds(0)
 			const reorderedDayIndex = reorderedDays.value.indexOf(day)
 			dateCounter.setDate(dateCounter.getDate() + reorderedDayIndex)
 
