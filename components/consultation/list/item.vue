@@ -5,8 +5,15 @@
 		:class="{ 'active': mustBeActive }"
 		@click="pickConsultation">
 		<h3 class="consultation-title font-bold mb-3;">
-			<span class="number-symbol">#{{ consultation.id }}</span>
-			{{ consultation.reason }}
+			<div class="number-and-title">
+				<span class="number-symbol">#{{ consultation.id }}</span>
+				{{ consultation.reason }}
+			</div>
+			<small
+				class="status-badge btn btn-primary"
+				:class="statusBadgeClasses">
+				{{ statusBadge }}
+			</small>
 		</h3>
 		<!-- TODO(others): style arrangement of pictures -->
 		<div class="profile-pictures">
@@ -27,11 +34,32 @@
 </template>
 
 <style scoped lang="scss">
+@import "@styles/btn.scss";
+
 	.consultation {
 		@apply p-3;
 
 		&.active {
 			background-color: hsla(0, 0%, 50%, 0.1)
+		}
+
+		.consultation-title {
+			@apply flex justify-between items-center;
+			.status-badge {
+				@apply p-1 text-xs rounded-0.5em;
+				@apply bg-opacity-10;
+				background-color: $color-primary;
+
+				&.scheduled {
+					@apply bg-dark-50 bg-opacity-100;
+				}
+				&.ongoing {
+					@apply bg-green-500 bg-opacity-100;
+				}
+				&.finished {
+					@apply bg-blue-500 bg-opacity-100;
+				}
+			}
 		}
 
 		.number-symbol { @apply opacity-45; }
@@ -74,6 +102,8 @@ import specializePath from "$/helpers/specialize_path"
 import LastChat from "@/consultation/list/last_chat.vue"
 import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
+import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
+
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
@@ -95,6 +125,28 @@ const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">
 
 	return activities
 })
+const {
+	isDone,
+	isOngoing,
+	willSoonStart,
+	willStart
+} = makeConsultationStates(props as unknown as {
+	"consultation": DeserializedConsultationResource<"consultant"|"consultantRole">
+})
+const statusBadge = computed(() => {
+	let status = ""
+
+	if (isDone.value) status = "Finished"
+	if (isOngoing.value) status = "Ongoing"
+	if (willSoonStart.value || willStart.value) status = "Scheduled"
+
+	return status
+})
+const statusBadgeClasses = computed(() => ({
+	"finished": isDone.value,
+	"ongoing": isOngoing.value,
+	"scheduled": willSoonStart.value || willStart.value
+}))
 
 const profilePictures = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
 	const activities = makeUniqueBy(ownedActivities.value, "user.data.id")
