@@ -173,7 +173,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 
 		// Customizable date
 		const emitted = wrapper.emitted()
-		expect(emitted).toHaveProperty("update:chosenDay.0.0", currentTime.toJSON())
+		expect(emitted).toHaveProperty("update:chosenDay.0.0", defaultDay.toJSON())
 		expect(emitted).toHaveProperty("update:chosenTime.0.0", chosenTime)
 	})
 })
