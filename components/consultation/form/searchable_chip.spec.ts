@@ -4,9 +4,7 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
-import { READ_OWN } from "$/permissions/user_combinations"
 import RequestEnvironment from "$/singletons/request_environment"
-import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Component from "./searchable_chip.vue"
 

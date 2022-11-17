@@ -14,6 +14,7 @@
 			</p>
 			<SearchableChip
 				v-model="selectedConsultants"
+				:current-user="userProfileData"
 				class="consultant required"
 				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
@@ -30,7 +31,7 @@
 
 			<SearchableChip
 				v-model="selectedConsulters"
-				:current-user-id="userProfileData.id"
+				:current-user="userProfileData"
 				class="consulters"
 				header="Consulters"
 				:maximum-participants="MAX_CONSULTERS"
@@ -192,7 +193,7 @@ import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object
 
 import Scheduler from "./helpers/scheduler.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import SearchableChip from "@/helpers/filters/searchable_chip.vue"
+import SearchableChip from "@/consultation/form/searchable_chip.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
