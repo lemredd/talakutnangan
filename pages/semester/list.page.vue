@@ -20,10 +20,11 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-if="mayEditSemester"
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_SEMESTER"
 				:headers="headers"
-				:list="tableData"
-				:may-edit="mayEditSemester"/>
+				:list="tableData"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -37,17 +38,17 @@ import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type { TableData } from "$@/types/component"
-import type {
-	DeserializedSemesterResource,
-	DeserializedSemesterListDocument
-} from "$/types/documents/semester"
+import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
+import makeManagementInfo from "@/semester/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -59,29 +60,38 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
-	| "semesters"
+| "userProfile"
+| "semesters"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
+const selectedIDs = ref<string[]>([])
+
 const fetcher = new Fetcher()
 
+const { userProfile } = pageProps
+
 const headers = [ "Name", "Order", "Start at", "End at" ]
-const list = ref<DeserializedSemesterResource[]>(
-	pageProps.semesters.data as DeserializedSemesterResource[]
-)
-const listDocument = ref<DeserializedSemesterListDocument>(
-	pageProps.semesters as DeserializedSemesterListDocument
-)
+const list = ref<DeserializedSemesterListDocument>(
+	pageProps.semesters as DeserializedSemesterListDocument)
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.map(resource => ({
-		"data": [
-			resource.name,
-			resource.semesterOrder,
-			formatToCompleteFriendlyTime(resource.startAt),
-			formatToCompleteFriendlyTime(resource.endAt)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				resource.semesterOrder,
+				formatToCompleteFriendlyTime(resource.startAt),
+				formatToCompleteFriendlyTime(resource.endAt)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveSemester,
+			"mayEdit": managementInfo.mayArchiveSemester
+				|| managementInfo.mayRestoreSemester,
+			"mayRestore": managementInfo.mayRestoreSemester
+		}
+	})
 
 	return data
 })
@@ -92,7 +102,7 @@ const existence = ref<"exists"|"archived"|"*">("exists")
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(
-		listDocument,
+		list,
 		fetcher,
 		() => ({
 			"filter": {
@@ -100,8 +110,8 @@ async function fetchSemesterInfos() {
 				"slug": slug.value
 			},
 			"page": {
-				"limit": 10,
-				"offset": list.value.length
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": list.value.data.length
 			},
 			"sort": [ "name" ]
 		}),
@@ -113,8 +123,6 @@ async function fetchSemesterInfos() {
 
 	isLoaded.value = true
 }
-
-const { userProfile } = pageProps
 
 const mayCreateSemester = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
@@ -136,7 +144,12 @@ const mayEditSemester = computed<boolean>(() => {
 })
 
 async function refetchSemester() {
-	list.value = []
+	list.value = {
+		"data": [],
+		"meta": {
+			"count": 0
+		}
+	}
 	isLoaded.value = false
 	await fetchSemesterInfos()
 }
