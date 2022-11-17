@@ -13,6 +13,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:headers="headers"
 				:list="tableData"
 				:may-edit="false"/>
@@ -46,6 +47,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/audit_trail"
+import makeManagementInfo from "@/audit_trail/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -61,22 +63,31 @@ type RequiredExtraProps =
 	| "auditTrails"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 const fetcher = new Fetcher()
+
+const selectedIDs = ref<string[]>([])
 
 const headers = [ "Action name", "Caused by", "Done last" ]
 const list = ref<DeserializedAuditTrailListDocument>(
 	pageProps.auditTrails as DeserializedAuditTrailListDocument
 )
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.actionName,
-			resource.user.data.name,
-			formatToCompleteFriendlyTime(resource.createdAt)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const unusedManagementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.actionName,
+				resource.user.data.name,
+				formatToCompleteFriendlyTime(resource.createdAt)
+			],
+			"id": resource.id,
+			"mayArchive": false,
+			"mayEdit": false,
+			"mayRestore": false
+		}
+	})
 
 	return data
 })
