@@ -186,7 +186,7 @@ export default class extends BaseManager<
 				fileContents
 			}) as AttachedChatFileDocument
 
-			const attachedChatFileModel = AttachedChatFile.build({
+			const attachedChatFileModel = await AttachedChatFile.create({
 				"chatMessageID": model.id,
 				fileContents,
 				"id": attachedDocument.data.id
