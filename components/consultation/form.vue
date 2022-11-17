@@ -53,7 +53,6 @@
 				label="What are the other reasons(s)?"
 				type="text"/>
 			<Scheduler
-				v-if="selectedConsultants.length"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultant-schedules="consultantSchedules"
@@ -265,17 +264,25 @@ async function fetchConsultantSchedules(selectedConsultant: DeserializedUserReso
 		"sort": [ "dayName" ]
 	}))
 }
+watch(selectedConsultants, () => {
+	if (selectedConsultants.value.length) {
+		const [ selectedConsultant ] = selectedConsultants.value
+		fetchConsultantSchedules(selectedConsultant)
+	} else {
+		consultantSchedules.value = {
+			"data": [],
+			"meta": {
+				"count": 0
+			}
+		}
+	}
+})
 
-const chosenDay = ref("")
-const customDate = ref("")
-const isCustomDate = computed(() => chosenDay.value === "custom")
+const chosenDay = ref<string>("")
+const chosenTime = ref<string>("")
 
-const chosenTime = ref("")
-
-const scheduledStartAt = computed(() => {
-	const chosenDate = isCustomDate.value && customDate.value
-		? new Date(customDate.value)
-		: new Date(chosenDay.value)
+const scheduledStartAt = computed<string>(() => {
+	const chosenDate = new Date(chosenDay.value)
 
 	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
@@ -285,7 +292,6 @@ const scheduledStartAt = computed(() => {
 
 	return chosenDate.toJSON()
 })
-
 watch(scheduledStartAt, () => {
 	hasConflicts.value = false
 })
@@ -297,6 +303,7 @@ const isRequiredInfoCompleted = computed(
 		&& Boolean(reason.value)
 		&& Boolean(chosenTime.value)
 )
+
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
@@ -345,18 +352,4 @@ function addConsultation(): void {
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
-
-watch(selectedConsultants, () => {
-	if (selectedConsultants.value.length) {
-		const [ selectedConsultant ] = selectedConsultants.value
-		fetchConsultantSchedules(selectedConsultant)
-	} else {
-		consultantSchedules.value = {
-			"data": [],
-			"meta": {
-				"count": 0
-			}
-		}
-	}
-})
 </script>
