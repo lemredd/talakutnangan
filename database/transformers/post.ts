@@ -20,7 +20,7 @@ type Relationships =
 export default class extends Transformer<Model, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "poster", "posterRole", "department", "postAttachments" ]
+			"included": [ "poster", "posterRole", "department", "postAttachments", "tags" ]
 		}
 	) {
 		super("post", [
