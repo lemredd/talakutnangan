@@ -12,15 +12,15 @@ export default function(
 	role: DeserializedRoleResource
 ): RoleManagementInfo {
 	const isDeleted = Boolean(role.deletedAt)
-	const userRoles = userProfile.data.roles.data
+	const roles = userProfile.data.roles.data
 
-	const mayUpdateRole = permissionGroup.hasOneRoleAllowed(userRoles, [ UPDATE ])
+	const mayUpdateRole = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
 
-	const mayArchiveRole = permissionGroup.hasOneRoleAllowed(userRoles, [
+	const mayArchiveRole = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
 
-	const mayRestoreRole = permissionGroup.hasOneRoleAllowed(userRoles, [
+	const mayRestoreRole = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
 	])
 
