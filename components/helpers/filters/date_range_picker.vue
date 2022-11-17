@@ -2,7 +2,7 @@
 	<div class="picker">
 		<SelectableOptionsField
 			v-model="chosenSemester"
-			class="date-range"
+			class="field date-range"
 			label="Date range:"
 			:options="selectableSemesters"/>
 		<label v-if="mustUseCustomRange">
@@ -11,7 +11,7 @@
 			</span>
 			<DateSelector
 				v-model="rawRangeBegin"
-				class="date"/>
+				class="field date"/>
 		</label>
 		<label v-if="mustUseCustomRange">
 			<span>
@@ -19,29 +19,45 @@
 			</span>
 			<DateSelector
 				v-model="rawRangeEnd"
-				class="date"/>
+				class="field date"/>
 		</label>
 	</div>
 </template>
 
+<style lang="scss">
+	.date-range select {
+		margin: 0 !important;
+	}
+
+	input[type=date] {
+		@apply w-max;
+	}
+</style>
+
 <style scoped lang="scss">
 	.picker {
-		@apply flex flex-row flex-wrap justify-start items-center;
+		@apply flex flex-col justify-start;
+
+		@screen sm {
+			@apply flex-row;
+		}
 
 		label {
-			@apply flex-1 flex flex-row justify-start items-center my-2;
+			@apply flex-1 flex flex-col justify-start;
 
 			span {
 				@apply flex-initial;
 			}
 
 			.date {
-				@apply flex-1 p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5 w-50;
+				@apply p-2;
+				@apply w-max;
+				@apply border border-gray-400;
 			}
 		}
 
 		.date-range {
-			@apply flex-1 py-2 mr-2;
+			@apply flex-1 mr-2;
 		}
 	}
 </style>

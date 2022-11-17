@@ -1,17 +1,22 @@
 <template>
 	<div class="multiviewer">
-		<form>
-			<SelectableOptionsField
-				v-model="chosenDepartment"
-				label="Department"
-				class="filter"
-				:options="departmentNames"/>
-			<DateRangePicker
-				v-model:range-begin="rangeBegin"
-				v-model:range-end="rangeEnd"
-				:semesters="semesters"
-				class="picker"/>
-			<SelectableExistence v-model="existence" class="existence"/>
+		<form class="filters">
+			<h3>Filters</h3>
+			<div class="overflowing-container">
+				<div class="filter-field-container">
+					<SelectableOptionsField
+						v-model="chosenDepartment"
+						label="Department"
+						class="filter department"
+						:options="departmentNames"/>
+					<DateRangePicker
+						v-model:range-begin="rangeBegin"
+						v-model:range-end="rangeEnd"
+						:semesters="semesters"
+						class="filter date-picker"/>
+					<SelectableExistence v-model="existence" class="filter existence"/>
+				</div>
+			</div>
 		</form>
 
 		<Viewer
@@ -38,22 +43,45 @@
 	</div>
 </template>
 
+<style lang="scss">
+	.filter.department select {
+		margin: 0 !important;
+	}
+
+</style>
+
 <style scoped lang="scss">
 @import "@styles/btn.scss";
 @import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col;
 
-		form {
-			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
-			@apply bg-gray-300 bg-opacity-20 p-4 mb-4 shadow-inner;
+		.overflowing-container {
+			@apply border border-gray-400 rounded-md;
 
-		.filter{
-			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
-		}
+			max-height: 150px;
+			overflow-y: scroll;
 
-			.existence {
-				@apply flex flex-col flex-nowrap;
+			.filter-field-container {
+				@apply p-4 mb-4;
+				@apply flex flex-col justify-between flex-wrap items-stretch;
+				@apply bg-gray-300 bg-opacity-20;
+
+				@screen md {
+					@apply flex-row;
+				}
+
+				.filter{
+					@apply mb-4;
+
+					@screen sm {
+						@apply mb-0;
+					}
+				}
+
+				.existence {
+					@apply flex flex-col flex-nowrap;
+				}
 			}
 		}
 
