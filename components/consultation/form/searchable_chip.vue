@@ -97,20 +97,19 @@ function findMatchedUsers() {
 	})
 	isLoaded.value = true
 }
-
 watch(slug, debounce(findMatchedUsers, DEBOUNCED_WAIT_DURATION))
 
 function removeParticipant(id: string): void {
 	selectedParticipants.value = selectedParticipants.value.filter(user => {
-		const doesIDMatches = user.id !== id
-		return !doesIDMatches
+		const doesNotMatchesID = user.id !== id
+		return doesNotMatchesID
 	})
 }
 
 function addParticipant(id: string): void {
 	const foundParticipant = otherParticipants.value.find(user => {
-		const doesIDMatches = user.id !== id
-		return doesIDMatches
+		const doesMatchesID = user.id === id
+		return doesMatchesID
 	})
 
 	if (foundParticipant) {
