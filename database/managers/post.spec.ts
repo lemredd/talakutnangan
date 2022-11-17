@@ -1,4 +1,7 @@
 import Model from "%/models/post"
+import PostTag from "%/models/post_tag"
+import PostAttachment from "%/models/post_attachment"
+
 import Factory from "~/factories/post"
 import TagFactory from "~/factories/tag"
 import UserFactory from "~/factories/user"
@@ -83,6 +86,8 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(3)
+		expect(await PostAttachment.count()).toBe(1)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
