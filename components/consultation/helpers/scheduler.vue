@@ -85,7 +85,7 @@ const reorderedDays = computed<Day[]>(
 )
 
 const customDate = ref("")
-const isCustomDate = computed<boolean>(() => props.chosenDay.value === CUSTOM_DAY)
+const isCustomDate = computed<boolean>(() => props.chosenDay === CUSTOM_DAY)
 const chosenDay = computed<string>({
 	get() {
 		const custom = customDate.value
