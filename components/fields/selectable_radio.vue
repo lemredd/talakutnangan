@@ -24,7 +24,7 @@
 		@apply flex flex-col flex-nowrap sm:flex-row justify-start items-start;
 
 		.options {
-			@apply flex-1 flex-col md:flex-row justify-start items-start;
+			@apply flex-1 flex flex-col md:flex-row justify-start items-start;
 		}
 
 		label {

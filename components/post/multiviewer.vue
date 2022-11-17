@@ -2,18 +2,20 @@
 	<div class="multiviewer">
 		<form class="filters">
 			<h3>Filters</h3>
-			<div class="filter-field-container">
-				<SelectableOptionsField
-					v-model="chosenDepartment"
-					label="Department"
-					class="filter department"
-					:options="departmentNames"/>
-				<DateRangePicker
-					v-model:range-begin="rangeBegin"
-					v-model:range-end="rangeEnd"
-					:semesters="semesters"
-					class="picker"/>
-				<SelectableExistence v-model="existence" class="existence"/>
+			<div class="overflowing-container">
+				<div class="filter-field-container">
+					<SelectableOptionsField
+						v-model="chosenDepartment"
+						label="Department"
+						class="filter department"
+						:options="departmentNames"/>
+					<DateRangePicker
+						v-model:range-begin="rangeBegin"
+						v-model:range-end="rangeEnd"
+						:semesters="semesters"
+						class="filter date-picker"/>
+					<SelectableExistence v-model="existence" class="filter existence"/>
+				</div>
 			</div>
 		</form>
 
@@ -54,24 +56,32 @@
 	.multiviewer {
 		@apply flex flex-col;
 
-		.filter-field-container {
-			@apply p-4 mb-4;
+		.overflowing-container {
 			@apply border border-gray-400 rounded-md;
-			@apply flex flex-col flex-wrap items-stretch;
-			@screen sm {
-				@apply flex-row;
-			}
-			@apply bg-gray-300 bg-opacity-20;
 
-			@apply o
+			max-height: 150px;
 			overflow-y: scroll;
 
-		.filter{
-			@apply flex flex-col flex-wrap;
-		}
+			.filter-field-container {
+				@apply p-4 mb-4;
+				@apply flex flex-col justify-between flex-wrap items-stretch;
+				@apply bg-gray-300 bg-opacity-20;
 
-			.existence {
-				@apply flex flex-col flex-nowrap;
+				@screen md {
+					@apply flex-row;
+				}
+
+				.filter{
+					@apply mb-4;
+
+					@screen sm {
+						@apply mb-0;
+					}
+				}
+
+				.existence {
+					@apply flex flex-col flex-nowrap;
+				}
 			}
 		}
 

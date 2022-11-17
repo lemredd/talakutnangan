@@ -26,7 +26,7 @@
 
 <style lang="scss">
 	.date-range select {
-		margin: 0 !important
+		margin: 0 !important;
 	}
 
 	input[type=date] {
@@ -43,7 +43,7 @@
 		}
 
 		label {
-			@apply flex-1 flex flex-col justify-start my-2;
+			@apply flex-1 flex flex-col justify-start;
 
 			span {
 				@apply flex-initial;
@@ -57,7 +57,7 @@
 		}
 
 		.date-range {
-			@apply flex-1 py-2 mr-2;
+			@apply flex-1 mr-2;
 		}
 	}
 </style>

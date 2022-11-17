@@ -40,12 +40,6 @@
 			}
 		}
 	}
-
-	@screen md {
-		.selectable {
-			@apply max-w-[70%] flex-row;
-		}
-	}
 </style>
 
 <script setup lang="ts">
