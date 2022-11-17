@@ -1,6 +1,6 @@
 import type { DepartmentManagementInfo } from "$@/types/independent"
-import type { DeserializedDepartmentResource } from "$/types/documents/department"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { DeserializedDepartmentResource } from "$/types/documents/department"
 
 import { department as permissionGroup } from "$/permissions/permission_list"
 import {
@@ -12,17 +12,17 @@ export default function(
 	department: DeserializedDepartmentResource
 ): DepartmentManagementInfo {
 	const isDeleted = Boolean(department.deletedAt)
-	const departments = userProfile.data.departments.data
+	const roles = userProfile.data.roles.data
 
-	const mayUpdateDepartment = permissionGroup.hasOneRoleAllowed(departments, [ UPDATE ])
+	const mayUpdateDepartment = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
 
-	const mayArchiveDepartment = permissionGroup.hasOneRoleAllowed(departments, [
+	const mayArchiveDepartment = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
-	])
+	]) && !isDeleted
 
-	const mayRestoreDepartment = permissionGroup.hasOneRoleAllowed(departments, [
+	const mayRestoreDepartment = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
-	])
+	]) && isDeleted
 
 	return {
 		isDeleted,
