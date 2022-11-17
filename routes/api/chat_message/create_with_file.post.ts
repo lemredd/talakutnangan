@@ -75,6 +75,7 @@ export default class extends CreateRoute {
 			chatMessageActivityID
 		}, meta.fileContents.buffer as Buffer) as ChatMessageDocument<"create">
 
+
 		Socket.emitToClients(
 			makeConsultationChatNamespace(document.data.relationships.consultation.data.id),
 			"create",

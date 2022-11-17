@@ -176,21 +176,10 @@ export default class extends BaseManager<
 		try {
 			const model = await this.insertModelWithUpdatedChatMessageActivity(details)
 
-			const attachedChatFileManager = new AttachedChatFileManager({
-				"cache": this.cache,
-				"transaction": this.transaction
-			})
-
-			const attachedDocument = await attachedChatFileManager.create({
-				"chatMessageID": model.id,
-				fileContents
-			}) as AttachedChatFileDocument
-
 			const attachedChatFileModel = await AttachedChatFile.create({
 				"chatMessageID": model.id,
-				fileContents,
-				"id": attachedDocument.data.id
-			})
+				fileContents
+			}, this.transaction.transactionObject)
 
 			model.attachedChatFile = attachedChatFileModel
 
