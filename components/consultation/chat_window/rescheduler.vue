@@ -8,7 +8,7 @@
 		</template>
 
 		<template #default>
-			<ReceivedErrors v-if="ReceivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ReceivedSuccessMessages
 				v-if="successMessages.length"
 				:received-success-messages="successMessages"/>
@@ -113,10 +113,9 @@ function fetchConsultantSchedules() {
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
-const hasPopulatedRequiredFields = computed(() => (
-	Boolean(chosenDay.value)
-	&& Boolean(chosenTime.value)
-))
+const hasPopulatedRequiredFields = computed(
+	() => Boolean(chosenDay.value) && Boolean(chosenTime.value)
+)
 function rescheduleConsultation() {
 	fetcher.update(consultation.data.id, {
 		"actionTaken": null,

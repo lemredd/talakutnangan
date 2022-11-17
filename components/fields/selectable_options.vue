@@ -32,7 +32,7 @@
 		}
 
 		select {
-			@apply flex-1 truncate;
+			@apply flex-1 truncate ml-2;
 			@apply dark:bg-transparent;
 			option {
 				@apply dark:bg-dark-500;

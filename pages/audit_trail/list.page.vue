@@ -1,9 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -38,7 +38,7 @@
 import { inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
@@ -92,6 +92,26 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by creation date",
+		"value": "createdAt"
+	},
+	{
+		"label": "Ascending by action name",
+		"value": "actionName"
+	},
+	{
+		"label": "Descending by creation date",
+		"value": "-createdAt"
+	},
+	{
+		"label": "Descending by action name",
+		"value": "-actionName"
+	}
+])
+const chosenSort = ref("-createdAt")
+
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
@@ -112,7 +132,7 @@ async function fetchAuditTrailInfos() {
 				"limit": DEFAULT_LIST_LIMIT,
 				"offset": offset.value
 			},
-			"sort": [ "-createdAt" ]
+			"sort": [ chosenSort.value ]
 		}),
 		{
 			"mayContinue": () => Promise.resolve(false)
@@ -133,5 +153,5 @@ async function refetchAuditTrail() {
 	await fetchAuditTrailInfos()
 }
 
-watch([ slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence, offset ], debounce(refetchAuditTrail, DEBOUNCED_WAIT_DURATION))
 </script>

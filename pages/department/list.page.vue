@@ -1,7 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
+		:sort-names="sortNames"
 		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
@@ -35,7 +37,8 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
+
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -97,6 +100,35 @@ const tableData = computed<TableData[]>(() => {
 
 	return data
 })
+
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "fullName"
+	},
+	{
+		"label": "Ascending by acronym",
+		"value": "acronym"
+	},
+	{
+		"label": "Ascending by may admit",
+		"value": "mayAdmit"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-fullName"
+	},
+	{
+		"label": "Descending by acronym",
+		"value": "-acronym"
+	},
+	{
+		"label": "Descending by may admit",
+		"value": "-mayAdmit"
+	}
+])
+const chosenSort = ref("fullName")
+
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
@@ -131,7 +163,7 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": list.value.data.length
 		},
-		"sort": [ "fullName" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
@@ -173,7 +205,7 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+watch([ chosenSort, slug, existence ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))
