@@ -191,3 +191,22 @@ export interface DepartmentManagementInfo {
 	mayArchiveDepartment: boolean,
 	mayRestoreDepartment: boolean
 }
+
+export interface SemesterManagementInfo {
+	isDeleted: boolean,
+	mayUpdateSemester: boolean,
+	mayArchiveSemester: boolean,
+	mayRestoreSemester: boolean
+}
+
+export interface TagManagementInfo {
+	isDeleted: boolean,
+	mayUpdateTag: boolean,
+	mayArchiveTag: boolean,
+	mayRestoreTag: boolean
+}
+
+export interface AuditTrailManagementInfo {
+	isDeleted: boolean,
+	mayRead: boolean
+}
