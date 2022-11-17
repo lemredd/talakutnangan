@@ -106,16 +106,18 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
-	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">,
+	modelValue: DeserializedPostListDocument<AssociatedPostResource>,
 	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		post: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		post: DeserializedPostListDocument<AssociatedPostResource>
 	): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -127,11 +129,11 @@ const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(cu
 // eslint-disable-next-line no-use-before-define
 const debouncedCommentCounting = debounce(countCommentsOfPosts, DEBOUNCED_WAIT_DURATION)
 
-const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"department">>({
-	get(): DeserializedPostListDocument<"poster"|"posterRole"|"department"> {
+const posts = computed<DeserializedPostListDocument<AssociatedPostResource>>({
+	get(): DeserializedPostListDocument<AssociatedPostResource> {
 		return props.modelValue
 	},
-	set(newValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">): void {
+	set(newValue: DeserializedPostListDocument<AssociatedPostResource>): void {
 		if (newValue.data.some(post => isUndefined(post.meta))) {
 			debouncedCommentCounting()
 		}
@@ -160,7 +162,7 @@ const existence = ref<string>("exists")
 const isLoaded = ref(false)
 
 function extractPostIDsWithNoVoteInfo(
-	currentPosts: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+	currentPosts: DeserializedPostListDocument<AssociatedPostResource>
 ): string[] {
 	const commentsWithNoVoteInfo = currentPosts.data.filter(comment => isUndefined(comment.meta))
 	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
@@ -230,7 +232,7 @@ function resetPostList() {
 }
 
 function removePost(
-	postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">, increment: number) {
+	postToRemove: DeserializedPostResource<AssociatedPostResource>, increment: number) {
 	posts.value = {
 		...posts.value,
 		"data": posts.value.data.filter(post => post.id !== postToRemove.id),
@@ -241,11 +243,11 @@ function removePost(
 	}
 }
 
-function archivePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+function archivePost(postToRemove: DeserializedPostResource<AssociatedPostResource>) {
 	removePost(postToRemove, -1)
 }
 
-function restorePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+function restorePost(postToRemove: DeserializedPostResource<AssociatedPostResource>) {
 	removePost(postToRemove, -1)
 }
 

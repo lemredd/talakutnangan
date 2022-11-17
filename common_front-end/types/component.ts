@@ -36,5 +36,8 @@ export interface RawFullTimeString {
 
 export interface TableData {
 	id: string,
+	mayEdit: boolean,
+	mayArchive: boolean,
+	mayRestore: boolean,
 	data: string[]
 }
