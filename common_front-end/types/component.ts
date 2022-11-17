@@ -41,5 +41,6 @@ export interface TableData {
 
 export interface ChipData {
 	id: string,
+	mayRemove: boolean,
 	data: string
 }
