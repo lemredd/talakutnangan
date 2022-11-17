@@ -440,7 +440,7 @@ if ($Log) {
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration
 
-	$contents = & npx changelogen --from=$("v0.$previousVersion.0")
+	$contents = & npx changelogen --from=$("v1.$previousVersion.0")
 	$contents = $contents.Trim("`n")
 	$contents = $contents -Split "`n"
 	$cleanedContents = @("# Changelog", "", "## v$version", "")
@@ -483,18 +483,18 @@ if ($Log) {
 	$cleanedContents = $cleanedContents[0..($cleanedContents.length-4)]
 	$cleanedContents = $cleanedContents -join "`n"
 
-	Rename-Item -Path ./changelogs/CHANGELOG.md -NewName CHANGELOG_v0.$($previousVersion).md
+	Rename-Item -Path ./changelogs/CHANGELOG.md -NewName CHANGELOG_v1.$($previousVersion).md
 	Set-Content -Path changelogs/CHANGELOG.md -Value $cleanedContents
 
 	& git add .
 	& git commit -m $("Update current version to v$version")
 	& git tag -s $("v$version")
 
-	$packageConfiguration.version = "0.$nextVersion.0-dev"
+	$packageConfiguration.version = "1.$nextVersion.0-dev"
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration
 
 	& git add .
-	& git commit -m $("Update current version to v0.$nextVersion.0-dev")
+	& git commit -m $("Update current version to v1.$nextVersion.0-dev")
 }
