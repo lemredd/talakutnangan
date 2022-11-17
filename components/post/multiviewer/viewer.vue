@@ -80,8 +80,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p v-html="formattedContent" class="post-content">
-		</p>
+		<p v-html="formattedContent" class="post-content"></p>
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
@@ -170,7 +169,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
@@ -183,6 +182,7 @@ import { READ_POST } from "$/constants/template_page_paths"
 import Fetcher from "$@/fetchers/post"
 import pluralize from "$/string/pluralize"
 import makeSwitch from "$@/helpers/make_switch"
+import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
@@ -190,15 +190,13 @@ import convertMarkdownToHTML from "$/string/convert_markdown_to_html"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToFriendlyPastTime from "$@/helpers/format_to_friendly_past_time"
 
-
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
-import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 import Overlay from "@/helpers/overlay.vue"
 import Menu from "@/post/multiviewer/viewer/menu.vue"
 import ProfilePicture from "@/consultation/list/profile_picture_item.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import UpdatePostForm from "@/post/multiviewer/viewer/update_post_form.vue"
-import assignPath from "$@/external/assign_path"
+import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const fetcher = new Fetcher()
 
