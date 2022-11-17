@@ -108,12 +108,27 @@ const CONDENSE_LIMIT = 4
 const pageLength = computed(
 	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
 )
-const condensedPageLength = computed(() => [
-	currentPageCount.value,
-	currentPageCount.value + 1,
-	currentPageCount.value + 2,
-	currentPageCount.value + 3
-].filter(pageNumber => pageNumber <= pageLength.value))
+const condensedPageLength = computed(() => {
+	let pages = []
+
+	if (currentPageCount.value === pageLength.value) {
+		pages = [
+			currentPageCount.value - 3,
+			currentPageCount.value - 2,
+			currentPageCount.value - 1,
+			currentPageCount.value
+		].filter(pageNumber => pageNumber <= pageLength.value)
+	} else {
+		pages = [
+			currentPageCount.value,
+			currentPageCount.value + 1,
+			currentPageCount.value + 2,
+			currentPageCount.value + 3
+		].filter(pageNumber => pageNumber <= pageLength.value)
+	}
+
+	return pages
+})
 
 const offset = computed({
 	get() { return props.modelValue },
