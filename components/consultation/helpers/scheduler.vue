@@ -45,7 +45,7 @@
 <style></style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 
 import { Day, DayValues } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
@@ -128,6 +128,11 @@ const selectableDays = computed<OptionInfo[]>(() => {
 	})
 
 	return actualSelectableDays as OptionInfo[]
+})
+watch(selectableDays, newValue => {
+	if (newValue.length > 1) {
+		emit("update:chosenDay", newValue[0].value)
+	}
 })
 
 const chosenDate = computed<string>({
