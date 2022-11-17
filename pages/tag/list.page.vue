@@ -20,6 +20,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_TAG"
 				:headers="headers"
 				:list="tableData"
@@ -55,6 +56,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/tag"
 import debounce from "$@/helpers/debounce"
+import makeManagementInfo from "@/tag/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -68,10 +70,11 @@ import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
-type RequiredExtraProps = "tags"
+type RequiredExtraProps = "tags" | "roles"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
+const selectedIDs = ref<string[]>([])
 const { userProfile } = pageProps
 const mayCreateTag = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
@@ -97,12 +100,19 @@ const fetcher = new Fetcher()
 const headers = [ "Name" ]
 const list = ref<DeserializedTagListDocument>(pageProps.tags as DeserializedTagListDocument)
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveTag,
+			"mayEdit": managementInfo.mayArchiveTag
+				|| managementInfo.mayRestoreTag,
+			"mayRestore": managementInfo.mayRestoreTag
+		}
+	})
 
 	return data
 })

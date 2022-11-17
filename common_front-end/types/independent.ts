@@ -168,3 +168,45 @@ export type ArchiveMeta<T extends Partial<GenericFetcherParameters>>
 
 export type RestoreMeta<T extends Partial<GenericFetcherParameters>>
 = T["restoreMeta"] extends Serializable ? T["restoreMeta"] : Serializable
+
+export interface UserManagementInfo {
+	isDeleted: boolean,
+	mayUpdateUser: boolean,
+	mayArchiveUser: boolean,
+	mayRestoreUser: boolean,
+	mayUpdateAttachedRoles: boolean,
+	mayResetPassword: boolean
+}
+
+export interface RoleManagementInfo {
+	isDeleted: boolean,
+	mayUpdateRole: boolean,
+	mayArchiveRole: boolean,
+	mayRestoreRole: boolean
+}
+
+export interface DepartmentManagementInfo {
+	isDeleted: boolean,
+	mayUpdateDepartment: boolean,
+	mayArchiveDepartment: boolean,
+	mayRestoreDepartment: boolean
+}
+
+export interface SemesterManagementInfo {
+	isDeleted: boolean,
+	mayUpdateSemester: boolean,
+	mayArchiveSemester: boolean,
+	mayRestoreSemester: boolean
+}
+
+export interface TagManagementInfo {
+	isDeleted: boolean,
+	mayUpdateTag: boolean,
+	mayArchiveTag: boolean,
+	mayRestoreTag: boolean
+}
+
+export interface AuditTrailManagementInfo {
+	isDeleted: boolean,
+	mayRead: boolean
+}

@@ -61,6 +61,7 @@
 
 				<template #footer>
 					<button
+						:disabled="!isActionTakenLengthEnough"
 						class="finish-btn btn btn-primary"
 						@click="finishOrCancelConsultation">
 						submit
@@ -265,6 +266,8 @@ const actionTaken = computed<string>({
 		emit("update:modelValue", newValue)
 	}
 })
+const CHARACTER_LIMIT = 10
+const isActionTakenLengthEnough = computed(() => actionTaken.value.length >= CHARACTER_LIMIT)
 function showActionTakenOverlay(): void {
 	emit("showActionTakenOverlay")
 }

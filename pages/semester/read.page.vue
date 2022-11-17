@@ -25,7 +25,7 @@
 				</button>
 			</Suspensible>
 			<button
-				v-if="mayRestoreSemester"
+				v-if="mayRestoreSemester && mayUpdateSemester"
 				type="button"
 				class="btn btn-primary"
 				@click="restoreSemester">
@@ -60,17 +60,16 @@
 import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { SemesterManagementInfo } from "$@/types/independent"
 import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 
 import Fetcher from "$@/fetchers/semester"
 import makeSwitch from "$@/helpers/make_switch"
 import type { OptionInfo } from "$@/types/component"
+import makeManagementInfo from "@/semester/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-
-import { semester as permissionGroup } from "$/permissions/permission_list"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
 import DateSelect from "@/fields/date_selector.vue"
 import Suspensible from "@/helpers/suspensible.vue"
@@ -92,14 +91,23 @@ const semester = ref<DeserializedSemesterDocument<"read">>(
 )
 const isDeleted = computed<boolean>(() => Boolean(semester.value.data.deletedAt))
 
-const mayArchiveOrRestoreSemester = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
+const semesters = ref<DeserializedSemesterDocument>(
+	{
+		...pageProps.semester,
+		"data": {
+			...pageProps.semester.data
+		}
+	} as DeserializedSemesterDocument
+)
 
-	return isPermitted
-})
+const managementInfo = computed<SemesterManagementInfo>(
+	() => makeManagementInfo(userProfile, semesters.value.data)
+)
+
+const mayUpdateSemester = computed<boolean>(() => managementInfo.value.mayUpdateSemester)
+
+const mayArchiveOrRestoreSemester = computed<boolean>(
+	() => managementInfo.value.mayArchiveSemester && managementInfo.value.mayRestoreSemester)
 
 const mayArchiveSemester = computed<boolean>(
 	() => !isDeleted.value && mayArchiveOrRestoreSemester.value

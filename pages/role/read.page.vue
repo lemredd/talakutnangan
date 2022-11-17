@@ -63,16 +63,15 @@ import { ref, inject, computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
+import type { RoleManagementInfo } from "$@/types/independent"
 import type { DeserializedRoleDocument, RoleAttributes } from "$/types/documents/role"
 
 import Fetcher from "$@/fetchers/role"
 import makeSwitch from "$@/helpers/make_switch"
+import makeManagementInfo from "@/role/make_management_info"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import makeFlagSelectorInfos from "@/role/make_flag_selector_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-
-import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
-import { role as permissionGroup } from "$/permissions/permission_list"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import FlagSelector from "@/role/flag_selector.vue"
@@ -85,6 +84,19 @@ type RequiredExtraProps = "role"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const { userProfile } = pageProps
+
+const roles = ref<DeserializedRoleDocument>(
+	{
+		...pageProps.role,
+		"data": {
+			...pageProps.role.data
+		}
+	} as DeserializedRoleDocument
+)
+
+const managementInfo = computed<RoleManagementInfo>(
+	() => makeManagementInfo(userProfile, roles.value.data)
+)
 
 const role = ref<DeserializedRoleDocument<"read">>(
 	pageProps.role as DeserializedRoleDocument<"read">
@@ -101,24 +113,14 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 		}
 	}
 })
-const isDeleted = computed<boolean>(() => Boolean(role.value.data.deletedAt))
+const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
 const password = ref<string>("")
 const flagSelectors = makeFlagSelectorInfos(roleData)
 
-const mayUpdateRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+const mayUpdateRole = computed<boolean>(() => managementInfo.value.mayUpdateRole)
 
-	return isPermitted
-})
-const mayArchiveOrRestoreRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isPermitted
-})
+const mayArchiveOrRestoreRole = computed<boolean>(
+	() => managementInfo.value.mayArchiveRole || managementInfo.value.mayRestoreRole)
 
 const mayArchiveRole = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreRole.value)
 const mayRestoreRole = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreRole.value)
