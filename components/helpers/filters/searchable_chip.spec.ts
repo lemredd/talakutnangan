@@ -73,7 +73,7 @@ describe("Component: helpers/filters/searchable_chip", () => {
 		expect(wrapper.emitted()).toHaveProperty("removeChip.0.0", id)
 	})
 
-	it("may not remove chips", async() => {
+	it("may not remove chips", () => {
 		const id = "1"
 		const selectedChips: ChipData[] = [
 			{
@@ -104,5 +104,33 @@ describe("Component: helpers/filters/searchable_chip", () => {
 		const [ chip ] = wrapper.findAll(".chip.selected")
 
 		expect(chip.find(".material-icons").exists()).toBeFalsy()
+	})
+
+	it("should update slug", async() => {
+		const selectedChips: ChipData[] = []
+		const unselectedChips: ChipData[] = []
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"stubs": {
+					"Suspensible": false
+				}
+			},
+			"props": {
+				"header": "",
+				"isLoaded": true,
+				"maximumChips": 1,
+				"modelValue": "",
+				selectedChips,
+				"textFieldLabel": "",
+				unselectedChips
+			}
+		})
+
+		const slugValue = "Hello"
+		const slug = wrapper.findComponent({ "name": "NonSensitiveTextField" })
+		await slug.setValue(slugValue)
+
+		expect(wrapper.emitted()).toHaveProperty("update:modelValue.0.0", slugValue)
 	})
 })
