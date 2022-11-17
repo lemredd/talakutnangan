@@ -11,14 +11,25 @@
 			type="text"/>
 		<Selectable
 			v-model="semester.data.semesterOrder"
-			class="order"
+			class="order field"
+			label="Order: "
 			:options="semesterOption"/>
-		<DateSelect
-			v-model="semester.data.startAt"
-			class="start-at border-solid"/>
-		<DateSelect
-			v-model="semester.data.endAt"
-			class="end-at border-solid"/>
+		<div class="field date-container">
+			Starts at:
+			<div class="date">
+				<DateSelect
+					v-model="semester.data.startAt"
+					class="start-at border-solid"/>
+			</div>
+		</div>
+		<div class="field date-container">
+			Ends at:
+			<div class="date">
+				<DateSelect
+					v-model="semester.data.endAt"
+					class="end-at border-solid"/>
+			</div>
+		</div>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedSemester">
 				<button type="submit" class="update-user-btn btn btn-primary">
@@ -53,7 +64,16 @@
 @import "@styles/btn.scss";
 
 	.controls{
+		@apply mt-4;
 		@apply flex justify-between;
+	}
+
+	.field {
+		@apply my-4;
+
+		.date {
+			@apply w-max p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5;
+		}
 	}
 </style>
 
