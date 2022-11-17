@@ -151,7 +151,7 @@ function logIn() {
 		extractAllErrorDetails(response, receivedErrors as Ref<string[]>)
 
 		if (response.status === RequestEnvironment.status.UNAUTHORIZED) {
-			response.value = [ "Invalid e-mail or password" ]
+			receivedErrors.value = [ "Invalid e-mail or password" ]
 		}
 	})
 }

@@ -26,18 +26,28 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditRole"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
 import { inject, onMounted, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
@@ -57,6 +67,7 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -72,6 +83,7 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
+const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "no. of users" ]
 const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
@@ -87,7 +99,6 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
 const sortNames = computed<OptionInfo[]>(() => [
 	{
 		"label": "Ascending by name",
@@ -117,6 +128,13 @@ const departmentNames = computed<OptionInfo[]>(() => [
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+
+const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
@@ -137,7 +155,6 @@ async function countUsersPerRole(IDsToCount: string[]) {
 		}
 	})
 }
-
 async function fetchRoleInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
@@ -147,10 +164,11 @@ async function fetchRoleInfos(): Promise<number|void> {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
 		"sort": [ chosenSort.value ]
 	}), {
+		mayContinue() { return Promise.resolve(false) },
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
 			return await countUsersPerRole(IDsToCount)
@@ -195,9 +213,18 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
+const debouncedResetList = debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+
 watch(
-	[ chosenSort, chosenDepartment, slug, existence ],
-	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+	[ chosenSort, chosenDepartment, slug, existence, offset ],
+	clearOffset
 )
 
 onMounted(async() => {

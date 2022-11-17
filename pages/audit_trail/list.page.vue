@@ -104,10 +104,10 @@ const chosenSort = ref("-createdAt")
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const receivedErrors = ref<string[]>([])
 const castedResourceListMeta = list.value.meta as ResourceCount
 const resourceCount = computed(() => castedResourceListMeta.count)
 const offset = ref(0)
+const receivedErrors = ref<string[]>([])
 async function fetchAuditTrailInfos() {
 	await loadRemainingResource(
 		list,
