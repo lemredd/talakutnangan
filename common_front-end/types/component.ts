@@ -38,3 +38,8 @@ export interface TableData {
 	id: string,
 	data: string[]
 }
+
+export interface ChipData {
+	id: string,
+	data: string
+}
