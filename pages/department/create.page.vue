@@ -6,34 +6,43 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="createDepartment">
-		<label class="block">
-			Full name:
-			<input
-				id="full-name"
-				v-model="titleDepartment"
-				class="border-solid"
-				type="text"/>
-		</label>
-		<label class="block">
-			Acronym:
-			<input
-				id="acronym"
-				v-model="capitalAcronym"
-				class="border-solid"
-				type="text"/>
-		</label>
-		<label class="block">
-			May admit students:
+		<NonSensitiveText
+			id="full-name"
+			v-model="titleDepartment"
+			label="Full Name"
+			class="field"
+			type="text"/>
+
+		<NonSensitiveText
+			id="acronym"
+			v-model="capitalAcronym"
+			label="Acronym"
+			class="field"
+			type="text"/>
+
+		<label for="may-admit" class="field">
 			<input
 				id="may-admit"
 				v-model="mayAdmit"
 				type="checkbox"/>
+			May admit students
 		</label>
-		<input type="submit" value="Create department"/>
+
+		<input
+			type="submit"
+			class="btn btn-primary"
+			value="Create department"/>
 	</form>
 </template>
 
-<style>
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+
+	.field {
+		@apply my-4;
+
+		display: block;
+	}
 </style>
 
 <script setup lang="ts">
@@ -45,6 +54,7 @@ import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import ListRedirector from "@/helpers/list_redirector.vue"
+import NonSensitiveText from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
