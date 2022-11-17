@@ -8,7 +8,7 @@
 		</template>
 
 		<template #default>
-			<ReceivedErrors v-if="ReceivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ReceivedSuccessMessages
 				v-if="successMessages.length"
 				:received-success-messages="successMessages"/>
