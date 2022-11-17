@@ -53,7 +53,7 @@
 				label="What are the other reasons(s)?"
 				type="text"/>
 			<Scheduler
-				v-if="selectedConsultants.length"
+				v-if="hasConsultantSchedules"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultant-schedules="consultantSchedules"
@@ -249,6 +249,7 @@ const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 		"count": 0
 	}
 })
+const hasConsultantSchedules = computed<boolean>(() => consultantSchedules.value.data.length > 0)
 async function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
 	await loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
 		"filter": {
@@ -265,11 +266,10 @@ async function fetchConsultantSchedules(selectedConsultant: DeserializedUserReso
 	}))
 }
 
-const chosenDay = ref("")
+const chosenDay = ref<string>("")
+const chosenTime = ref<string>("")
 
-const chosenTime = ref("")
-
-const scheduledStartAt = computed(() => {
+const scheduledStartAt = computed<string>(() => {
 	const chosenDate = new Date(chosenDay.value)
 
 	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
@@ -280,7 +280,6 @@ const scheduledStartAt = computed(() => {
 
 	return chosenDate.toJSON()
 })
-
 watch(scheduledStartAt, () => {
 	hasConflicts.value = false
 })
@@ -292,6 +291,7 @@ const isRequiredInfoCompleted = computed(
 		&& Boolean(reason.value)
 		&& Boolean(chosenTime.value)
 )
+
 function addConsultation(): void {
 	const consultant = {
 		"id": selectedConsultants.value[0]?.id,
