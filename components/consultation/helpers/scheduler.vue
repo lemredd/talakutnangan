@@ -126,18 +126,24 @@ const selectableDays = computed<OptionInfo[]>(() => {
 	return actualSelectableDays as OptionInfo[]
 })
 
-const isCustomDate = computed<boolean>(() => props.chosenDay === CUSTOM_DAY)
-const customDate = ref("")
 const chosenDate = computed<string>({
 	get() {
-		if (selectableDays.value.find(day => day.value)) {
+		if (selectableDays.value.find(day => day.value === props.chosenDay)) {
 			return props.chosenDay
 		}
 
 		return CUSTOM_DAY
 	},
-	set(newValue: string) { emit("update:chosenDay", newValue) }
+	set(newValue: string) {
+		if (newValue === CUSTOM_DAY) {
+			emit("update:chosenDay", new Date(castToCompatibleDate(new Date())).toJSON())
+		} else {
+			emit("update:chosenDay", newValue)
+		}
+	}
 })
+const isCustomDate = computed<boolean>(() => chosenDate.value === CUSTOM_DAY)
+const customDate = ref("")
 
 const chosenTime = computed({
 	get() { return props.chosenTime },
@@ -168,11 +174,12 @@ const selectableTimes = computed(() => {
 				const midday = getTimePart(time, "midday")
 				const label = `${timeString} ${midday}`
 
-				const comparableDate = new Date(chosenDate.value)
+				const comparableDate = new Date(dayToDerive)
 				comparableDate.setHours(timeObject.hours)
 				comparableDate.setMinutes(timeObject.minutes)
 				comparableDate.setSeconds(0)
 				comparableDate.setMilliseconds(0)
+
 				if (comparableDate > dateToday.value) {
 					availableTimes.push({
 						label,
