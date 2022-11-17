@@ -2,6 +2,7 @@ import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
+import Tag from "%/models/tag"
 import Role from "%/models/role"
 import User from "%/models/user"
 import Department from "%/models/department"
@@ -50,6 +51,10 @@ export default function<T>(
 	})
 	castInclude.push({
 		"model": PostAttachment,
+		"required": false
+	})
+	castInclude.push({
+		"model": Tag,
 		"required": false
 	})
 
