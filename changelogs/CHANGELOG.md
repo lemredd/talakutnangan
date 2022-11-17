@@ -1,3 +1,7 @@
+# Changelog
+
+## v1.0.0
+
 ### 🚀 Enhancements
 - **consultation:** Show overlay when cancelling (8898c635)
 - **consultation:** Allow cancelling (b5982572)
