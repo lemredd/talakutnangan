@@ -53,6 +53,7 @@
 				label="What are the other reasons(s)?"
 				type="text"/>
 			<Scheduler
+				v-if="selectedConsultants.length"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultant-schedules="consultantSchedules"

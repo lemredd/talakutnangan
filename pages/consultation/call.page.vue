@@ -9,7 +9,7 @@
 				class="local-participant"/>
 			<OtherParticipantsContainer
 				class="other-participants"
-				:other-participants="otherParticipants as RemoteTracks[]"/>
+				:other-participants="uniqueOtherParticipants as RemoteTracks[]"/>
 		</div>
 
 		<Suspensible
@@ -35,6 +35,10 @@
 
 		@screen sm {
 			@apply flex-row;
+		}
+
+		.local-participant {
+			overflow: hidden;
 		}
 
 		.other-participants {
@@ -69,6 +73,7 @@ import type {
 	DeserializedChatMessageActivityListDocument
 } from "$/types/documents/chat_message_activity"
 
+import makeUniqueBy from "$/helpers/make_unique_by"
 import isUndefined from "$/type_guards/is_undefined"
 
 import makeSwitch from "$@/helpers/make_switch"
@@ -173,6 +178,7 @@ function leave() {
 }
 
 const otherParticipants = ref<RemoteTracks[]>([])
+const uniqueOtherParticipants = computed(() => makeUniqueBy(otherParticipants.value, "remoteID"))
 
 const isReadyForCalling = ref(false)
 onMounted(() => {

@@ -1,7 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
+		:sort-names="sortNames"
 		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
@@ -22,18 +24,29 @@
 				:headers="headers"
 				:list="tableData"
 				:may-edit="mayEditTag"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
-<style>
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
 import { inject, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedTagListDocument } from "$/types/documents/tag"
 
 import { READ_TAG } from "$/constants/template_page_paths"
@@ -49,6 +62,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import { tag as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -77,8 +91,10 @@ const mayEditTag = computed<boolean>(() => {
 	return isPermitted
 })
 
-const headers = [ "Name" ]
+const isLoaded = ref<boolean>(true)
 const fetcher = new Fetcher()
+
+const headers = [ "Name" ]
 const list = ref<DeserializedTagListDocument>(pageProps.tags as DeserializedTagListDocument)
 const tableData = computed<TableData[]>(() => {
 	const data = list.value.data.map(resource => ({
@@ -91,11 +107,27 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	}
+])
+const chosenSort = ref("name")
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const receivedErrors = ref<string[]>([])
 
+const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
+const receivedErrors = ref<string[]>([])
 async function fetchTagInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
@@ -105,10 +137,12 @@ async function fetchTagInfos(): Promise<number|void> {
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": list.value.data.length
+			"offset": offset.value
 		},
-		"sort": [ "name" ]
-	}))
+		"sort": [ chosenSort.value ]
+	}), {
+		"mayContinue": () => Promise.resolve(false)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
@@ -125,5 +159,13 @@ async function refetchTags() {
 	await fetchTagInfos()
 }
 
-watch([ slug, existence ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchTags, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 </script>
