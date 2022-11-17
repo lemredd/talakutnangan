@@ -35,7 +35,7 @@
 <style lang="scss">
 	.controls-bar {
 		@apply dark:bg-dark-100 bg-light-600 gap-y-4;
-		@apply flex flex-col sm:flex-row flex-wrap justify-between;
+		@apply flex flex-row flex-wrap justify-between;
 
 		> * {
 			@apply flex-1 mr-2;
