@@ -20,13 +20,13 @@ import type { UserKind } from "$/types/database"
 import type { ChipData } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
-
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
 
-import SearchableChip from "@/helpers/filter/searchable_chip.vue"
+import SearchableChip from "@/helpers/filters/searchable_chip.vue"
 
 const props = defineProps<{
 	currentUser: DeserializedUserResource
@@ -80,7 +80,7 @@ function findMatchedUsers() {
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
+			"limit": DEFAULT_LIST_LIMIT,
 			"offset": 0
 		},
 		"sort": [ "name" ]
