@@ -41,12 +41,16 @@
 @import "@styles/btn.scss";
 	.start, .end {
 		@apply flex flex-row;
-		@apply m-10 ;
+		@apply mt-4;
 	}
+
 	.date {
 			@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5;
-		}
+	}
 
+	.btn-primary {
+		@apply mt-8;
+	}
 </style>
 
 <script setup lang="ts">
