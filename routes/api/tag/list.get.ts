@@ -14,6 +14,7 @@ import { tag as permissionGroup } from "$/permissions/permission_list"
 import string from "!/validators/base/string"
 import boolean from "!/validators/base/boolean"
 import nullable from "!/validators/base/nullable"
+import length from "!/validators/comparison/length"
 import makeListRules from "!/rule_sets/make_list"
 
 export default class extends QueryController {
@@ -38,9 +39,12 @@ export default class extends QueryController {
 			},
 			"slug": {
 				"constraints": {
+					"length": {
+						"maximum": 255
+					},
 					"nullable": { "defaultValue": "" }
 				},
-				"pipes": [ nullable, string ]
+				"pipes": [ nullable, string, length ]
 			}
 		})
 	}

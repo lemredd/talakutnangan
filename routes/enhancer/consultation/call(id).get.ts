@@ -11,7 +11,7 @@ import makeUnique from "$/array/make_unique"
 import Manager from "%/managers/consultation"
 import URLMaker from "$!/singletons/url_maker"
 import deserialize from "$/object/deserialize"
-import present from "!/validators/manager/present"
+import exists from "!/validators/manager/exists"
 import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
@@ -27,9 +27,8 @@ export default class extends PageMiddleware {
 
 	get validations(): Validation[] {
 		return [
-			// TODO: Allow adding other rules to check if consultation belongs to current user
 			new IDParameterValidator([
-				[ "id", Manager, present ]
+				[ "id", Manager, exists ]
 			])
 		]
 	}

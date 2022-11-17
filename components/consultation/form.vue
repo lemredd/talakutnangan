@@ -117,6 +117,7 @@
 		@apply flex justify-between;
 
 		select {
+			@apply p-2;
 			@apply dark:bg-transparent dark:text-white;
 
 			option {

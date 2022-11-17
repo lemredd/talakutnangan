@@ -25,18 +25,28 @@
 				:template-path="READ_SEMESTER"
 				:headers="headers"
 				:list="tableData"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch, computed, Ref } from "vue"
+import { inject, ref, watch, computed, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
 
@@ -55,6 +65,7 @@ import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -71,6 +82,7 @@ const selectedIDs = ref<string[]>([])
 const fetcher = new Fetcher()
 
 const { userProfile } = pageProps
+const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterListDocument>(
@@ -132,10 +144,15 @@ const sortNames = computed<OptionInfo[]>(() => [
 	}
 ])
 const chosenSort = ref("name")
-
-const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
+
+const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
 	await loadRemainingResource(
@@ -191,9 +208,13 @@ async function refetchSemester() {
 	await fetchSemesterInfos()
 }
 
-watch([ chosenSort, slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchSemester, DEBOUNCED_WAIT_DURATION)
 
-onMounted(() => {
-	isLoaded.value = true
-})
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 </script>
