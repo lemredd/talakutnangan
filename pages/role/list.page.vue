@@ -21,10 +21,11 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-if="mayEditRole"
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_ROLE"
 				:headers="headers"
-				:list="tableData"
-				:may-edit="mayEditRole"/>
+				:list="tableData"/>
 		</template>
 	</ResourceManager>
 </template>
@@ -46,12 +47,15 @@ import { READ_ROLE } from "$/constants/template_page_paths"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import {
+	UPDATE, ARCHIVE_AND_RESTORE, CREATE
+} from "$/permissions/role_combinations"
 
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import DepartmentFetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
@@ -72,16 +76,29 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
+
 const headers = [ "Name", "no. of users" ]
-const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
+const list = ref<DeserializedRoleListDocument>(
+	pageProps.roles as DeserializedRoleListDocument)
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name,
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveRole,
+			"mayEdit": managementInfo.mayArchiveRole
+				|| managementInfo.mayRestoreRole,
+			"mayRestore": managementInfo.mayRestoreRole
+		}
+	})
 
 	return data
 })
@@ -148,11 +165,9 @@ async function fetchRoleInfos(): Promise<number|void> {
 	isLoaded.value = true
 }
 
-const { userProfile } = pageProps
-
 const mayCreateRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		CREATE,
 		UPDATE,
 		ARCHIVE_AND_RESTORE
@@ -162,8 +177,8 @@ const mayCreateRole = computed<boolean>(() => {
 }
 )
 const mayEditRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		UPDATE,
 		ARCHIVE_AND_RESTORE
 	])
