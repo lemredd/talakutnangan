@@ -40,6 +40,16 @@
 	</div>
 </template>
 
+<style lang="scss">
+	.selectable {
+		-webkit-box-orient: horizontal !important;
+		-webkit-box-direction: normal !important;
+		-ms-flex-direction: row !important;
+		-webkit-flex-direction: row !important;
+		flex-direction: row !important;
+	}
+</style>
+
 <style scoped lang ="scss">
 .selected-options{
 	@apply border-t border-opacity-50;

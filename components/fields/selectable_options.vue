@@ -32,7 +32,7 @@
 		}
 
 		select {
-			@apply truncate w-max ml-2;
+			@apply truncate w-max;
 			@apply dark:bg-transparent;
 			@apply border border-gray-400 border-opacity-20 dark:border-opacity-40;
 			option {
