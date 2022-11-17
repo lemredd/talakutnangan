@@ -84,12 +84,20 @@ const reorderedDays = computed<Day[]>(
 	() => [ ...DayValues.slice(dayIndex.value), ...DayValues.slice(0, dayIndex.value) ]
 )
 
-const chosenDay = computed({
-	get() { return props.chosenDay },
+const customDate = ref("")
+const isCustomDate = computed<boolean>(() => props.chosenDay.value === CUSTOM_DAY)
+const chosenDay = computed<string>({
+	get() {
+		const custom = customDate.value
+		if (isCustomDate.value) {
+			return custom
+		}
+
+		return props.chosenDay
+	},
 	set(newValue: string) { emit("update:chosenDay", newValue) }
 })
-const customDate = ref("")
-const isCustomDate = computed(() => chosenDay.value === CUSTOM_DAY)
+
 const selectableDays = computed(() => {
 	const { consultantSchedules } = props
 	const dates: Date[] = []
