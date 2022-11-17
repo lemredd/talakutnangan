@@ -92,9 +92,11 @@ describe("PATCH /api/user/:id", () => {
 		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
 		.insertOne()
 
-		const { "user": student, cookie } = await App.makeAuthenticatedCookie(studentRole)
+		const { "user": student, cookie } = await App.makeAuthenticatedCookie(
+			studentRole,
+			userFactory => userFactory.email(() => "example.2@example.com")
+		)
 		const newStudent = await new UserFactory()
-		.email(() => "example.2@example.com")
 		.prefersDark(() => true)
 		.makeOne()
 
@@ -117,6 +119,7 @@ describe("PATCH /api/user/:id", () => {
 		.type(JSON_API_MEDIA_TYPE)
 		.accept(JSON_API_MEDIA_TYPE)
 
+		console.log(response.body)
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
 
 		const updatedStudent = await User.findOne({ "where": { "id": student.id } })
