@@ -4,9 +4,10 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
-		<input
+		<TextualField
 			v-model="semester.data.name"
-			class="name border-solid"
+			class="name field"
+			label="Semester name: "
 			type="text"/>
 		<Selectable
 			v-model="semester.data.semesterOrder"
@@ -74,6 +75,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import DateSelect from "@/fields/date_selector.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import Selectable from "@/fields/selectable_options.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
