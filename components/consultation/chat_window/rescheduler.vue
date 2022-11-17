@@ -13,7 +13,6 @@
 				v-if="successMessages.length"
 				:received-success-messages="successMessages"/>
 			<Scheduler
-				v-if="hasConsultantSchedules"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultant-schedules="consultantSchedules"/>
@@ -92,7 +91,6 @@ const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 		"count": 0
 	}
 })
-const hasConsultantSchedules = computed<boolean>(() => consultantSchedules.value.data.length > 0)
 function fetchConsultantSchedules() {
 	const consultant = consultation.data.consultant as DeserializedUserDocument
 	loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
@@ -115,10 +113,9 @@ function fetchConsultantSchedules() {
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
-const hasPopulatedRequiredFields = computed(() => (
-	Boolean(chosenDay.value)
-	&& Boolean(chosenTime.value)
-))
+const hasPopulatedRequiredFields = computed(
+	() => Boolean(chosenDay.value) && Boolean(chosenTime.value)
+)
 function rescheduleConsultation() {
 	fetcher.update(consultation.data.id, {
 		"actionTaken": null,
