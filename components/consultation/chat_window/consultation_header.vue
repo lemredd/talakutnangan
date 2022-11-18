@@ -91,12 +91,14 @@
 import { ref, computed, inject, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { StatusMessage } from "$/types/message"
 import type { FullTime } from "$@/types/independent"
-import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type { ResourceCount } from "$/types/documents/base"
+import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type {
 	DeserializedChatMessageListDocument,
-	DeserializedChatMessageResource
+	DeserializedChatMessageResource,
+	ChatMessageRelationships
 } from "$/types/documents/chat_message"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -120,7 +122,8 @@ const {
 	"pageProps": {
 		"userProfile": {
 			"data": {
-				kind
+				kind,
+				name
 			}
 		}
 	}
@@ -293,7 +296,25 @@ const {
 } = makeSwitch(false)
 
 function sendMessage() {
-
+	chatMessageFetcher.create({
+		"createdAt": new Date().toJSON(),
+		"data": {
+			"value": `${name} joined the call`
+		},
+		"kind": "status",
+		"updatedAt": new Date().toJSON()
+	} as StatusMessage, {
+		"extraDataFields": {
+			"relationships": {
+				"chatMessageActivity": {
+					"data": {
+						"id": "",
+						"type": "chat_message_activity"
+					}
+				}
+			}
+		} as ChatMessageRelationships
+	})
 }
 
 onMounted(async() => {
