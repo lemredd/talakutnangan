@@ -217,8 +217,15 @@ onMounted(() => {
 	.then(() => {
 		isReadyForCalling.value = true
 	}).then(() => sendMessage(`${userProfile.data.name} preparing for call`))
-})
-onBeforeUnmount(() => {
-	sendMessage(`${userProfile.data.name} completely exited from call`)
+
+	window.addEventListener("unload", async event => {
+		event.preventDefault()
+		try {
+			await sendMessage(`${userProfile.data.name} completely exited from call`)
+			window.close()
+		} finally {
+			window.close()
+		}
+	})
 })
 </script>
