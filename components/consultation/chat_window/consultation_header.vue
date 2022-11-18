@@ -15,8 +15,7 @@
 				v-if="isAllowedToCall"
 				:href="path"
 				target="_blank"
-				class="material-icons"
-				@click="sendMessage">
+				class="material-icons">
 				video_camera_back
 			</span>
 			<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
@@ -91,14 +90,12 @@
 import { ref, computed, inject, onMounted, Ref } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { StatusMessage } from "$/types/message"
 import type { FullTime } from "$@/types/independent"
 import type { ResourceCount } from "$/types/documents/base"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 import type {
 	DeserializedChatMessageListDocument,
-	DeserializedChatMessageResource,
-	ChatMessageRelationships
+	DeserializedChatMessageResource
 } from "$/types/documents/chat_message"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -122,8 +119,7 @@ const {
 	"pageProps": {
 		"userProfile": {
 			"data": {
-				kind,
-				name
+				kind
 			}
 		}
 	}
@@ -294,28 +290,6 @@ const {
 	"off": hideReschedulerOverlay,
 	"state": isReschedulerShown
 } = makeSwitch(false)
-
-function sendMessage() {
-	chatMessageFetcher.create({
-		"createdAt": new Date().toJSON(),
-		"data": {
-			"value": `${name} joined the call`
-		},
-		"kind": "status",
-		"updatedAt": new Date().toJSON()
-	} as StatusMessage, {
-		"extraDataFields": {
-			"relationships": {
-				"chatMessageActivity": {
-					"data": {
-						"id": "",
-						"type": "chat_message_activity"
-					}
-				}
-			}
-		} as ChatMessageRelationships
-	})
-}
 
 onMounted(async() => {
 	await loadRemainingFiles(independentFileChatMessages, chatMessageFetcher)
