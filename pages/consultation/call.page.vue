@@ -162,7 +162,7 @@ function sendMessage(message: string) {
 			"relationships": {
 				"chatMessageActivity": {
 					"data": {
-						"id": "",
+						"id": chatMessageActivityID,
 						"type": "chat_message_activity"
 					}
 				}
