@@ -8,31 +8,49 @@
 	<form @submit.prevent="createSemester">
 		<label class="block">
 			Semester name:
-			<input
+			<TextualField
 				v-model="titleSemester"
-				class="name border-solid"
+				class="mb-10"
 				type="text"/>
 			<Selectable
 				v-model="semesterOrder"
-				class="order"
+				label="Order: "
+				class="order mb-10"
 				:options="semesterOption"/>
+			Start:
 			<input
 				v-model="startAt"
-				class="start-at"
+				class="start date"
+				label="Start: "
 				type="date"/>
+			End:
 			<input
 				v-model="endAt"
-				class="end-at"
+				class="end date"
 				type="date"/>
 		</label>
-		<input type="submit" value="Create semester"/>
+		<button
+			class="btn btn-primary"
+			type="submit">
+			Create Semester
+		</button>
 	</form>
 </template>
 
 <style scoped lang="scss">
-		.start, .end {
-			@apply flex justify-between;
-		}
+@import "@styles/btn.scss";
+	.start, .end {
+		@apply flex flex-row;
+		@apply mt-4;
+	}
+
+	.date {
+			@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5;
+	}
+
+	.btn-primary {
+		@apply mt-8;
+	}
 </style>
 
 <script setup lang="ts">
@@ -48,18 +66,18 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Selectable from "@/fields/selectable_options.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 import makeOptionInfo from "$@/helpers/make_option_info"
 
 const name = ref<string>("")
-const endAt = ref<string>("")
-const startAt = ref<string>("")
 const semesterOrder = ref<Order>("first")
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 const fetcher = new SemesterFetcher()
-
+const endAt = ref<string>("")
+const startAt = ref<string>("")
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
