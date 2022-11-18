@@ -62,6 +62,7 @@ import {
 	computed,
 	inject,
 	onMounted,
+	onBeforeUnmount,
 	Ref,
 	ref
 } from "vue"
@@ -215,6 +216,9 @@ onMounted(() => {
 	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
-	})
+	}).then(() => sendMessage(`${userProfile.data.name} preparing for call`))
+})
+onBeforeUnmount(() => {
+	sendMessage(`${userProfile.data.name} completely exited from call`)
 })
 </script>

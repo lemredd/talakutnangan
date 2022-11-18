@@ -11,13 +11,13 @@
 			</div>
 		</div>
 		<div class="controls">
-			<span
+			<a
 				v-if="isAllowedToCall"
 				:href="path"
 				target="_blank"
 				class="material-icons">
 				video_camera_back
-			</span>
+			</a>
 			<button class="material-icons toggle-controls-btn" @click="showFileRepoOverlay">
 				storage
 			</button>
