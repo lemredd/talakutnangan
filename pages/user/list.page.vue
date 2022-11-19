@@ -88,6 +88,7 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import { IMPORT_USERS } from "$/permissions/user_combinations"
@@ -274,58 +275,12 @@ watch(
 	clearOffset
 )
 
-function removeData(IDs: string[]) {
-	const newData = list.value.data.filter(item => IDs.indexOf(item.id) === -1)
-
-	if (newData.length === 0) {
-		offset.value = Math.max(offset.value - 1, 0)
-	} else {
-		list.value = {
-			...list.value,
-			"data": newData,
-			"meta": {
-				...list.value.meta,
-				"count": newData.length
-			}
-		}
-	}
-}
-
-async function batchArchive(IDs: string[]) {
-	isLoaded.value = false
-	await fetcher.archive(IDs).catch(
-		responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors)
-	)
-	if (existence.value === "exists") {
-		removeData(IDs)
-	} else if (existence.value === "*") {
-		list.value = {
-			...list.value,
-			"data": list.value.data.map(item => {
-				const newItemData = { ...item }
-				if (IDs.indexOf(newItemData.id) > -1) {
-					newItemData.deletedAt = new Date()
-				}
-				return newItemData
-			})
-		}
-	}
-	isLoaded.value = true
-}
-
-async function batchRestore(IDs: string[]) {
-	isLoaded.value = false
-	await fetcher.restore(IDs)
-	isLoaded.value = true
-}
-
-function archive(id: string) {
-	batchArchive([ id ])
-}
-
-function restore(id: string) {
-	batchRestore([ id ])
-}
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(list, fetcher, existence, offset, isLoaded, receivedErrors)
 
 onMounted(async() => {
 	await loadRemainingRoles(roles, roleFetcher)
