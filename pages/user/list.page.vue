@@ -91,7 +91,7 @@ import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import makeExistenceOperators from "@/resource_management/make_existence_operators"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
-import { IMPORT_USERS } from "$/permissions/user_combinations"
+import { IMPORT_USERS, READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 import PageCounter from "@/helpers/page_counter.vue"
@@ -108,6 +108,9 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
+const mayReadAll = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+])
 
 const fetcher = new Fetcher()
 const roleFetcher = new RoleFetcher()
@@ -196,17 +199,24 @@ const chosenRole = ref("*")
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
-const departmentNames = computed<OptionInfo[]>(() => [
-	{
-		"label": "All",
-		"value": "*"
-	},
-	...departments.value.data.map(data => ({
-		"label": data.acronym,
-		"value": data.id
-	}))
-])
-const chosenDepartment = ref("*")
+const departmentNames = computed<OptionInfo[]|undefined>(() => {
+	if (mayReadAll) {
+		return [
+			{
+				"label": "All",
+				"value": "*"
+			},
+			...departments.value.data.map(data => ({
+				"label": data.acronym,
+				"value": data.id
+			}))
+		]
+	}
+
+	// eslint-disable-next-line no-undefined
+	return undefined
+})
+const chosenDepartment = ref(mayReadAll ? "*" : userProfile.data.department.data.id)
 const slug = ref("")
 const existence = ref<Existence>("exists")
 
