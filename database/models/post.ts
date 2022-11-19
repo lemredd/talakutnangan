@@ -4,12 +4,15 @@ import {
 	HasMany,
 	DataType,
 	BelongsTo,
-	ForeignKey
+	ForeignKey,
+	BelongsToMany
 } from "sequelize-typescript"
 
+import Tag from "%/models/tag"
 import User from "%/models/user"
 import Role from "%/models/role"
 import Comment from "%/models/comment"
+import PostTag from "%/models/post_tag"
 import Department from "%/models/department"
 import AttachedRole from "%/models/attached_role"
 import PostAttachment from "%/models/post_attachment"
@@ -49,4 +52,7 @@ export default class Post extends TextContentLike {
 
 	@HasMany(() => PostAttachment)
 		postAttachments!: PostAttachment[]
+
+	@BelongsToMany(() => Tag, () => PostTag)
+		tags!: Tag[]
 }

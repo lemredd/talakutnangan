@@ -41,3 +41,9 @@ export interface TableData {
 	mayRestore: boolean,
 	data: string[]
 }
+
+export interface ChipData {
+	id: string,
+	mayRemove: boolean,
+	data: string
+}

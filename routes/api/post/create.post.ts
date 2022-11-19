@@ -4,12 +4,14 @@ import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import { postContent, postContentDescription } from "$!/constants/regex"
 
 import Policy from "!/bases/policy"
+import JSONController from "!/controllers/json"
+import CreatedResponseInfo from "!/response_infos/created"
+
 import Manager from "%/managers/post"
+import TagManager from "%/managers/tag"
 import UserManager from "%/managers/user"
 import RoleManager from "%/managers/role"
-import JSONController from "!/controllers/json"
 import DepartmentManager from "%/managers/department"
-import CreatedResponseInfo from "!/response_infos/created"
 import PostAttachmentManager from "%/managers/post_attachment"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
@@ -101,6 +103,14 @@ export default class extends JSONController {
 				"isOptional": true,
 				"relationshipName": "department",
 				"typeName": "department",
+				"validator": exists
+			},
+			{
+				"ClassName": TagManager,
+				"isArray": true,
+				"isOptional": true,
+				"relationshipName": "tags",
+				"typeName": "tag",
 				"validator": exists
 			}
 		])

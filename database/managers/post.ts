@@ -11,7 +11,7 @@ import DatabaseError from "$!/errors/database"
 import User from "%/models/user"
 import Model from "%/models/post"
 import Comment from "%/models/comment"
-import Department from "%/models/department"
+import PostTag from "%/models/post_tag"
 import AttachedRole from "%/models/attached_role"
 import PostAttachment from "%/models/post_attachment"
 
@@ -89,7 +89,8 @@ export default class extends BaseManager<
 					}
 				},
 				"postAttachments": attachments,
-				department
+				department,
+				tags
 			} = relationships
 
 			const departmentID = department
@@ -120,12 +121,6 @@ export default class extends BaseManager<
 
 			model.posterInfo = attachedRole
 
-			if (departmentID !== null) {
-				model.department = await Department.findByPk(Number(departmentID), {
-					...this.transaction.transactionObject
-				}) as Department
-			}
-
 			if (attachments && attachments.data.length > 0) {
 				const IDMatcher = new Condition().isIncludedIn(
 					"id",
@@ -137,9 +132,14 @@ export default class extends BaseManager<
 					"where": IDMatcher,
 					...this.transaction.transactionObject
 				})
+			}
 
-				model.postAttachments = await PostAttachment.findAll({
-					"where": IDMatcher,
+			if (tags && tags.data.length > 0) {
+				const tagData = tags.data.map(tag => ({
+					"postID": model.id,
+					"tagID": tag.id
+				}))
+				await PostTag.bulkCreate(tagData, {
 					...this.transaction.transactionObject
 				})
 			}

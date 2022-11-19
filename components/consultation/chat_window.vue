@@ -117,13 +117,13 @@ import type {
 import { CONSULTATION_FORM_PRINT } from "$/constants/template_page_paths"
 
 import makeSwitch from "$@/helpers/make_switch"
-import formatToReadableTime from "$@/helpers/format_to_complete_friendly_time"
 import assignPath from "$@/external/assign_path"
 import specializePath from "$/helpers/specialize_path"
 import ConsultationFetcher from "$@/fetchers/consultation"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import watchConsultation from "@/consultation/listeners/watch_consultation"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
+import formatToReadableTime from "$@/helpers/format_to_complete_friendly_time"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 import convertMStoTimeObject from "$@/helpers/convert_milliseconds_to_full_time_object"
 
