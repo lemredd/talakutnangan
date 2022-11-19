@@ -30,7 +30,9 @@
 
 		.dropdown-container {
 			@apply w-max;
-			@apply bg-dark-400 fixed h-full z-501 h-min;
+			@apply border border-gray-300;
+			@apply bg-light-500 fixed h-full z-501 h-min;
+			@apply dark:bg-dark-400;
 			@apply flex flex-col flex-nowrap;
 
 			top: 50%;
@@ -45,7 +47,8 @@
 			.overlay { @apply bg-transparent; }
 
 			.dropdown-container {
-				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max py-1 px-2;
+				@apply py-1 px-2;
+				@apply absolute dark:bg-dark-400 bg-gray-100 h-max w-max;
 
 				inset: unset;
 				transform: translatex(-50%) translateY(60%);
