@@ -7,33 +7,33 @@ describe("Component: page counter", () => {
 	it("can generate page count buttons by balanced count", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"maxCount": 50,
+				"maxResourceCount": 50,
 				"modelValue": 0
 			}
 		})
 
 		const pageCountBtns = wrapper.findAll(".page-count-btn")
-		const expectedLength = 5
+		const expectedLength = 4
 		expect(pageCountBtns.length).toEqual(expectedLength)
 	})
 
 	it("can generate page count buttons by imbalance count", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"maxCount": 48,
+				"maxResourceCount": 48,
 				"modelValue": 0
 			}
 		})
 
 		const pageCountBtns = wrapper.findAll(".page-count-btn")
-		const expectedLength = 5
+		const expectedLength = 4
 		expect(pageCountBtns.length).toEqual(expectedLength)
 	})
 
 	it("can not move to previous page", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"maxCount": 48,
+				"maxResourceCount": 48,
 				"modelValue": 0
 			}
 		})
@@ -41,13 +41,15 @@ describe("Component: page counter", () => {
 		const previousBtn = wrapper.find(".previous-btn")
 		await previousBtn.trigger("click")
 
+		console.log(wrapper.emitted(), "\n\n\n")
+
 		expect(wrapper.emitted()).not.toHaveProperty("update:modelValue")
 	})
 
-	it("can not move to previous page", async() => {
+	it("can not move to next page", async() => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"maxCount": 48,
+				"maxResourceCount": 48,
 				"modelValue": 40
 			}
 		})
@@ -61,7 +63,7 @@ describe("Component: page counter", () => {
 	it("can emit custom events", () => {
 		const wrapper = shallowMount(Component, {
 			"props": {
-				"maxCount": 50,
+				"maxResourceCount": 50,
 				"modelValue": 0
 			}
 		})
