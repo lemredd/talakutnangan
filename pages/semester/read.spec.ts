@@ -40,8 +40,7 @@ describe("Page: semester/read", () => {
 				}
 			}
 		})
-
-		const nameInput = wrapper.find("input.name").element as HTMLInputElement
+		const nameInput = wrapper.find(".name input").element as HTMLInputElement
 		const orderInput = wrapper.find(".order select").element as HTMLSelectElement
 		const startAtInput = wrapper.find(".start-at input").element as HTMLInputElement
 		const endAtInput = wrapper.find(".end-at input").element as HTMLInputElement
@@ -96,7 +95,7 @@ describe("Page: semester/read", () => {
 			}
 		})
 
-		const nameInput = wrapper.find("input.name")
+		const nameInput = wrapper.find(".name input")
 		const orderInput = wrapper.find(".order select")
 		const startAtInput = wrapper.find(".start-at input")
 		const endAtInput = wrapper.find(".end-at input")
