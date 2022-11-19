@@ -12,13 +12,16 @@
 			:schedule-id="schedule.id"
 			:day-name="schedule.dayName"
 			:schedule-start="schedule.scheduleStart"
-			:schedule-end="schedule.scheduleEnd"/>
+			:schedule-end="schedule.scheduleEnd"
+			class="filled-schedule-picker"/>
 
 		<SchedulePicker
 			:is-new="true"
 			:day-name="props.dayName"
 			:schedule-start="convertTimeToMinutes('00:00')"
-			:schedule-end="convertTimeToMinutes('00:00')"/>
+			:schedule-end="convertTimeToMinutes('00:00')"
+			class="new-schedule-picker"
+			@push-new-schedule="pushNewSchedule"/>
 	</div>
 </template>
 
@@ -39,7 +42,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
@@ -52,7 +55,15 @@ const props = defineProps<{
 	schedules: DeserializedEmployeeScheduleResource[]
 }>()
 
+const schedules = ref(props.schedules)
 const daySchedules = computed<DeserializedEmployeeScheduleResource[]>(
-	() => props.schedules.filter(schedule => schedule.dayName === props.dayName)
+	() => schedules.value.filter(schedule => schedule.dayName === props.dayName)
 )
+
+function pushNewSchedule(newSchedule: DeserializedEmployeeScheduleResource) {
+	schedules.value = [
+		...schedules.value,
+		newSchedule
+	]
+}
 </script>
