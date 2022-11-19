@@ -1,11 +1,14 @@
 import { FieldRules } from "!/types/validation"
 import { Request, Response } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import Manager from "%/managers/role"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
@@ -26,6 +29,13 @@ export default class extends JSONController {
 		return new PermissionBasedPolicy(permissionGroup, [
 			ARCHIVE_AND_RESTORE
 		])
+	}
+
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
@@ -53,9 +63,10 @@ export default class extends JSONController {
 		return new NoContentResponseInfo()
 	}
 
-	get postJobs(): ActionAuditor[] {
+	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("role.archive")
+			new ActionAuditor("role.archive"),
+			new TransactionCommitter()
 		]
 	}
 }
