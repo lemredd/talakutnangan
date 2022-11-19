@@ -24,6 +24,7 @@
 				</div>
 				<SearchableChip
 					v-model="tags"
+					class="optional-tags"
 					header="Optional tags"
 					:maximum-tags="MAX_TAGS"
 					text-field-label="Type the tags to add"/>
@@ -97,6 +98,10 @@
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
+	.optional-tags {
+		@apply mt-5 mb-5;
+	}
+
 	.preview-img {
 		@apply py-5;
 		max-width:100%;
@@ -156,6 +161,7 @@ const roleNames = computed<OptionInfo[]>(() => userProfile.data.roles.data.map(d
 	"value": data.id
 })))
 const roleID = ref<string>(userProfile.data.roles.data[0].id)
+
 
 const props = defineProps<{
 	isShown: boolean
@@ -267,7 +273,7 @@ function createPost(): void {
 		"type": "tag"
 	}))
 	const tagList = tags.value.length === 0
-		// eslint-disable-next-line no-undefined
+	// eslint-disable-next-line no-undefined
 		? undefined
 		: {
 			"data": tagIDs
