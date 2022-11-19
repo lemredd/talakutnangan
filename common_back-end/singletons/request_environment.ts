@@ -7,5 +7,11 @@ import BaseRequestEnvironment from "$/singletons/request_environment"
 export default class RequestEnvironment extends BaseRequestEnvironment {
 	static get root(): string { return getRoot() }
 
-	get root(): string { return getRoot() }
+	static get isInMaintenanceMode(): boolean {
+		return Boolean(process.env.IS_IN_MAINTENANCE) && process.env.IS_IN_MAINTENANCE !== "false"
+	}
+
+	get root(): string { return RequestEnvironment.root }
+
+	get isInMaintenanceMode(): boolean { return RequestEnvironment.isInMaintenanceMode }
 }
