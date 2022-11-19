@@ -34,7 +34,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_USER"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -260,6 +264,22 @@ const debouncedResetList = debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
 function clearOffset() {
 	offset.value = 0
 	debouncedResetList()
+}
+
+function batchArchive(IDs: string[]) {
+	fetcher.archive(IDs)
+}
+
+function batchRestore(IDs: string[]) {
+	fetcher.restore(IDs)
+}
+
+function archive(id: string) {
+	batchArchive([ id ])
+}
+
+function restore(id: string) {
+	batchRestore([ id ])
 }
 
 watch([ offset ], debouncedResetList)
