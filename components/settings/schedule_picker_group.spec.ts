@@ -31,4 +31,27 @@ describe("Component: Schedule Picker Group", () => {
 		const schedulePickers = wrapper.findAllComponents({ "name": "SchedulePicker" })
 		expect(schedulePickers.length).toBe(3)
 	})
+
+	it("should concatenate new schedule", async() => {
+		const newSchedule = {
+			"dayName": "sunday",
+			"id": "1",
+			"scheduleEnd": 1365,
+			"scheduleStart": 1350,
+			"type": "employee_schedule"
+		}
+
+		const wrapper = shallowMount<any>(Component, {
+			"props": {
+				"dayName": "monday",
+				"schedules": []
+			}
+		})
+		const newSchedulePicker = wrapper.findComponent({ "name": "SchedulePicker" })
+		newSchedulePicker.vm.$emit("pushNewSchedule", newSchedule)
+
+		// Ensure
+		const castWrapper = wrapper.vm as any
+		expect(castWrapper.schedules).toHaveLength(1)
+	})
 })
