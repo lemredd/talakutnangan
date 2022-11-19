@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "!/types/dependent"
 
-import RequestEnvironment from "$/singletons/request_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
 export default class MaintenanceGuard extends ForceRedirector {
@@ -11,8 +11,7 @@ export default class MaintenanceGuard extends ForceRedirector {
 	async intermediate(request: Request, response: Response, next: NextFunction)
 	: Promise<void> {
 		if (
-			process.env.IS_IN_MAINTENANCE
-			&& process.env.IS_IN_MAINTENANCE !== "false"
+			RequestEnvironment.isInMaintenanceMode
 			&& !(
 				request.url === "/"
 				&& request.method === "GET"

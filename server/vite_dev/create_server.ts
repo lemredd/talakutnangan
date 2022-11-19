@@ -9,13 +9,13 @@ import { Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import getRoot from "$!/helpers/get_root"
-import getEnvironment from "$/helpers/get_environment"
+import RequestEnvironment from "$!/singletons/request_environment"
 
 export default async function(app: ExpressApp) {
 	const root = getRoot()
 	const isProduction
-		= getEnvironment() === Environment.Production
-		|| getEnvironment() === Environment.IntegrationTest
+		= RequestEnvironment.environment === Environment.Production
+			|| RequestEnvironment.isOnIntegration
 
 
 	if (isProduction) {
@@ -59,8 +59,7 @@ export default async function(app: ExpressApp) {
 				"documentProps": request.documentProps,
 				"pageProps": {
 					...request.pageProps ?? {},
-					"isInMaintenanceMode": process.env.IS_IN_MAINTENANCE
-						&& process.env.IS_IN_MAINTENANCE !== "false",
+					"isInMaintenanceMode": RequestEnvironment.isInMaintenanceMode,
 					parsedUnitError
 				},
 				"urlOriginal": url
