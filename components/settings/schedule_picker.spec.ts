@@ -99,6 +99,22 @@ describe("Component: Schedule Picker", () => {
 	})
 
 	it("should add new schedule in a day", async() => {
+		const newSchedule = {
+			"attributes": {
+				"dayName": "sunday",
+				"scheduleEnd": 1365,
+				"scheduleStart": 1350
+			},
+			"id": "1",
+			"type": "employee_schedule"
+		}
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				"data": newSchedule
+			}),
+			{ "status": RequestEnvironment.status.CREATED }
+		)
+
 		const wrapper = shallowMount<any>(SchedulePicker, {
 			"global": {
 				"provide": {
@@ -129,25 +145,6 @@ describe("Component: Schedule Picker", () => {
 		const endTimeSelectable = endTimeSelectors.findComponent({ "name": "Selectable" })
 		await startTimeSelectable.setValue("10:30")
 		await endTimeSelectable.setValue("10:45")
-
-		fetchMock.mockResponseOnce(
-			JSON.stringify({
-				"data": {
-					"attributes": {
-						"dayName": "sunday",
-						"scheduleEnd": 1365,
-						"scheduleStart": 1350
-					},
-					"id": "1",
-					"type": "employee_schedule"
-				}
-			}),
-			{ "status": RequestEnvironment.status.CREATED }
-		)
-		fetchMock.mockResponseOnce(
-			JSON.stringify({ "data": {} }),
-			{ "status": RequestEnvironment.status.NO_CONTENT }
-		)
 		const saveBtn = wrapper.find("#save-new-btn")
 		await saveBtn.trigger("click")
 		await flushPromises()
@@ -157,6 +154,14 @@ describe("Component: Schedule Picker", () => {
 
 		expect(request).toHaveProperty("method", "POST")
 		expect(request).toHaveProperty("url", "/api/employee_schedule")
+
+		const expectedEmission = wrapper.emitted("pushNewSchedule")
+		console.log(expectedEmission, "\n\n\n")
+		expect(expectedEmission).toHaveProperty("0.0", {
+			...newSchedule.attributes,
+			"id": newSchedule.id,
+			"type": newSchedule.type
+		})
 	})
 
 	it("should delete existing schedule", async() => {
