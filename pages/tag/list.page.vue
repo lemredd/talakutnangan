@@ -27,8 +27,7 @@
 	</ResourceManager>
 </template>
 
-<style scoped lang="scss">
-	@import "@styles/btn.scss";
+<style>
 </style>
 
 <script setup lang="ts">
