@@ -1,7 +1,7 @@
 import type { Ref } from "vue"
 import type { Existence } from "$/types/query"
 import type { ExistenceOperators } from "$@/types/component"
-import type { GenericFetcherParameters } from "$@/types/independent"
+import type { GenericFetcherParameters, Response } from "$@/types/independent"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import type {
 	ResourceIdentifier,
@@ -70,7 +70,7 @@ export default function<
 		}
 	}
 
-	function renewExistence(IDs: string, renew: (resource: X) => X) {
+	function renewExistence(IDs: string[], renew: (resource: X) => X) {
 		list.value = {
 			...list.value,
 			"data": list.value.data.map(item => {
@@ -85,7 +85,7 @@ export default function<
 
 	async function batchOperate(
 		IDs: string[],
-		operate: () => Promise<void>,
+		operate: () => Promise<Response<T, U, V, W, X, null>>,
 		oppositeExistence: Existence,
 		renew: (resource: X) => X
 	) {
@@ -99,7 +99,10 @@ export default function<
 			}
 			selectedIDs.value = selectedIDs.value.filter(selectedID => IDs.indexOf(selectedID) === -1)
 		} catch (responseWithErrors) {
-			extractAllErrorDetails(responseWithErrors, UIState.receivedErrors)
+			extractAllErrorDetails(
+				responseWithErrors as Response<T, U, V, W, X, null>,
+				UIState.receivedErrors
+			)
 		} finally {
 			UIState.isLoaded.value = true
 		}
