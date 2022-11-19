@@ -11,6 +11,7 @@ export type PageProps<
 	T extends Format = "serialized",
 	U extends AdditionalPropNames<T> = "userProfile"
 > = BasePageProps<T, U> & {
+	isInMaintenance: boolean,
 	parsedUnitError: (UnitError|null) & Serializable
 } & Serializable
 

@@ -17,7 +17,7 @@ export default class extends PageMiddleware {
 
 	getPageProps(unusedRequest: Request): Serializable {
 		return {
-			"data": "Hello world!"
+			"isInMaintenance": true
 		}
 	}
 }
