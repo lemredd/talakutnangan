@@ -65,6 +65,19 @@ export default function<
 		}
 	}
 
+	function renewExistence(IDs: string, renew: (resource: X) => X) {
+		list.value = {
+			...list.value,
+			"data": list.value.data.map(item => {
+				let newItemData = { ...item }
+				if (IDs.indexOf(newItemData.id) > -1) {
+					newItemData = renew(newItemData)
+				}
+				return newItemData
+			})
+		}
+	}
+
 	async function batchArchive(IDs: string[]) {
 		isLoaded.value = false
 		await fetcher.archive(IDs).catch(
@@ -73,16 +86,10 @@ export default function<
 		if (existence.value === "exists") {
 			removeData(IDs)
 		} else if (existence.value === "*") {
-			list.value = {
-				...list.value,
-				"data": list.value.data.map(item => {
-					const newItemData = { ...item }
-					if (IDs.indexOf(newItemData.id) > -1) {
-						newItemData.deletedAt = new Date()
-					}
-					return newItemData
-				})
-			}
+			renewExistence(IDs, item => ({
+				...item,
+				"deletedAt": new Date()
+			}))
 		}
 		isLoaded.value = true
 	}
