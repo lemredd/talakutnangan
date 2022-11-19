@@ -6,13 +6,15 @@ import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/r
 
 import Model from "%/models/role"
 import BaseManager from "%/managers/base"
-import trimRight from "$/string/trim_right"
-import makeUnique from "$/array/make_unique"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
+
 import Condition from "%/helpers/condition"
+import trimRight from "$/string/trim_right"
+import makeUnique from "$/array/make_unique"
 import segragateIDs from "%/helpers/segragate_IDs"
+
 import siftBySlug from "%/queries/role/sift_by_slug"
 import siftByDepartment from "%/queries/role/sift_by_department"
 
