@@ -1,8 +1,9 @@
 <template>
 	<div v-if="shouldShowPagination" class="page-counter">
 		<button
-			class="movement-btn previous-btn"
+			class="movement-btn first-page-btn"
 			:class="movementBtnClasses"
+			:disabled="isAtFirstPage"
 			@click="updateOffset(1)">
 			<span class="material-icons">keyboard_double_arrow_left</span>
 		</button>
@@ -41,8 +42,9 @@
 			<span class="material-icons">chevron_right</span>
 		</button>
 		<button
-			class="movement-btn next-btn"
+			class="movement-btn last-page-btn"
 			:class="movementBtnClasses"
+			:disabled="isAtLastPage"
 			@click="updateOffset(pageLength)">
 			<span class="material-icons">keyboard_double_arrow_right</span>
 		</button>
