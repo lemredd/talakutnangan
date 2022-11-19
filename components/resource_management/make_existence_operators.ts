@@ -83,17 +83,19 @@ export default function<
 		}
 	}
 
-	async function batchArchive(IDs: string[]) {
+	async function batchOperate(
+		IDs: string[],
+		operate: () => Promise<void>,
+		oppositeExistence: Existence,
+		renew: (resource: X) => X
+	) {
 		UIState.isLoaded.value = false
 		try {
-			await fetcher.archive(IDs)
-			if (queryState.existence.value === "exists") {
+			await operate()
+			if (queryState.existence.value === oppositeExistence) {
 				removeData(IDs)
 			} else if (queryState.existence.value === "*") {
-				renewExistence(IDs, item => ({
-					...item,
-					"deletedAt": new Date()
-				}))
+				renewExistence(IDs, renew)
 			}
 			selectedIDs.value = selectedIDs.value.filter(selectedID => IDs.indexOf(selectedID) === -1)
 		} catch (responseWithErrors) {
@@ -103,10 +105,18 @@ export default function<
 		}
 	}
 
+	async function batchArchive(IDs: string[]) {
+		await batchOperate(IDs, () => fetcher.archive(IDs), "exists", item => ({
+			...item,
+			"deletedAt": new Date()
+		}))
+	}
+
 	async function batchRestore(IDs: string[]) {
-		UIState.isLoaded.value = false
-		await fetcher.restore(IDs)
-		UIState.isLoaded.value = true
+		await batchOperate(IDs, () => fetcher.restore(IDs), "archived", item => ({
+			...item,
+			"deletedAt": null
+		}))
 	}
 
 	async function archive(id: string) {
