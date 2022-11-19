@@ -70,7 +70,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import SemesterFetcher from "$@/fetchers/semester"
 import DepartmentFetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
 import { READ as READ_SEMESTERS } from "$/permissions/semester_combinations"
 import {
@@ -92,8 +92,9 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const posts = ref<DeserializedPostListDocument<"poster"|"posterRole"|"department">>(
-	pageProps.posts as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+const posts = ref<DeserializedPostListDocument<AssociatedPostResource>>(
+	pageProps.posts as DeserializedPostListDocument<AssociatedPostResource>
 )
 
 const departments = ref<DeserializedDepartmentListDocument>(
