@@ -1,5 +1,11 @@
 # Changelog
 
+### 🔩 Internals
+- **server:** Include the enhancers for the pages to guard them (82f89087)
+
+### ❤️  Contributors
+- Kenneth Trecy Tobias
+
 ## v1.2.0
 
 ### 🚀 Enhancements
