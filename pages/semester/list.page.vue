@@ -165,7 +165,7 @@ async function fetchSemesterInfos() {
 			},
 			"page": {
 				"limit": DEFAULT_LIST_LIMIT,
-				"offset": list.value.data.length
+				"offset": offset.value
 			},
 			"sort": [ chosenSort.value ]
 		}),
