@@ -229,6 +229,7 @@ const resourceCount = computed<number>(() => {
 const receivedErrors = ref<string[]>([])
 async function fetchUserInfo() {
 	isLoaded.value = false
+
 	await loadRemainingResource(list as Ref<DeserializedUserListDocument>, fetcher, () => ({
 		"filter": {
 			"department": currentResourceManager.isAdmin()

@@ -24,7 +24,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_SEMESTER"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -64,6 +68,7 @@ import makeManagementInfo from "@/semester/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import PageCounter from "@/helpers/page_counter.vue"
@@ -156,6 +161,8 @@ const resourceCount = computed<number>(() => {
 
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
+	isLoaded.value = false
+
 	await loadRemainingResource(
 		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
@@ -205,7 +212,6 @@ async function refetchSemester() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchSemesterInfos()
 }
 
@@ -218,4 +224,23 @@ function clearOffset() {
 
 watch([ offset ], debouncedResetList)
 watch([ chosenSort, slug, existence ], clearOffset)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 </script>
