@@ -1,6 +1,10 @@
 <template>
 	<div class="date-selector">
+		<label for="selected-date">
+			{{ label }}
+		</label>
 		<input
+			id="selected-date"
 			v-model="rawDate"
 			class="date"
 			type="date"/>
@@ -19,6 +23,7 @@ import { computed } from "vue"
 import convertToRawDate from "$@/helpers/convert_to_raw_date"
 
 const props = defineProps<{
+	label?: string
 	modelValue: Date
 }>()
 
