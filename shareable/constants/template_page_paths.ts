@@ -20,6 +20,11 @@ export const PROFILE_SETTINGS = "/settings/profile"
 export const CONSULTATION_FORM_PRINT = "/consultation/form/:id"
 
 /**
+ * Requires `id` of the chat message activity of the current user
+ */
+export const CONSULTATION_CALL = "/consultation/call/:id"
+
+/**
  * Requires `id` of the consultation
  */
 export const READ_CONSULTATION = "/consultation/read/:id"
