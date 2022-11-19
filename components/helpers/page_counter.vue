@@ -101,12 +101,12 @@ type DefinedProps = {
 }
 const props = defineProps<DefinedProps>()
 
-const shouldShowPagination = computed(() => props.maxCount > DEFAULT_LIST_LIMIT)
+const shouldShowPagination = computed(() => props.maxResourceCount > DEFAULT_LIST_LIMIT)
 
 const currentPageCount = computed(() => props.modelValue / DEFAULT_LIST_LIMIT + 1)
 const CONDENSE_LIMIT = 4
 const pageLength = computed(
-	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
+	() => Math.ceil(props.maxResourceCount / DEFAULT_LIST_LIMIT)
 )
 const condensedPageLength = computed(() => {
 	let pages = []
@@ -117,15 +117,40 @@ const condensedPageLength = computed(() => {
 			currentPageCount.value - 2,
 			currentPageCount.value - 1,
 			currentPageCount.value
-		].filter(pageNumber => pageNumber <= pageLength.value)
+		]
+	} else if (currentPageCount.value >= pageLength.value - 1) {
+		// At 2nd to the last page
+		pages = [
+			currentPageCount.value - 2,
+			currentPageCount.value - 1,
+			currentPageCount.value,
+			currentPageCount.value + 1,
+			currentPageCount.value + 2
+		]
+	} else if (currentPageCount.value > 1) {
+		// At second page
+		pages = [
+			currentPageCount.value - 1,
+			currentPageCount.value,
+			currentPageCount.value + 1,
+			currentPageCount.value + 2,
+			currentPageCount.value + 3
+		]
 	} else {
+		// At first page
 		pages = [
 			currentPageCount.value,
 			currentPageCount.value + 1,
 			currentPageCount.value + 2,
 			currentPageCount.value + 3
-		].filter(pageNumber => pageNumber <= pageLength.value)
+		]
 	}
+
+	pages = pages
+	.filter(
+		pageNumber => pageNumber > 0 && pageNumber <= pageLength.value
+	)
+	.slice(0, CONDENSE_LIMIT)
 
 	return pages
 })
@@ -150,7 +175,9 @@ function determineActiveness(pageCountOfButton: number) {
 
 const isAtFirstPage = computed(() => props.modelValue === 0)
 const isAtLastPage = computed(() => {
-	const flooredMaxCount = Math.floor(props.maxCount / DEFAULT_LIST_LIMIT) * DEFAULT_LIST_LIMIT
+	const flooredMaxCount = Math.ceil(
+		props.maxResourceCount / DEFAULT_LIST_LIMIT - 1
+	) * DEFAULT_LIST_LIMIT
 	return flooredMaxCount === props.modelValue
 })
 const movementBtnClasses = {
