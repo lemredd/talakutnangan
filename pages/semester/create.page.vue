@@ -19,12 +19,12 @@
 		<DateSelector
 			v-model="startAt"
 			class="start date"
-			label="Start: "
+			label="Starts at:"
 			type="date"/>
 		<DateSelector
 			v-model="endAt"
 			class="end date"
-			label="End: "
+			label="Ends at:"
 			type="date"/>
 		<button
 			class="btn btn-primary"
