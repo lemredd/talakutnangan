@@ -1,0 +1,21 @@
+import type { Request, Response, NextFunction } from "!/types/dependent"
+
+import RequestEnvironment from "$/singletons/request_environment"
+import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
+
+export default class ForceMaintenance extends ForceRedirector {
+	constructor() {
+		super("/", RequestEnvironment.status.TEMPORARY_REDIRECT)
+	}
+
+	async intermediate(request: Request, response: Response, next: NextFunction)
+	: Promise<void> {
+		if (
+			process.env.IS_IN_MAINTENANCE
+			&& process.env.IS_IN_MAINTENANCE !== "false"
+			&& request.url !== "/"
+		) {
+			await super.intermediate(request, response, next)
+		}
+	}
+}
