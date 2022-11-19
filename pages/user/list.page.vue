@@ -280,7 +280,19 @@ const {
 	batchArchive,
 	batchRestore,
 	restore
-} = makeExistenceOperators(list, fetcher, existence, offset, isLoaded, receivedErrors)
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 
 onMounted(async() => {
 	await loadRemainingRoles(roles, roleFetcher)

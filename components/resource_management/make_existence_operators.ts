@@ -43,16 +43,21 @@ export default function<
 >(
 	list: Ref<B>,
 	fetcher: Fetcher<T, U, V, W, X, Y, Z, A, B, C>,
-	existence: Ref<Existence>,
-	offset: Ref<number>,
-	isLoaded: Ref<boolean>,
-	receivedErrors: Ref<string[]>
+	queryState: {
+		existence: Ref<Existence>,
+		offset: Ref<number>,
+	},
+	selectedIDs: Ref<string[]>,
+	UIState: {
+		isLoaded: Ref<boolean>,
+		receivedErrors: Ref<string[]>
+	}
 ): ExistenceOperators {
 	function removeData(IDs: string[]) {
 		const newData = list.value.data.filter(item => IDs.indexOf(item.id) === -1)
 
 		if (newData.length === 0) {
-			offset.value = Math.max(offset.value - 1, 0)
+			queryState.offset.value = Math.max(queryState.offset.value - 1, 0)
 		} else {
 			list.value = {
 				...list.value,
@@ -79,25 +84,25 @@ export default function<
 	}
 
 	async function batchArchive(IDs: string[]) {
-		isLoaded.value = false
+		UIState.isLoaded.value = false
 		await fetcher.archive(IDs).catch(
-			responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors)
+			responseWithErrors => extractAllErrorDetails(responseWithErrors, UIState.receivedErrors)
 		)
-		if (existence.value === "exists") {
+		if (queryState.existence.value === "exists") {
 			removeData(IDs)
-		} else if (existence.value === "*") {
+		} else if (queryState.existence.value === "*") {
 			renewExistence(IDs, item => ({
 				...item,
 				"deletedAt": new Date()
 			}))
 		}
-		isLoaded.value = true
+		UIState.isLoaded.value = true
 	}
 
 	async function batchRestore(IDs: string[]) {
-		isLoaded.value = false
+		UIState.isLoaded.value = false
 		await fetcher.restore(IDs)
-		isLoaded.value = true
+		UIState.isLoaded.value = true
 	}
 
 	async function archive(id: string) {
