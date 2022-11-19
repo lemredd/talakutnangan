@@ -13,7 +13,10 @@ export default class MaintenanceGuard extends ForceRedirector {
 		if (
 			process.env.IS_IN_MAINTENANCE
 			&& process.env.IS_IN_MAINTENANCE !== "false"
-			&& request.url !== "/"
+			&& !(
+				request.url === "/"
+				&& request.method === "GET"
+			)
 		) {
 			await super.intermediate(request, response, next)
 		}
