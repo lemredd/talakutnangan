@@ -3,6 +3,7 @@ import type { AttributesObject, TransformerOptions } from "%/types/dependent"
 
 import Model from "%/models/post"
 import Transformer from "%/transformers/base"
+import TagTransformer from "%/transformers/tag"
 import UserTransformer from "%/transformers/user"
 import RoleTransformer from "%/transformers/role"
 import Serializer from "%/transformers/serializer"
@@ -10,15 +11,16 @@ import DepartmentTransformer from "%/transformers/department"
 import PostAttachmentTransformer from "%/transformers/post_attachment"
 
 type Relationships =
-	|"poster"
-	|"posterRole"
-	|"department"
-	|"postAttachments"
+	| "tags"
+	| "poster"
+	| "posterRole"
+	| "department"
+	| "postAttachments"
 
 export default class extends Transformer<Model, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "poster", "posterRole", "department", "postAttachments" ]
+			"included": [ "poster", "posterRole", "department", "postAttachments", "tags" ]
 		}
 	) {
 		super("post", [
@@ -44,6 +46,12 @@ export default class extends Transformer<Model, void> {
 				? {
 					"attribute": "postAttachments",
 					"transformer": new PostAttachmentTransformer()
+				}
+				: null,
+			included.indexOf("tags") > -1
+				? {
+					"attribute": "tags",
+					"transformer": new TagTransformer()
 				}
 				: null
 		])

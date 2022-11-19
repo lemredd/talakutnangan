@@ -13,7 +13,7 @@ export default class extends FileLikeTransformer<AttachedChatFile, FileLikeTrans
 		super("attached_chat_file", [
 			included.indexOf("chatMessage") > -1
 				? {
-					"attribute": "chatMessageActivity",
+					"attribute": "chatMessage",
 					"transformer": new ChatMessageTransformer({
 						"included": []
 					})

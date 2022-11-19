@@ -4,13 +4,14 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
-		<input
+		<TextualField
 			v-model="tag.data.name"
+			label="Tag name"
 			class="name border-solid"
 			type="text"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
-				<button type="submit" class="update-user-btn btn btn-primary">
+				<button type="submit" class="update-tag-btn btn btn-primary">
 					update tag
 				</button>
 			</Suspensible>
@@ -42,6 +43,7 @@
 @import "@styles/btn.scss";
 
 	.controls{
+		@apply mt-8;
 		@apply flex justify-between;
 	}
 </style>
@@ -59,6 +61,7 @@ import makeManagementInfo from "@/tag/make_management_info"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import TextualField from "@/fields/non-sensitive_text.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"

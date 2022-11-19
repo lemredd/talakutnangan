@@ -80,8 +80,7 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p v-html="formattedContent" class="post-content">
-		</p>
+		<p v-html="formattedContent" class="post-content"></p>
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
@@ -170,7 +169,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
@@ -222,8 +221,12 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const isLoaded = ref<boolean>(false)
 const post = ref<DeserializedPostResource<AssociatedPostResource>>(props.modelValue)
-const formattedContent = computed<string>(() => convertMarkdownToHTML(post.value.content))
+const formattedContent = computed<string>(() => {
+	if (isLoaded.value) return convertMarkdownToHTML(post.value.content)
+	return ""
+})
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
@@ -319,6 +322,8 @@ async function submitChangesSeparately(): Promise<void> {
 				"department": undefined,
 				// eslint-disable-next-line no-undefined
 				"postAttachments": undefined,
+				// eslint-disable-next-line no-undefined
+				"tags": undefined,
 				"poster": {
 					"data": {
 						"id": post.value.poster.data.id,
@@ -363,4 +368,8 @@ async function restorePost(): Promise<void> {
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
+
+onMounted(() => {
+	isLoaded.value = true
+})
 </script>

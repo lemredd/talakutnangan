@@ -14,6 +14,7 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
+import length from "!/validators/comparison/length"
 import makeListRules from "!/rule_sets/make_list"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 import makeMultiIDBasedFilterRules from "!/rule_sets/make_multi-id-based_filter"
@@ -33,9 +34,12 @@ export default class extends QueryController {
 			{
 				"slug": {
 					"constraints": {
+						"length": {
+							"maximum": 255
+						},
 						"nullable": { "defaultValue": "" }
 					},
-					"pipes": [ nullable, string ]
+					"pipes": [ nullable, string, length ]
 				},
 				...makeIDBasedFilterRules("department", DepartmentManager, { "mustCast": true }),
 				...makeMultiIDBasedFilterRules(Manager, { "mustCast": true })

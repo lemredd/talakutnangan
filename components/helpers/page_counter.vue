@@ -1,18 +1,45 @@
 <template>
-	<div class="page-counter">
-		<button class="movement-btn previous-btn">
+	<div v-if="maxCount > DEFAULT_LIST_LIMIT" class="page-counter">
+		<button
+			class="movement-btn previous-btn"
+			:class="movementBtnClasses"
+			@click="goToPreviousPage">
 			<span class="material-icons">chevron_left</span>
 			<span class="text">Previous</span>
 		</button>
+
+		<div v-if="pageLength < CONDENSE_LIMIT" class="limited-page-btn">
+			<button
+				v-for="pageCount in pageLength"
+				:key="pageCount"
+				class="page-count-btn btn"
+				:class="determineActiveness(pageCount)"
+				@click="updateOffset(pageCount)">
+				{{ pageCount }}
+			</button>
+		</div>
+		<div v-else class="unlimited-page-btn">
+			<button
+				v-for="pageCount in condensedPageLength"
+				:key="pageCount"
+				class="page-count-btn btn"
+				:class="determineActiveness(pageCount)"
+				@click="updateOffset(pageCount)">
+				{{ pageCount }}
+			</button>
+			...
+			<button
+				class="page-count-btn btn"
+				:class="determineActiveness(pageLength)"
+				@click="updateOffset(pageLength)">
+				{{ pageLength }}
+			</button>
+		</div>
+
 		<button
-			v-for="pageCount in pageLength"
-			:key="pageCount"
-			class="page-count-btn btn"
-			:class="determineActiveness(pageCount)"
-			@click="updateOffset(pageCount)">
-			{{ pageCount }}
-		</button>
-		<button class="movement-btn next-btn">
+			class="movement-btn next-btn"
+			:class="movementBtnClasses"
+			@click="goToNextPage">
 			<span class="text">Next</span>
 			<span class="material-icons">chevron_right</span>
 		</button>
@@ -27,8 +54,23 @@
 		.movement-btn {
 			@apply flex items-center;
 
-			&.previous-btn { @apply mr-2; }
-			&.next-btn { @apply ml-3; }
+			&.previous-btn {
+				@apply mr-2;
+
+				&.disabled-previous-btn {
+					@apply text-gray-400;
+					cursor: initial;
+				}
+			}
+			&.next-btn {
+				@apply ml-3;
+
+				&.disabled-next-btn {
+					@apply text-gray-400;
+					cursor: initial;
+				}
+			}
+
 		}
 
 		.page-count-btn {
@@ -41,7 +83,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -56,9 +98,17 @@ type DefinedProps = {
 }
 const props = defineProps<DefinedProps>()
 
+const currentPageCount = computed(() => props.modelValue / DEFAULT_LIST_LIMIT + 1)
+const CONDENSE_LIMIT = 4
 const pageLength = computed(
 	() => Math.ceil(props.maxCount / DEFAULT_LIST_LIMIT)
 )
+const condensedPageLength = computed(() => [
+	currentPageCount.value,
+	currentPageCount.value + 1,
+	currentPageCount.value + 2,
+	currentPageCount.value + 3
+])
 
 const offset = computed({
 	get() { return props.modelValue },
@@ -70,12 +120,27 @@ function updateOffset(selectedOffset: number) {
 
 function determineActiveness(pageCountOfButton: number) {
 	const classes = []
-	const pageCountOfOffset = props.modelValue / DEFAULT_LIST_LIMIT + 1
-	const isActive = pageCountOfButton === pageCountOfOffset
+	const isActive = pageCountOfButton === currentPageCount.value
 
 	if (isActive) classes.push("btn-primary")
 	else classes.push("btn-inactive")
 
 	return classes.join(" ")
+}
+
+const isAtFirstPage = computed(() => props.modelValue === 0)
+const isAtLastPage = computed(() => {
+	const flooredMaxCount = Math.floor(props.maxCount / DEFAULT_LIST_LIMIT) * DEFAULT_LIST_LIMIT
+	return flooredMaxCount === props.modelValue
+})
+const movementBtnClasses = {
+	"disabled-next-btn": isAtLastPage.value,
+	"disabled-previous-btn": isAtFirstPage.value
+}
+function goToPreviousPage() {
+	if (!isAtFirstPage.value) emit("update:modelValue", props.modelValue - DEFAULT_LIST_LIMIT)
+}
+function goToNextPage() {
+	if (!isAtLastPage.value) emit("update:modelValue", props.modelValue + DEFAULT_LIST_LIMIT)
 }
 </script>

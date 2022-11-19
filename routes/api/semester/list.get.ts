@@ -9,6 +9,7 @@ import QueryController from "!/controllers/query"
 
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
+import length from "!/validators/comparison/length"
 import { READ } from "$/permissions/semester_combinations"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { semester as permissionGroup } from "$/permissions/permission_list"
@@ -28,9 +29,12 @@ export default class extends QueryController {
 		return makeListRules(Manager, {
 			"slug": {
 				"constraints": {
+					"length": {
+						"maximum": 255
+					},
 					"nullable": { "defaultValue": "" }
 				},
-				"pipes": [ nullable, string ]
+				"pipes": [ nullable, string, length ]
 			}
 		})
 	}

@@ -15,6 +15,7 @@ import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import string from "!/validators/base/string"
 import nullable from "!/validators/base/nullable"
 import oneOf from "!/validators/comparison/one-of"
+import length from "!/validators/comparison/length"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
@@ -39,10 +40,13 @@ export default class extends QueryController {
 			...makeIDBasedFilterRules("role", RoleManager, { "mustCast": true }),
 			"kind": {
 				"constraints": {
+					"length": {
+						"maximum": 255
+					},
 					"nullable": { "defaultValue": "*" },
 					"oneOf": { "values": [ ...UserKindValues ] }
 				},
-				"pipes": [ nullable, string, skipAsterisk, oneOf ]
+				"pipes": [ nullable, string, length, skipAsterisk, oneOf ]
 			}
 		})
 	}

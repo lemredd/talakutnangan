@@ -2,9 +2,11 @@ import type { Message } from "$/types/message"
 import type { Serializable } from "$/types/general"
 import type { UserKind, Day } from "$/types/database"
 
+export type Existence = "exists" | "archived" | "*"
+
 export interface ExistenceFilter extends Serializable {
 	filter: {
-		existence: "exists" | "archived" | "*"
+		existence: Existence
 	}
 }
 

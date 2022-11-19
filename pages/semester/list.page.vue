@@ -1,10 +1,10 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
-		:is-loaded="isLoaded"
-		:department-names="[]"
-		:role-names="[]">
+		:sort-names="sortNames"
+		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -24,21 +24,37 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_SEMESTER"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
+			<PageCounter
+				v-model="offset"
+				:max-count="resourceCount"
+				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
 </template>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.centered-page-counter {
+		@apply mt-4;
+		@apply flex justify-center;
+	}
 </style>
 
 <script setup lang="ts">
-import { onMounted, inject, ref, watch, computed } from "vue"
+import { inject, ref, watch, computed, Ref } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
+import type { ResourceCount } from "$/types/documents/base"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedSemesterListDocument } from "$/types/documents/semester"
+
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
@@ -49,11 +65,13 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
 import makeManagementInfo from "@/semester/make_management_info"
+import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
+import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -70,6 +88,7 @@ const selectedIDs = ref<string[]>([])
 const fetcher = new Fetcher()
 
 const { userProfile } = pageProps
+const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterListDocument>(
@@ -82,8 +101,8 @@ const tableData = computed<TableData[]>(() => {
 			"data": [
 				resource.name,
 				resource.semesterOrder,
-				formatToCompleteFriendlyTime(resource.startAt),
-				formatToCompleteFriendlyTime(resource.endAt)
+				formatToFriendlyDate(resource.startAt),
+				formatToFriendlyDate(resource.endAt)
 			],
 			"id": resource.id,
 			"mayArchive": managementInfo.mayArchiveSemester,
@@ -96,13 +115,56 @@ const tableData = computed<TableData[]>(() => {
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Ascending by order",
+		"value": "semesterOrder"
+	},
+	{
+		"label": "Ascending by start at",
+		"value": "startAt"
+	},
+	{
+		"label": "Ascending by end at",
+		"value": "endAt"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	},
+	{
+		"label": "Descending by order",
+		"value": "-semesterOrder"
+	},
+	{
+		"label": "Descending by start at",
+		"value": "-startAt"
+	},
+	{
+		"label": "Descending by end at",
+		"value": "-endAt"
+	}
+])
+const chosenSort = ref("name")
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
+
+const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
+	isLoaded.value = false
+
 	await loadRemainingResource(
-		list,
+		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
 		() => ({
 			"filter": {
@@ -113,7 +175,7 @@ async function fetchSemesterInfos() {
 				"limit": DEFAULT_LIST_LIMIT,
 				"offset": list.value.data.length
 			},
-			"sort": [ "name" ]
+			"sort": [ chosenSort.value ]
 		}),
 		{
 			"mayContinue": () => Promise.resolve(false)
@@ -150,13 +212,35 @@ async function refetchSemester() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchSemesterInfos()
 }
 
-watch([ slug, existence ], debounce(refetchSemester, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchSemester, DEBOUNCED_WAIT_DURATION)
 
-onMounted(() => {
-	isLoaded.value = true
-})
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 </script>

@@ -3,23 +3,43 @@
 		<h6 class="title">
 			{{ title }}
 		</h6>
-		<label
-			v-for="option in options"
-			:key="option.value"
-			:for="`label_${option.label ?? option.value}`">
-			<input
-				:id="`label_${option.label ?? option.value}`"
-				v-model="value"
-				:value="option.value"
-				type="radio"/>
-			{{ option.label ?? option.value }}
-		</label>
+		<div class="options">
+			<label
+				v-for="option in options"
+				:key="option.value"
+				:for="`label_${option.label ?? option.value}`">
+				<input
+					:id="`label_${option.label ?? option.value}`"
+					v-model="value"
+					:value="option.value"
+					type="radio"/>
+				<span>{{ option.label ?? option.value }}</span>
+			</label>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	label {
-		@apply mr-4;
+	.selectable-radio {
+		@apply flex flex-col flex-nowrap sm:flex-row justify-start items-start;
+
+		.options {
+			@apply flex-1 flex flex-col md:flex-row justify-start items-start;
+		}
+
+		label {
+			@apply mr-4;
+			@apply flex flex-row flex-nowrap;
+
+			> * { @apply flex-none; }
+			span { @apply ml-1; }
+		}
+
+		@screen md {
+			.title {
+				@apply mr-4;
+			}
+		}
 	}
 </style>
 

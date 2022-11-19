@@ -29,6 +29,10 @@ describe("Page: consultation/call", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
 
 		const userProfile = {
 			"data": {

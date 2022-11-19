@@ -220,7 +220,6 @@ export function unmuteAudioTrack() {
 			if (!localTracks.localAudioTrack?.isPlaying) {
 				localTracks.localAudioTrack = await manager().createMicrophoneAudioTrack()
 				await engine().publish(localTracks.localAudioTrack)
-				localTracks.localAudioTrack?.play()
 			}
 			localTracks.localAudioTrack?.setMuted(false)
 		},

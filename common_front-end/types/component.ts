@@ -41,3 +41,19 @@ export interface TableData {
 	mayRestore: boolean,
 	data: string[]
 }
+
+type BatchExistenceOperator = (IDs: string[]) => Promise<void>
+type SingleExistenceOperator = (id: string) => Promise<void>
+
+export interface ExistenceOperators {
+	batchArchive: BatchExistenceOperator,
+	batchRestore: BatchExistenceOperator,
+	archive: SingleExistenceOperator,
+	restore: SingleExistenceOperator
+}
+
+export interface ChipData {
+	id: string,
+	mayRemove: boolean,
+	data: string
+}
