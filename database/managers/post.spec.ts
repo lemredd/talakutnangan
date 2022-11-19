@@ -1,5 +1,10 @@
 import Model from "%/models/post"
+import PostTag from "%/models/post_tag"
+import Department from "%/models/department"
+import PostAttachment from "%/models/post_attachment"
+
 import Factory from "~/factories/post"
+import TagFactory from "~/factories/tag"
 import UserFactory from "~/factories/user"
 import CommentFactory from "~/factories/comment"
 import DepartmentFactory from "~/factories/department"
@@ -41,6 +46,57 @@ describe("Database Manager: Post create operations", () => {
 	it("can create post", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const attachment = await new PostAttachmentFactory().insertOne()
+		const tags = await new TagFactory().insertMany(3)
+		const model = await new Factory().makeOne()
+		const manager = new Manager()
+
+		const data = await manager.createUsingResource({
+			"attributes": {
+				"content": model.content
+			},
+			"relationships": {
+				"department": {
+					"data": {
+						"id": department.id
+					}
+				},
+				"postAttachments": {
+					"data": [
+						{
+							"id": attachment.id
+						}
+					]
+				},
+				"poster": {
+					"data": {
+						"id": model.poster?.id
+					}
+				},
+				"posterRole": {
+					"data": {
+						"id": model.posterRole?.id
+					}
+				},
+				"tags": {
+					"data": tags.map(tag => ({
+						"id": tag.id,
+						"type": "tag"
+					}))
+				}
+			}
+		} as any)
+
+		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(3)
+		expect(await Department.count()).toBe(2)
+		expect(await PostAttachment.count()).toBe(1)
+		expect(data).toHaveProperty("data")
+		expect(data).toHaveProperty("data.attributes.content", model.content)
+	})
+
+	it("can create post without tags", async() => {
+		const department = await new DepartmentFactory().insertOne()
+		const attachment = await new PostAttachmentFactory().insertOne()
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
 
@@ -75,11 +131,14 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(2)
+		expect(await PostAttachment.count()).toBe(1)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
 
-	it("can create post without attachment", async() => {
+	it("can create post without attachment and tags", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
@@ -111,11 +170,14 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(2)
+		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})
 
-	it("can create post without attachment and department", async() => {
+	it("can create post without attachment, tags and department", async() => {
 		const model = await new Factory().makeOne()
 		const manager = new Manager()
 
@@ -143,6 +205,9 @@ describe("Database Manager: Post create operations", () => {
 		} as any)
 
 		expect(await Model.count()).toBe(1)
+		expect(await PostTag.count()).toBe(0)
+		expect(await Department.count()).toBe(1)
+		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
 	})

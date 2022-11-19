@@ -14,11 +14,19 @@
 				class="name border-solid"
 				type="text"/>
 		</Suspensible>
-		<input type="submit" value="Create tag"/>
+		<input
+			type="submit"
+			class="submit-btn btn btn-primary"
+			value="Create tag"/>
 	</form>
 </template>
 
 <style scoped lang="scss">
+	@import "@styles/btn.scss";
+
+	.submit-btn {
+		@apply mt-8;
+	}
 </style>
 
 <script setup lang="ts">

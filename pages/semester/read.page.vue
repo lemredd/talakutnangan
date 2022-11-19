@@ -1,23 +1,29 @@
 <template>
+	<ListRedirector resource-type="semester"/>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
-		<input
+		<TextualField
 			v-model="semester.data.name"
-			class="name border-solid"
+			class="name field"
+			label="Semester name: "
 			type="text"/>
 		<Selectable
 			v-model="semester.data.semesterOrder"
-			class="order"
+			class="order field"
+			label="Order: "
 			:options="semesterOption"/>
 		<DateSelect
 			v-model="semester.data.startAt"
-			class="start-at border-solid"/>
+			label="Starts at: "
+			class="start-at field date"/>
 		<DateSelect
 			v-model="semester.data.endAt"
-			class="end-at border-solid"/>
+			label="Ends at: "
+			class="end-at field date"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedSemester">
 				<button type="submit" class="update-user-btn btn btn-primary">
@@ -52,7 +58,16 @@
 @import "@styles/btn.scss";
 
 	.controls{
+		@apply mt-8;
 		@apply flex justify-between;
+	}
+
+	.field {
+		@apply my-4;
+
+		&.date {
+			@apply flex flex-col w-max;
+		}
 	}
 </style>
 
@@ -74,6 +89,8 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import DateSelect from "@/fields/date_selector.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import Selectable from "@/fields/selectable_options.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -107,7 +124,7 @@ const managementInfo = computed<SemesterManagementInfo>(
 const mayUpdateSemester = computed<boolean>(() => managementInfo.value.mayUpdateSemester)
 
 const mayArchiveOrRestoreSemester = computed<boolean>(
-	() => managementInfo.value.mayArchiveSemester && managementInfo.value.mayRestoreSemester)
+	() => managementInfo.value.mayArchiveSemester || managementInfo.value.mayRestoreSemester)
 
 const mayArchiveSemester = computed<boolean>(
 	() => !isDeleted.value && mayArchiveOrRestoreSemester.value

@@ -62,12 +62,15 @@ import {
 	computed,
 	inject,
 	onMounted,
+	onBeforeUnmount,
 	Ref,
 	ref
 } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { StatusMessage } from "$/types/message"
 import type { RemoteTracks } from "@/consultation/call/helpers/types/video_conference_manager"
+import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type {
 	DeserializedChatMessageActivityResource,
 	DeserializedChatMessageActivityListDocument
@@ -76,8 +79,9 @@ import type {
 import makeUniqueBy from "$/helpers/make_unique_by"
 import isUndefined from "$/type_guards/is_undefined"
 
-import makeSwitch from "$@/helpers/make_switch"
 import Fetcher from "$@/fetchers/consultation"
+import makeSwitch from "$@/helpers/make_switch"
+import ChatMessageFetcher from "$@/fetchers/chat_message"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import CallControls from "@/consultation/call/call_controls.vue"
@@ -129,6 +133,8 @@ const ownCurrentConsultationActivityResource = computed<
 })
 
 const fetcher = new Fetcher()
+const chatMessageFetcher = new ChatMessageFetcher()
+
 const token = ref("")
 const { "id": consultationID } = consultation.data
 const { "id": chatMessageActivityID } = ownCurrentConsultationActivityResource.value
@@ -141,6 +147,28 @@ function fetchGeneratedToken() {
 		const { RTCToken } = meta
 
 		token.value = RTCToken
+	})
+}
+
+function sendMessage(message: string) {
+	chatMessageFetcher.create({
+		"createdAt": new Date().toJSON(),
+		"data": {
+			"value": message
+		},
+		"kind": "status",
+		"updatedAt": new Date().toJSON()
+	} as StatusMessage, {
+		"extraDataFields": {
+			"relationships": {
+				"chatMessageActivity": {
+					"data": {
+						"id": chatMessageActivityID,
+						"type": "chat_message_activity"
+					}
+				}
+			}
+		} as ChatMessageRelationships
 	})
 }
 
@@ -171,10 +199,12 @@ function join() {
 			"isTransmittingAudio": isTransmittingAudio.value
 		}
 	)
+	sendMessage(`${userProfile.data.name} joined the call`)
 }
 function leave() {
 	leaveAndHideAdditionalButtons()
 	leaveAndRemoveLocalTracks()
+	sendMessage(`${userProfile.data.name} leaved the call`)
 }
 
 const otherParticipants = ref<RemoteTracks[]>([])
@@ -186,6 +216,16 @@ onMounted(() => {
 	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
+	}).then(() => sendMessage(`${userProfile.data.name} preparing for call`))
+
+	window.addEventListener("unload", async event => {
+		event.preventDefault()
+		try {
+			await sendMessage(`${userProfile.data.name} completely exited from call`)
+			window.close()
+		} finally {
+			window.close()
+		}
 	})
 })
 </script>

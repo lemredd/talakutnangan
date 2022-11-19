@@ -188,7 +188,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 const existence = ref<string>("exists")
-const isLoaded = ref(false)
+const isLoaded = ref(true)
 
 function extractPostIDsWithNoVoteInfo(
 	currentPosts: DeserializedPostListDocument<AssociatedPostResource>

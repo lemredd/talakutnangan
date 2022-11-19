@@ -51,3 +51,9 @@ export interface ExistenceOperators {
 	archive: SingleExistenceOperator,
 	restore: SingleExistenceOperator
 }
+
+export interface ChipData {
+	id: string,
+	mayRemove: boolean,
+	data: string
+}

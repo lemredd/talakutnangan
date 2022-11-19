@@ -65,11 +65,11 @@ import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
 import makeManagementInfo from "@/semester/make_management_info"
+import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import makeExistenceOperators from "@/resource_management/make_existence_operators"
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -101,8 +101,8 @@ const tableData = computed<TableData[]>(() => {
 			"data": [
 				resource.name,
 				resource.semesterOrder,
-				formatToCompleteFriendlyTime(resource.startAt),
-				formatToCompleteFriendlyTime(resource.endAt)
+				formatToFriendlyDate(resource.startAt),
+				formatToFriendlyDate(resource.endAt)
 			],
 			"id": resource.id,
 			"mayArchive": managementInfo.mayArchiveSemester,
