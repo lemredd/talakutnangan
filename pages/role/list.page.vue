@@ -26,7 +26,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_ROLE"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -70,6 +74,7 @@ import DepartmentFetcher from "$@/fetchers/department"
 import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
 
 import PageCounter from "@/helpers/page_counter.vue"
@@ -174,6 +179,8 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 async function fetchRoleInfos(): Promise<number|void> {
+	isLoaded.value = false
+
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -225,7 +232,6 @@ async function refetchRoles() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchRoleInfos()
 }
 
@@ -241,6 +247,25 @@ watch([ offset ], debouncedResetList)
 watch(
 	[ chosenSort, chosenDepartment, slug, existence, offset ],
 	clearOffset
+)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
 )
 
 onMounted(async() => {
