@@ -24,7 +24,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_SEMESTER"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -45,6 +49,7 @@
 <script setup lang="ts">
 import { inject, ref, watch, computed, Ref } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -64,6 +69,7 @@ import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -145,7 +151,7 @@ const sortNames = computed<OptionInfo[]>(() => [
 ])
 const chosenSort = ref("name")
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -155,6 +161,8 @@ const resourceCount = computed<number>(() => {
 
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
+	isLoaded.value = false
+
 	await loadRemainingResource(
 		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
@@ -204,7 +212,6 @@ async function refetchSemester() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchSemesterInfos()
 }
 
@@ -217,4 +224,23 @@ function clearOffset() {
 
 watch([ offset ], debouncedResetList)
 watch([ chosenSort, slug, existence ], clearOffset)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 </script>

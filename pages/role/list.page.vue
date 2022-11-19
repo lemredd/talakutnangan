@@ -26,7 +26,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_ROLE"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -47,6 +51,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, computed, watch } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -69,7 +74,8 @@ import DepartmentFetcher from "$@/fetchers/department"
 import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -144,7 +150,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -173,6 +179,8 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 async function fetchRoleInfos(): Promise<number|void> {
+	isLoaded.value = false
+
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -224,7 +232,6 @@ async function refetchRoles() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchRoleInfos()
 }
 
@@ -240,6 +247,25 @@ watch([ offset ], debouncedResetList)
 watch(
 	[ chosenSort, chosenDepartment, slug, existence, offset ],
 	clearOffset
+)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
 )
 
 onMounted(async() => {
