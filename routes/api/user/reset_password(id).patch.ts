@@ -74,7 +74,7 @@ export default class extends DoubleBoundJSONController {
 	get postJobs(): Middleware[] {
 		return [
 			new PasswordResetNotification(),
-			new ActionAuditor("user.reset_password")
+			new ActionAuditor("user.reset_password", () => ({ "isSensitive": true }))
 		]
 	}
 }
