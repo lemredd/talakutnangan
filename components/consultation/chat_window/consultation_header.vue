@@ -35,6 +35,7 @@
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
 				:is-consultation-finished-or-cancelled="isConsultationFinishedOrCancelled"
+				:is-ongoing="isOngoing"
 				@show-action-taken-overlay="showActionTakenOverlay"
 				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"
 				@show-rescheduler-overlay="showReschedulerOverlay"/>

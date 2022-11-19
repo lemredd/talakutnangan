@@ -11,13 +11,21 @@
 					View consultation form
 				</a>
 				<a
-					v-if="!isConsultationFinishedOrCancelled"
+					v-if="mustShowFinishButton"
 					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">
-					{{ finishOrCancel }} consultation
+					finish consultation
 				</a>
 				<a
-					v-if="!isCurrentUserConsultant"
+					v-if="mustShowCancelButton"
+					class="additional-control show-action-taken-overlay-btn"
+					@click="showActionTakenOverlay">
+					cancel consultation
+				</a>
+				<a
+					v-if="!isCurrentUserConsultant
+						&& !isConsultationFinishedOrCancelled
+						&& !isOngoing"
 					class="additional-control show-rescheduling-overlay-btn"
 					@click="showReschedulerOverlay">
 					Reschedule consultation
@@ -60,9 +68,10 @@ import Dropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
 	consultationId: string,
-	isHeaderControlDropdownShown: boolean,
 	isCurrentUserConsultant: boolean,
-	isConsultationFinishedOrCancelled: boolean
+	isConsultationFinishedOrCancelled: boolean,
+	isHeaderControlDropdownShown: boolean,
+	isOngoing: boolean
 }>()
 
 interface CustomEvents {
@@ -89,8 +98,10 @@ function toggleHeaderControlDropdownShown() {
 	emit("toggleHeaderControlDropdownShown")
 }
 
-const { isCurrentUserConsultant } = props
-const finishOrCancel = isCurrentUserConsultant ? "Finish" : "Cancel"
+const mustShowFinishButton
+= props.isCurrentUserConsultant && !props.isConsultationFinishedOrCancelled
+const mustShowCancelButton
+= !props.isCurrentUserConsultant && !props.isConsultationFinishedOrCancelled
 function showActionTakenOverlay() {
 	toggleHeaderControlDropdownShown()
 	emit("showActionTakenOverlay")
