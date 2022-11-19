@@ -83,7 +83,7 @@ jobs:
     - run: npm install
     - run: ./execute.ps1 -test unit:route
       shell: pwsh
-      timeout-minutes: 5
+      timeout-minutes: 6
 
   unit_database_tests_with_necessary_database:
     runs-on: ubuntu-latest
