@@ -24,7 +24,10 @@
 				:template-path="READ_DEPARTMENT"
 				:headers="headers"
 				:list="tableData"
-				:may-edit="mayEditDepartment"/>
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -54,9 +57,9 @@ import type { DeserializedDepartmentListDocument } from "$/types/documents/depar
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import { CREATE } from "$/permissions/department_combinations"
 import { READ_DEPARTMENT } from "$/constants/template_page_paths"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
@@ -65,6 +68,7 @@ import makeManagementInfo from "@/department/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -171,6 +175,8 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 }
 
 async function fetchDepartmentInfos(): Promise<number|void> {
+	isLoaded.value = false
+
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"existence": existence.value,
@@ -201,16 +207,6 @@ const mayCreateDepartment = computed<boolean>(() => {
 	return isPermitted
 })
 
-const mayEditDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		UPDATE,
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isPermitted
-})
-
 async function refetchDepartment() {
 	list.value = {
 		"data": [],
@@ -218,7 +214,6 @@ async function refetchDepartment() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchDepartmentInfos()
 }
 
@@ -231,6 +226,24 @@ function clearOffset() {
 
 watch([ offset ], debouncedResetList)
 watch([ chosenSort, slug, existence ], clearOffset)
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))
