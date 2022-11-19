@@ -226,6 +226,7 @@ const post = ref<DeserializedPostResource<AssociatedPostResource>>(props.modelVa
 const formattedContent = computed<string>(() => {
 	if (isLoaded.value) return convertMarkdownToHTML(post.value.content)
 	return ""
+})
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
@@ -321,6 +322,8 @@ async function submitChangesSeparately(): Promise<void> {
 				"department": undefined,
 				// eslint-disable-next-line no-undefined
 				"postAttachments": undefined,
+				// eslint-disable-next-line no-undefined
+				"tags": undefined,
 				"poster": {
 					"data": {
 						"id": post.value.poster.data.id,
