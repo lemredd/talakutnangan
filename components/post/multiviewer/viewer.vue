@@ -127,6 +127,7 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 
 	.post-content {
 		word-break: normal;
@@ -142,7 +143,7 @@
 		height: 30px;
 
 		color: white;
-		background-color: #dc3645;
+		background-color: $color-primary;
 
 		&.unselected {
 			@apply cursor-pointer hover:bg-gray-300;
