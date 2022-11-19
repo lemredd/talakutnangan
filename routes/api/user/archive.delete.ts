@@ -73,7 +73,7 @@ export default class extends JSONController {
 
 	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("user.archive"),
+			new ActionAuditor("user.archive", () => ({ "isSensitive": true })),
 			new TransactionCommitter()
 		]
 	}

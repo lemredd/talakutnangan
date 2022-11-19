@@ -50,7 +50,7 @@ export default class extends JSONController {
 
 	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("role.restore"),
+			new ActionAuditor("role.restore", () => ({ "isSensitive": true })),
 			new TransactionCommitter()
 		]
 	}
