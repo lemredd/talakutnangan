@@ -55,7 +55,7 @@ export default class extends JSONController {
 
 	get postJobs(): ActionAuditor[] {
 		return [
-			new ActionAuditor("role.archive")
+			new ActionAuditor("role.archive", () => ({ "isSensitive": true }))
 		]
 	}
 }

@@ -89,8 +89,8 @@ function findMatchedTags() {
 
 			return isNotSelected
 		})
+		isLoaded.value = true
 	})
-	isLoaded.value = true
 }
 watch(slug, debounce(findMatchedTags, DEBOUNCED_WAIT_DURATION))
 

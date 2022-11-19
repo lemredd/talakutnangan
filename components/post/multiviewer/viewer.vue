@@ -73,6 +73,14 @@
 						</span>
 					</div>
 				</div>
+				<div
+					v-for="tag in post.tags.data"
+					:key="tag.id"
+					class="tag selected">
+					<span>
+						{{ tag.name }}
+					</span>
+				</div>
 				<Menu
 					:post="post"
 					@update-post="openUpdateForm"
@@ -119,9 +127,27 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 
 	.post-content {
 		word-break: normal;
+	}
+
+	.tag {
+		@apply inline-flex items-center text-sm;
+
+		margin: 5px;
+		border-radius: 25px;
+		padding: 0 15px;
+
+		height: 30px;
+
+		color: white;
+		background-color: $color-primary;
+
+		&.unselected {
+			@apply cursor-pointer hover:bg-gray-300;
+		}
 	}
 
 	article {
@@ -172,6 +198,7 @@
 import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
+
 import type {
 	DeserializedPostAttachmentResource,
 	DeserializedPostAttachmentListDocument
@@ -204,7 +231,7 @@ function isImage(type: string): boolean {
 	return type.includes("image")
 }
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 
 const props = defineProps<{
 	commentCount: number,
