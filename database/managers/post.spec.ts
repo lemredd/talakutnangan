@@ -88,7 +88,7 @@ describe("Database Manager: Post create operations", () => {
 
 		expect(await Model.count()).toBe(1)
 		expect(await PostTag.count()).toBe(3)
-		expect(await Department.count()).toBe(1)
+		expect(await Department.count()).toBe(2)
 		expect(await PostAttachment.count()).toBe(1)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
@@ -132,7 +132,7 @@ describe("Database Manager: Post create operations", () => {
 
 		expect(await Model.count()).toBe(1)
 		expect(await PostTag.count()).toBe(0)
-		expect(await Department.count()).toBe(1)
+		expect(await Department.count()).toBe(2)
 		expect(await PostAttachment.count()).toBe(1)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
@@ -171,7 +171,7 @@ describe("Database Manager: Post create operations", () => {
 
 		expect(await Model.count()).toBe(1)
 		expect(await PostTag.count()).toBe(0)
-		expect(await Department.count()).toBe(1)
+		expect(await Department.count()).toBe(2)
 		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
@@ -206,7 +206,7 @@ describe("Database Manager: Post create operations", () => {
 
 		expect(await Model.count()).toBe(1)
 		expect(await PostTag.count()).toBe(0)
-		expect(await Department.count()).toBe(0)
+		expect(await Department.count()).toBe(1)
 		expect(await PostAttachment.count()).toBe(0)
 		expect(data).toHaveProperty("data")
 		expect(data).toHaveProperty("data.attributes.content", model.content)
