@@ -86,10 +86,10 @@ import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import loadRemainingRoles from "@/resource_management/load_remaining_roles"
 import makeExistenceOperators from "@/resource_management/make_existence_operators"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/message_handlers/load_remaining_departments"
 
 import { IMPORT_USERS, READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -292,7 +292,7 @@ const {
 	batchRestore,
 	restore
 } = makeExistenceOperators(
-	list,
+	list as Ref<DeserializedUserListDocument>,
 	fetcher,
 	{
 		existence,
