@@ -59,6 +59,8 @@ export default async function(app: ExpressApp) {
 				"documentProps": request.documentProps,
 				"pageProps": {
 					...request.pageProps ?? {},
+					"isInMaintenanceMode": process.env.IS_IN_MAINTENANCE
+						&& process.env.IS_IN_MAINTENANCE !== "false",
 					parsedUnitError
 				},
 				"urlOriginal": url
