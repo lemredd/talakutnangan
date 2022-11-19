@@ -9,6 +9,7 @@ import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import Manager from "%/managers/tag"
 import PostManager from "%/managers/post"
+import UserManager from "%/managers/user"
 import deserialize from "$/object/deserialize"
 import BoundJSONController from "!/controllers/bound_json"
 import NoContentResponseInfo from "!/response_infos/no_content"
@@ -37,16 +38,30 @@ export default class extends BoundJSONController {
 			TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
 			TAG_PUBLIC_POST_ON_ANY_DEPARTMENT,
 			async(request: AuthenticatedIDRequest) => {
-				const manager = new PostManager(request)
+				const postManager = new PostManager(request)
 				const id = Number(request.params.id)
-				const document = await manager.findWithID(id)
+				const document = await postManager.findWithID(id)
 				const deserializedDocument = deserialize(document) as DeserializedPostDocument<
-					"poster"
+					"poster"|"department"
 				>
+				// ! Some owners have been moved in different department
 				const owner = deserializedDocument.data.poster as DeserializedUserDocument<
 					"roles"|"department"
 				>
-				return owner
+				owner.data.department = deserializedDocument.data.department
+				if (!owner.data.department) {
+					const userManager = new UserManager(request)
+					const completeInfo = await userManager.findWithID(Number(
+						deserializedDocument.data.poster.data.id
+					))
+					const deserializedCompleteInfo = deserialize(
+						completeInfo
+					) as DeserializedUserDocument<"roles"|"department">
+					owner.data.department = deserializedCompleteInfo.data.department
+					owner.data.roles = deserializedCompleteInfo.data.roles
+				}
+
+				return deserialize(owner) as DeserializedUserDocument<"roles"|"department">
 			}
 		)
 	}
