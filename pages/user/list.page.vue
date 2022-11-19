@@ -266,12 +266,56 @@ function clearOffset() {
 	debouncedResetList()
 }
 
-function batchArchive(IDs: string[]) {
-	fetcher.archive(IDs)
+watch([ offset ], debouncedResetList)
+
+watch(
+	[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
+	clearOffset
+)
+
+function removeData(IDs: string[]) {
+	const newData = list.value.data.filter(item => IDs.indexOf(item.id) === -1)
+
+	if (newData.length === 0) {
+		offset.value = Math.max(offset.value - 1, 0)
+	} else {
+		list.value = {
+			...list.value,
+			"data": newData,
+			"meta": {
+				...list.value.meta,
+				"count": newData.length
+			}
+		}
+	}
 }
 
-function batchRestore(IDs: string[]) {
-	fetcher.restore(IDs)
+async function batchArchive(IDs: string[]) {
+	isLoaded.value = false
+	await fetcher.archive(IDs).catch(
+		responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors)
+	)
+	if (existence.value === "exists") {
+		removeData(IDs)
+	} else if (existence.value === "*") {
+		list.value = {
+			...list.value,
+			"data": list.value.data.map(item => {
+				const newItemData = { ...item }
+				if (IDs.indexOf(newItemData.id) > -1) {
+					newItemData.deletedAt = new Date()
+				}
+				return newItemData
+			})
+		}
+	}
+	isLoaded.value = true
+}
+
+async function batchRestore(IDs: string[]) {
+	isLoaded.value = false
+	await fetcher.restore(IDs)
+	isLoaded.value = true
 }
 
 function archive(id: string) {
@@ -281,13 +325,6 @@ function archive(id: string) {
 function restore(id: string) {
 	batchRestore([ id ])
 }
-
-watch([ offset ], debouncedResetList)
-
-watch(
-	[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
-	clearOffset
-)
 
 onMounted(async() => {
 	await loadRemainingRoles(roles, roleFetcher)
