@@ -5,6 +5,7 @@ describe("Helpers: Make default password", () => {
 	it("can generate for student", () => {
 		const userProfile: DeserializedUserProfile<"studentDetail"> = {
 			"data": {
+				"deletedAt": null,
 				"email": "",
 				"emailVerifiedAt": null,
 				"id": "1",
@@ -33,6 +34,7 @@ describe("Helpers: Make default password", () => {
 	it("can generate for reachable employee", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
+				"deletedAt": null,
 				"email": "hello.world@example.com",
 				"emailVerifiedAt": null,
 				"id": "1",
@@ -54,6 +56,7 @@ describe("Helpers: Make default password", () => {
 	it("can generate for unreachable employee", () => {
 		const userProfile: DeserializedUserProfile = {
 			"data": {
+				"deletedAt": null,
 				"email": "foo.bar@example.com",
 				"emailVerifiedAt": null,
 				"id": "1",
