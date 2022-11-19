@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import { onMounted, inject, ref, watch, computed } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -140,7 +141,7 @@ const sortNames = computed<OptionInfo[]>(() => [
 ])
 const chosenSort = ref("fullName")
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {

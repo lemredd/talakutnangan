@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, Ref, onMounted } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type {
@@ -236,7 +237,7 @@ async function retrievePosts() {
 				"end": rangeEnd.value
 			},
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
-			"existence": existence.value as "exists"|"archived"|"*"
+			"existence": existence.value as Existence
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
