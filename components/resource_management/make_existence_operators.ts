@@ -96,6 +96,7 @@ export default function<
 				"deletedAt": new Date()
 			}))
 		}
+		selectedIDs.value = selectedIDs.value.filter(selectedID => IDs.indexOf(selectedID) === -1)
 		UIState.isLoaded.value = true
 	}
 
