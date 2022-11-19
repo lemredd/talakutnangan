@@ -78,7 +78,7 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn(() => true),
 			"params": {
-				"id": dean.data.id
+				"id": post.id
 			},
 			"user": {
 				...dean,
