@@ -7,13 +7,13 @@
 				v-if="mayBatchArchive"
 				class="batch-archive-resource-btn btn"
 				@click="batchArchive">
-				Archive selected items
+				Archive selected {{ friendlySelectedArchivableQuantity }}
 			</span>
 			<span
 				v-if="mayBatchRestore"
 				class="batch-restore-resource-btn btn"
 				@click="batchRestore">
-				Restore selected items
+				Restore selected {{ friendlySelectedRestorableQuantity }}
 			</span>
 		</p>
 		<ResourceTable v-if="list.length">
@@ -145,6 +145,22 @@ const mayManage = computed<boolean>(() => maySelect.value || props.list.some(dat
 const itemQuantity = computed<number>(() => props.selectedIDs.length)
 const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
 const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
+
+const archivableItems = computed<TableData[]>(() => props.list.filter(item => item.mayArchive))
+const selectedArchivableItems = computed<string[]>(() => props.selectedIDs.filter(
+	id => archivableItems.value.findIndex(item => item.id === id) > -1
+))
+const friendlySelectedArchivableQuantity = computed<string>(
+	() => pluralize("item", selectedArchivableItems.value.length)
+)
+
+const restorableItems = computed<TableData[]>(() => props.list.filter(item => item.mayRestore))
+const selectedRestorableItems = computed<string[]>(() => props.selectedIDs.filter(
+	id => restorableItems.value.findIndex(item => item.id === id) > -1
+))
+const friendlySelectedRestorableQuantity = computed<string>(
+	() => pluralize("item", selectedRestorableItems.value.length)
+)
 
 const mayBatchArchive = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayArchive
