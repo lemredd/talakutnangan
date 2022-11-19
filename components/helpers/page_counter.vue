@@ -96,7 +96,7 @@ type CustomEvents = {
 const emit = defineEmits<CustomEvents>()
 
 type DefinedProps = {
-	maxCount: number
+	maxResourceCount: number
 	modelValue: number
 }
 const props = defineProps<DefinedProps>()

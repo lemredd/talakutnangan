@@ -27,7 +27,7 @@
 				:may-edit="mayEditTag"/>
 			<PageCounter
 				v-model="offset"
-				:max-count="resourceCount"
+				:max-resource-count="resourceCount"
 				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
