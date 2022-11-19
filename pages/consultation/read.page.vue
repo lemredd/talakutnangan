@@ -11,6 +11,7 @@
 			<ChatWindow
 				:consultation="consultation"
 				:chat-messages="chatMessages"
+				:current-consultation-activity="currentConsultationActivity"
 				:has-loaded-chat-messages="hasLoadedChatMessages"
 				:is-consultation-list-shown="isConsultationListShown"
 				@updated-consultation-attributes="updateConsultationAttributes"
