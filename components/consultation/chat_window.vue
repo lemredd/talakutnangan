@@ -31,7 +31,9 @@
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
-					<li>Scheduled at: <br/> {{ readableScheduledAt }}</li>
+					<li class="scheduled-at">
+						Scheduled at: {{ readableScheduledAt }}
+					</li>
 
 					<li>
 						<a
@@ -100,10 +102,10 @@
 
 			ul.selected-consultation-additional-details {
 				@apply bg-gray-400 bg-opacity-10 border border-gray-400 rounded-md p-5;
-				@apply my-5 w-max mx-auto;
+				@apply my-5 mx-auto;
 
-				li {
-					word-break: break-all;
+				.scheduled-at {
+					word-break: normal;
 				}
 			}
 		}
