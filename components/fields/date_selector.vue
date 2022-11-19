@@ -12,8 +12,9 @@
 </template>
 
 <style scoped lang = "scss">
-	.date {
-		@apply bg-transparent mr-2;
+	input.date {
+		@apply p-1;
+		@apply border border-gray-400;
 	}
 </style>
 
