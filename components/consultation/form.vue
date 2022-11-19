@@ -14,6 +14,7 @@
 			</p>
 			<SearchableChip
 				v-model="selectedConsultants"
+				:current-user="userProfileData"
 				class="consultant required"
 				header="Consultant"
 				:maximum-participants="MAX_CONSULTANTS"
@@ -30,7 +31,7 @@
 
 			<SearchableChip
 				v-model="selectedConsulters"
-				:current-user-id="userProfileData.id"
+				:current-user="userProfileData"
 				class="consulters"
 				header="Consulters"
 				:maximum-participants="MAX_CONSULTERS"

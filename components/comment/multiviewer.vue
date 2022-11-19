@@ -142,7 +142,7 @@ async function countVotesOfComments(): Promise<void> {
 }
 
 const existence = ref<"exists"|"archived"|"*">("exists")
-const isLoaded = ref(false)
+const isLoaded = ref(true)
 const hasNoComments = computed(() => comments.value.data.length === 0)
 
 async function fetchComments() {

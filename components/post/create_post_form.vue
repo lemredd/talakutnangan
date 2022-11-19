@@ -22,6 +22,11 @@
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
+				<SearchableChip
+					v-model="tags"
+					header="Optional tags"
+					:maximum-tags="MAX_TAGS"
+					text-field-label="Type the tags to add"/>
 			</DraftForm>
 			<form @submit.prevent>
 				<input
@@ -90,22 +95,22 @@
 
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 
-.preview-img{
-	@apply py-5;
-	max-width:100%;
-	max-height:100%;
-}
+	.preview-img {
+		@apply py-5;
+		max-width:100%;
+		max-height:100%;
+	}
 
-.close{
-	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
-}
+	.close {
+		@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+	}
 
-.filter{
-			@apply flex flex-col flex-wrap;
-			max-width:100%;
-		}
+	.filter {
+		@apply flex flex-col flex-wrap;
+		max-width:100%;
+	}
 </style>
 
 <script setup lang="ts">
@@ -114,8 +119,10 @@ import { ref, computed, inject } from "vue"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { PostRelationships } from "$/types/documents/post"
+import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
+
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
@@ -128,6 +135,7 @@ import { CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT } from "$/permissions/post_combina
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
+import SearchableChip from "@/post/searchable_chip.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
@@ -136,6 +144,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
+const MAX_TAGS = 5
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
@@ -171,6 +180,7 @@ const mayPostGenerally = computed<boolean>(() => {
 	])
 	return isLimitedUpToGlobalScope && props.departments.data.length > 1
 })
+const tags = ref<DeserializedTagResource[]>([])
 
 const content = ref<string>("")
 
@@ -251,6 +261,17 @@ function createPost(): void {
 		: {
 			"data": attachmentIDs
 		}
+
+	const tagIDs = tags.value.map(resource => ({
+		"id": resource.id,
+		"type": "tag"
+	}))
+	const tagList = tags.value.length === 0
+		// eslint-disable-next-line no-undefined
+		? undefined
+		: {
+			"data": tagIDs
+		}
 	const department = chosenDepartment.value === NULL_AS_STRING
 		// eslint-disable-next-line no-undefined
 		? undefined
@@ -282,7 +303,8 @@ function createPost(): void {
 						"id": roleID.value,
 						"type": "role"
 					}
-				}
+				},
+				"tags": tagList
 			}
 		} as PostRelationships<"create">
 	}).then(({ body }) => {
