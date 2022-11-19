@@ -1,10 +1,12 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:chosen-department="chosenDepartment"
 		v-model:slug="slug"
 		v-model:existence="existence"
 		:is-loaded="isLoaded"
-		:department-names="departmentNames">
+		:department-names="departmentNames"
+		:sort-names="sortNames">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -20,10 +22,11 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-if="mayEditRole"
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_ROLE"
 				:headers="headers"
-				:list="tableData"
-				:may-edit="mayEditRole"/>
+				:list="tableData"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -55,12 +58,15 @@ import { READ_ROLE } from "$/constants/template_page_paths"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import {
+	UPDATE, ARCHIVE_AND_RESTORE, CREATE
+} from "$/permissions/role_combinations"
 
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import DepartmentFetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
@@ -81,22 +87,47 @@ const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
+const isLoaded = ref<boolean>(true)
+
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
 
 const headers = [ "Name", "no. of users" ]
-const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
+const list = ref<DeserializedRoleListDocument>(
+	pageProps.roles as DeserializedRoleListDocument)
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name,
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveRole,
+			"mayEdit": managementInfo.mayArchiveRole
+				|| managementInfo.mayRestoreRole,
+			"mayRestore": managementInfo.mayRestoreRole
+		}
+	})
 
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	}
+])
+const chosenSort = ref("name")
+
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
@@ -114,10 +145,14 @@ const departmentNames = computed<OptionInfo[]>(() => [
 
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const receivedErrors = ref<string[]>([])
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
+const receivedErrors = ref<string[]>([])
 async function countUsersPerRole(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
 		const deserializedData = response.body.data
@@ -148,7 +183,7 @@ async function fetchRoleInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": offset.value
 		},
-		"sort": [ "name" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		mayContinue() { return Promise.resolve(false) },
 		async postOperations(deserializedData) {
@@ -161,11 +196,9 @@ async function fetchRoleInfos(): Promise<number|void> {
 	isLoaded.value = true
 }
 
-const { userProfile } = pageProps
-
 const mayCreateRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		CREATE,
 		UPDATE,
 		ARCHIVE_AND_RESTORE
@@ -175,8 +208,8 @@ const mayCreateRole = computed<boolean>(() => {
 }
 )
 const mayEditRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		UPDATE,
 		ARCHIVE_AND_RESTORE
 	])
@@ -195,9 +228,18 @@ async function refetchRoles() {
 	await fetchRoleInfos()
 }
 
+const debouncedResetList = debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+
 watch(
-	[ chosenDepartment, slug, existence, offset ],
-	debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
+	[ chosenSort, chosenDepartment, slug, existence, offset ],
+	clearOffset
 )
 
 onMounted(async() => {

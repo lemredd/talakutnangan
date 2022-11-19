@@ -1,17 +1,22 @@
 <template>
 	<div class="multiviewer">
-		<form>
-			<SelectableOptionsField
-				v-model="chosenDepartment"
-				label="Department"
-				class="filter"
-				:options="departmentNames"/>
-			<DateRangePicker
-				v-model:range-begin="rangeBegin"
-				v-model:range-end="rangeEnd"
-				:semesters="semesters"
-				class="picker"/>
-			<SelectableExistence v-model="existence" class="existence"/>
+		<form class="filters">
+			<h3>Filters</h3>
+			<div class="overflowing-container">
+				<div class="filter-field-container">
+					<SelectableOptionsField
+						v-model="chosenDepartment"
+						label="Department"
+						class="filter department"
+						:options="departmentNames"/>
+					<DateRangePicker
+						v-model:range-begin="rangeBegin"
+						v-model:range-end="rangeEnd"
+						:semesters="semesters"
+						class="filter date-picker"/>
+					<SelectableExistence v-model="existence" class="filter existence"/>
+				</div>
+			</div>
 		</form>
 
 		<Viewer
@@ -38,22 +43,45 @@
 	</div>
 </template>
 
+<style lang="scss">
+	.filter.department select {
+		margin: 0 !important;
+	}
+
+</style>
+
 <style scoped lang="scss">
 @import "@styles/btn.scss";
 @import "@styles/variables.scss";
 	.multiviewer {
 		@apply flex flex-col;
 
-		form {
-			@apply flex flex-row flex-wrap sm:flex flex-col flex-wrap items-stretch;
-			@apply bg-gray-300 bg-opacity-20 p-4 mb-4 shadow-inner;
+		.overflowing-container {
+			@apply border border-gray-400 rounded-md;
 
-		.filter{
-			@apply flex flex-col flex-wrap sm: flex flex-row flex-wrap truncate;
-		}
+			max-height: 150px;
+			overflow-y: scroll;
 
-			.existence {
-				@apply flex flex-col flex-nowrap;
+			.filter-field-container {
+				@apply p-4 mb-4;
+				@apply flex flex-col justify-between flex-wrap items-stretch;
+				@apply bg-gray-300 bg-opacity-20;
+
+				@screen md {
+					@apply flex-row;
+				}
+
+				.filter{
+					@apply mb-4;
+
+					@screen sm {
+						@apply mb-0;
+					}
+				}
+
+				.existence {
+					@apply flex flex-col flex-nowrap;
+				}
 			}
 		}
 
@@ -106,16 +134,18 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
-	modelValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">,
+	modelValue: DeserializedPostListDocument<AssociatedPostResource>,
 	semesters: DeserializedSemesterListDocument
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
-		post: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		post: DeserializedPostListDocument<AssociatedPostResource>
 	): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -127,11 +157,11 @@ const rangeEnd = ref<Date>(adjustBeforeMidnightOfNextDay(adjustUntilChosenDay(cu
 // eslint-disable-next-line no-use-before-define
 const debouncedCommentCounting = debounce(countCommentsOfPosts, DEBOUNCED_WAIT_DURATION)
 
-const posts = computed<DeserializedPostListDocument<"poster"|"posterRole"|"department">>({
-	get(): DeserializedPostListDocument<"poster"|"posterRole"|"department"> {
+const posts = computed<DeserializedPostListDocument<AssociatedPostResource>>({
+	get(): DeserializedPostListDocument<AssociatedPostResource> {
 		return props.modelValue
 	},
-	set(newValue: DeserializedPostListDocument<"poster"|"posterRole"|"department">): void {
+	set(newValue: DeserializedPostListDocument<AssociatedPostResource>): void {
 		if (newValue.data.some(post => isUndefined(post.meta))) {
 			debouncedCommentCounting()
 		}
@@ -157,10 +187,10 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 const chosenDepartment = ref<string>(userProfile.data.department.data.id)
 const existence = ref<string>("exists")
-const isLoaded = ref(false)
+const isLoaded = ref(true)
 
 function extractPostIDsWithNoVoteInfo(
-	currentPosts: DeserializedPostListDocument<"poster"|"posterRole"|"department">
+	currentPosts: DeserializedPostListDocument<AssociatedPostResource>
 ): string[] {
 	const commentsWithNoVoteInfo = currentPosts.data.filter(comment => isUndefined(comment.meta))
 	const commentIDs = commentsWithNoVoteInfo.map(comment => comment.id)
@@ -230,7 +260,7 @@ function resetPostList() {
 }
 
 function removePost(
-	postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">, increment: number) {
+	postToRemove: DeserializedPostResource<AssociatedPostResource>, increment: number) {
 	posts.value = {
 		...posts.value,
 		"data": posts.value.data.filter(post => post.id !== postToRemove.id),
@@ -241,11 +271,11 @@ function removePost(
 	}
 }
 
-function archivePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+function archivePost(postToRemove: DeserializedPostResource<AssociatedPostResource>) {
 	removePost(postToRemove, -1)
 }
 
-function restorePost(postToRemove: DeserializedPostResource<"poster"|"posterRole"|"department">) {
+function restorePost(postToRemove: DeserializedPostResource<AssociatedPostResource>) {
 	removePost(postToRemove, -1)
 }
 

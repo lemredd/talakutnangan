@@ -1,7 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
+		:sort-names="sortNames"
 		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
@@ -18,6 +20,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_DEPARTMENT"
 				:headers="headers"
 				:list="tableData"
@@ -43,8 +46,8 @@
 import { onMounted, inject, ref, watch, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -57,6 +60,7 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_co
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import Fetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/department/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -69,36 +73,81 @@ import ResourceList from "@/resource_management/resource_manager/resource_list.v
 
 type RequiredExtraProps =
 	| "userProfile"
+	| "roles"
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
 const fetcher = new Fetcher()
+const isLoaded = ref<boolean>(true)
+
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
 
 const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.fullName,
-			resource.acronym,
-			resource.mayAdmit ? "Yes" : "No",
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.fullName,
+				resource.acronym,
+				resource.mayAdmit ? "Yes" : "No",
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveDepartment,
+			"mayEdit": managementInfo.mayUpdateDepartment
+				|| managementInfo.mayRestoreDepartment
+				|| managementInfo.mayArchiveDepartment,
+			"mayRestore": managementInfo.mayRestoreDepartment
+		}
+	})
 
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "fullName"
+	},
+	{
+		"label": "Ascending by acronym",
+		"value": "acronym"
+	},
+	{
+		"label": "Ascending by may admit",
+		"value": "mayAdmit"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-fullName"
+	},
+	{
+		"label": "Descending by acronym",
+		"value": "-acronym"
+	},
+	{
+		"label": "Descending by may admit",
+		"value": "-mayAdmit"
+	}
+])
+const chosenSort = ref("fullName")
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function countUsersPerDepartment(IDsToCount: string[]) {
 	await fetcher.countUsers(IDsToCount).then(response => {
@@ -130,7 +179,7 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": offset.value
 		},
-		"sort": [ "fullName" ]
+		"sort": [ chosenSort.value ]
 	}), {
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
@@ -141,8 +190,6 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 
 	isLoaded.value = true
 }
-
-const { userProfile } = pageProps
 
 const mayCreateDepartment = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
@@ -163,7 +210,7 @@ const mayEditDepartment = computed<boolean>(() => {
 	return isPermitted
 })
 
-async function refetchRoles() {
+async function refetchDepartment() {
 	list.value = {
 		"data": [],
 		"meta": {
@@ -174,7 +221,15 @@ async function refetchRoles() {
 	await fetchDepartmentInfos()
 }
 
-watch([ slug, existence, offset ], debounce(refetchRoles, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchDepartment, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))

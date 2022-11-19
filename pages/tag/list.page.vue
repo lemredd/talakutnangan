@@ -1,7 +1,9 @@
 <template>
 	<ResourceManager
+		v-model:chosen-sort="chosenSort"
 		v-model:slug="slug"
 		v-model:existence="existence"
+		:sort-names="sortNames"
 		:is-loaded="isLoaded">
 		<template #header>
 			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
@@ -18,6 +20,7 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_TAG"
 				:headers="headers"
 				:list="tableData"
@@ -43,8 +46,8 @@
 import { inject, ref, computed, watch } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type { TableData } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedTagListDocument } from "$/types/documents/tag"
 
 import { READ_TAG } from "$/constants/template_page_paths"
@@ -53,6 +56,7 @@ import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/tag"
 import debounce from "$@/helpers/debounce"
+import makeManagementInfo from "@/tag/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -63,12 +67,14 @@ import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinati
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
+import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
-type RequiredExtraProps = "tags"
+type RequiredExtraProps = "tags" | "roles"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
+const selectedIDs = ref<string[]>([])
 const { userProfile } = pageProps
 const mayCreateTag = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
@@ -88,26 +94,49 @@ const mayEditTag = computed<boolean>(() => {
 	return isPermitted
 })
 
-const headers = [ "Name" ]
+const isLoaded = ref<boolean>(true)
 const fetcher = new Fetcher()
+
+const headers = [ "Name" ]
 const list = ref<DeserializedTagListDocument>(pageProps.tags as DeserializedTagListDocument)
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveTag,
+			"mayEdit": managementInfo.mayArchiveTag
+				|| managementInfo.mayRestoreTag,
+			"mayRestore": managementInfo.mayRestoreTag
+		}
+	})
 
 	return data
 })
 
-const isLoaded = ref<boolean>(true)
+const sortNames = computed<OptionInfo[]>(() => [
+	{
+		"label": "Ascending by name",
+		"value": "name"
+	},
+	{
+		"label": "Descending by name",
+		"value": "-name"
+	}
+])
+const chosenSort = ref("name")
 const slug = ref<string>("")
 const existence = ref<"exists"|"archived"|"*">("exists")
-const castedResourceListMeta = list.value.meta as ResourceCount
-const resourceCount = computed(() => castedResourceListMeta.count)
+
 const offset = ref(0)
+const resourceCount = computed<number>(() => {
+	const castedResourceListMeta = list.value.meta as ResourceCount
+	return castedResourceListMeta.count
+})
+
 const receivedErrors = ref<string[]>([])
 async function fetchTagInfos(): Promise<number|void> {
 	await loadRemainingResource(list, fetcher, () => ({
@@ -120,8 +149,10 @@ async function fetchTagInfos(): Promise<number|void> {
 			"limit": DEFAULT_LIST_LIMIT,
 			"offset": offset.value
 		},
-		"sort": [ "name" ]
-	}))
+		"sort": [ chosenSort.value ]
+	}), {
+		"mayContinue": () => Promise.resolve(false)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 
 	isLoaded.value = true
@@ -138,5 +169,13 @@ async function refetchTags() {
 	await fetchTagInfos()
 }
 
-watch([ slug, existence, offset ], debounce(refetchTags, DEBOUNCED_WAIT_DURATION))
+const debouncedResetList = debounce(refetchTags, DEBOUNCED_WAIT_DURATION)
+
+function clearOffset() {
+	offset.value = 0
+	debouncedResetList()
+}
+
+watch([ offset ], debouncedResetList)
+watch([ chosenSort, slug, existence ], clearOffset)
 </script>

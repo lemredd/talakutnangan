@@ -8,7 +8,7 @@
 	</button>
 
 	<section class="header">
-		<h1>Consultation Ticket #{{ consultation.id }}</h1>
+		<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
 	</section>
 
 	<section class="details">
