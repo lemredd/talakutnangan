@@ -12,7 +12,8 @@ on:
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back.config.json'
       - 'jest.back.unit_ci.config.json'
-      - 'jest.back_database.unit_ci.config.json'
+      - 'jest.route.config.json'
+      - 'jest.database.config.json'
   pull_request:
     types:
       - reopened
@@ -28,7 +29,8 @@ on:
       - '.github/workflows/back-end.unit.yml'
       - 'jest.back.config.json'
       - 'jest.back.unit_ci.config.json'
-      - 'jest.back_database.unit_ci.config.json'
+      - 'jest.route.config.json'
+      - 'jest.database.config.json'
 
 jobs:
   unit_tests_with_rarely_used_database:
@@ -58,7 +60,7 @@ jobs:
       shell: pwsh
       timeout-minutes: 5
 
-  unit_tests_with_necessary_database:
+  unit_route_tests_with_necessary_database:
     runs-on: ubuntu-latest
     steps:
     - name: Change to appropriate timezone
@@ -75,10 +77,35 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./node_modules
-        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back_database.unit_ci.config.json') }}
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.route.config.json') }}
         restore-keys: |
-          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.back_database.unit_ci.config.json') }}
+          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.route.config.json') }}
     - run: npm install
-    - run: ./execute.ps1 -test unit_ci:back_database
+    - run: ./execute.ps1 -test unit:route
       shell: pwsh
-      timeout-minutes: 10
+      timeout-minutes: 5
+
+  unit_database_tests_with_necessary_database:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Change to appropriate timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "Asia/Singapore"
+    - name: Checking out from the pushed source
+      uses: actions/checkout@v3
+    - name: Testing on Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules
+        key: ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.database.config.json') }}
+        restore-keys: |
+          ${{ runner.os }}_${{ hashFiles('package.json') }}_${{ hashFiles('jest.database.config.json') }}
+    - run: npm install
+    - run: ./execute.ps1 -test unit:database
+      shell: pwsh
+      timeout-minutes: 5
