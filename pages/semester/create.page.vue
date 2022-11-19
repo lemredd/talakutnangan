@@ -80,8 +80,8 @@ const name = ref<string>("")
 const semesterOrder = ref<Order>("first")
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 const fetcher = new SemesterFetcher()
-const endAt = ref<string>("")
-const startAt = ref<string>("")
+const endAt = ref(new Date())
+const startAt = ref(new Date())
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
@@ -102,8 +102,8 @@ function createSemester() {
 	})
 	.then(() => {
 		name.value = ""
-		endAt.value = ""
-		startAt.value = ""
+		endAt.value = new Date("")
+		startAt.value = new Date("")
 		semesterOrder.value = "first"
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
