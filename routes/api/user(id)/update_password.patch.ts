@@ -113,7 +113,7 @@ export default class extends DoubleBoundJSONController {
 
 	get postJobs(): Middleware[] {
 		return [
-			new ActionAuditor("user.update_password")
+			new ActionAuditor("user.update_password", () => ({ "isSensitive": true }))
 		]
 	}
 }

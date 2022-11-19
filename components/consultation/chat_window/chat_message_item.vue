@@ -53,6 +53,7 @@
 				class="seen-user">
 				<ProfilePicture
 					v-if="hasSeenLatestMessage(activity)"
+					class="seen-user-profile-picture"
 					:user="activity.user!"
 					:title="`seen at ${activity.seenMessageAt}`"/>
 			</span>
@@ -68,6 +69,7 @@
 	.seen-user{
 		max-width: 20px;
 		max-height: 20px;
+		.seen-user-profile-picture { @apply rounded-full; }
 	}
 
 }

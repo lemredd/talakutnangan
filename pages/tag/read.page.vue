@@ -4,13 +4,14 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="openConfirmation">
-		<input
+		<TextualField
 			v-model="tag.data.name"
+			label="Tag name"
 			class="name border-solid"
 			type="text"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
-				<button type="submit" class="update-user-btn btn btn-primary">
+				<button type="submit" class="update-tag-btn btn btn-primary">
 					update tag
 				</button>
 			</Suspensible>
@@ -42,6 +43,7 @@
 @import "@styles/btn.scss";
 
 	.controls{
+		@apply mt-8;
 		@apply flex justify-between;
 	}
 </style>
@@ -50,15 +52,16 @@
 import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { TagManagementInfo } from "$@/types/independent"
 import type { DeserializedTagDocument } from "$/types/documents/tag"
 
 import Fetcher from "$@/fetchers/tag"
 import makeSwitch from "$@/helpers/make_switch"
+import makeManagementInfo from "@/tag/make_management_info"
 
 import RequestEnvironment from "$/singletons/request_environment"
-import { tag as permissionGroup } from "$/permissions/permission_list"
-import { ARCHIVE_AND_RESTORE } from "$/permissions/tag_combinations"
 
+import TextualField from "@/fields/non-sensitive_text.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
@@ -71,23 +74,24 @@ const { userProfile } = pageProps
 const tag = ref<DeserializedTagDocument<"read">>(
 	pageProps.tag as DeserializedTagDocument<"read">
 )
-const isDeleted = computed<boolean>(() => Boolean(tag.value.data.deletedAt))
+const tags = ref<DeserializedTagDocument>(
+	{
+		...pageProps.tag,
+		"data": {
+			...pageProps.tag.data
+		}
+	} as DeserializedTagDocument
+)
 
-const mayArchiveOrRestoreTag = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isPermitted
-})
+const managementInfo = computed<TagManagementInfo>(
+	() => makeManagementInfo(userProfile, tags.value.data)
+)
 
 const mayArchiveTag = computed<boolean>(
-	() => !isDeleted.value && mayArchiveOrRestoreTag.value
-)
+	() => managementInfo.value.mayArchiveTag)
+
 const mayRestoreTag = computed<boolean>(
-	() => isDeleted.value && mayArchiveOrRestoreTag.value
-)
+	() => managementInfo.value.mayRestoreTag)
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction

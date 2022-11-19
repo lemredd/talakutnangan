@@ -20,13 +20,17 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_DEPARTMENT"
 				:headers="headers"
 				:list="tableData"
-				:may-edit="mayEditDepartment"/>
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
-				:max-count="resourceCount"
+				:max-resource-count="resourceCount"
 				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
@@ -44,6 +48,7 @@
 <script setup lang="ts">
 import { onMounted, inject, ref, watch, computed } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -52,16 +57,18 @@ import type { DeserializedDepartmentListDocument } from "$/types/documents/depar
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
+import { CREATE } from "$/permissions/department_combinations"
 import { READ_DEPARTMENT } from "$/constants/template_page_paths"
 import { department as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import Fetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/department/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -71,6 +78,7 @@ import ResourceList from "@/resource_management/resource_manager/resource_list.v
 
 type RequiredExtraProps =
 	| "userProfile"
+	| "roles"
 	| "departments"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
@@ -78,20 +86,33 @@ const { pageProps } = pageContext
 const fetcher = new Fetcher()
 const isLoaded = ref<boolean>(true)
 
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
+
 const headers = [ "Name", "Acronym", "May admit", "No. of users" ]
 const list = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.fullName,
-			resource.acronym,
-			resource.mayAdmit ? "Yes" : "No",
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.fullName,
+				resource.acronym,
+				resource.mayAdmit ? "Yes" : "No",
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveDepartment,
+			"mayEdit": managementInfo.mayUpdateDepartment
+				|| managementInfo.mayRestoreDepartment
+				|| managementInfo.mayArchiveDepartment,
+			"mayRestore": managementInfo.mayRestoreDepartment
+		}
+	})
 
 	return data
 })
@@ -124,7 +145,7 @@ const sortNames = computed<OptionInfo[]>(() => [
 ])
 const chosenSort = ref("fullName")
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -154,6 +175,8 @@ async function countUsersPerDepartment(IDsToCount: string[]) {
 }
 
 async function fetchDepartmentInfos(): Promise<number|void> {
+	isLoaded.value = false
+
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"existence": existence.value,
@@ -175,22 +198,10 @@ async function fetchDepartmentInfos(): Promise<number|void> {
 	isLoaded.value = true
 }
 
-const { userProfile } = pageProps
-
 const mayCreateDepartment = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
 	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
 		CREATE
-	])
-
-	return isPermitted
-})
-
-const mayEditDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		UPDATE,
-		ARCHIVE_AND_RESTORE
 	])
 
 	return isPermitted
@@ -203,7 +214,6 @@ async function refetchDepartment() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchDepartmentInfos()
 }
 
@@ -216,6 +226,24 @@ function clearOffset() {
 
 watch([ offset ], debouncedResetList)
 watch([ chosenSort, slug, existence ], clearOffset)
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 
 onMounted(async() => {
 	await countUsersPerDepartment(list.value.data.map(item => item.id))

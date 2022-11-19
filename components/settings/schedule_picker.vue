@@ -1,6 +1,3 @@
-<!--
- -->
-
 <template>
 	<div class="schedule-picker">
 		<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
@@ -124,6 +121,7 @@ import type { OptionInfo } from "$@/types/component"
 import type { PageContext } from "$/types/renderer"
 
 import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
+import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 
@@ -148,13 +146,19 @@ import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { "pageProps": { "userProfile": { "data": { "id": userId } } } } = pageContext
 
-const props = defineProps<{
+type Props = {
 	scheduleId?: string
 	isNew?: boolean
 	dayName: string
 	scheduleStart: number
 	scheduleEnd: number
-}>()
+}
+type CustomEvents = {
+	(event: "pushNewSchedule", newSchedule: DeserializedEmployeeScheduleResource): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<CustomEvents>()
 
 const {
 	"state": isEditing,
@@ -260,8 +264,11 @@ function saveNewSchedule() {
 			}
 		}
 	})
-	.then(() => {
+	.then(({ body }) => {
+		const { data } = body
+		emit("pushNewSchedule", data)
 		fillSuccessMessages(receivedErrors, successMessages)
+		discard()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }

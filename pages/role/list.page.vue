@@ -22,13 +22,18 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-if="mayEditRole"
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_ROLE"
 				:headers="headers"
 				:list="tableData"
-				:may-edit="mayEditRole"/>
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
-				:max-count="resourceCount"
+				:max-resource-count="resourceCount"
 				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
@@ -46,6 +51,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, computed, watch } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -57,15 +63,19 @@ import { READ_ROLE } from "$/constants/template_page_paths"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import { role as permissionGroup } from "$/permissions/permission_list"
-import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/role_combinations"
+import {
+	UPDATE, ARCHIVE_AND_RESTORE, CREATE
+} from "$/permissions/role_combinations"
 
 import Fetcher from "$@/fetchers/role"
 import debounce from "$@/helpers/debounce"
 import pluralize from "$/string/pluralize"
 import DepartmentFetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -85,16 +95,29 @@ const fetcher = new Fetcher()
 const departmentFetcher = new DepartmentFetcher()
 const isLoaded = ref<boolean>(true)
 
+const selectedIDs = ref<string[]>([])
+
+const { userProfile } = pageProps
+
 const headers = [ "Name", "no. of users" ]
-const list = ref<DeserializedRoleListDocument>(pageProps.roles as DeserializedRoleListDocument)
+const list = ref<DeserializedRoleListDocument>(
+	pageProps.roles as DeserializedRoleListDocument)
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name,
-			pluralize("user", resource.meta ? resource.meta.userCount : 0)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				pluralize("user", resource.meta ? resource.meta.userCount : 0)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveRole,
+			"mayEdit": managementInfo.mayArchiveRole
+				|| managementInfo.mayRestoreRole,
+			"mayRestore": managementInfo.mayRestoreRole
+		}
+	})
 
 	return data
 })
@@ -127,7 +150,7 @@ const departmentNames = computed<OptionInfo[]>(() => [
 ])
 
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -156,6 +179,8 @@ async function countUsersPerRole(IDsToCount: string[]) {
 	})
 }
 async function fetchRoleInfos(): Promise<number|void> {
+	isLoaded.value = false
+
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"department": chosenDepartment.value,
@@ -179,11 +204,9 @@ async function fetchRoleInfos(): Promise<number|void> {
 	isLoaded.value = true
 }
 
-const { userProfile } = pageProps
-
 const mayCreateRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		CREATE,
 		UPDATE,
 		ARCHIVE_AND_RESTORE
@@ -193,8 +216,8 @@ const mayCreateRole = computed<boolean>(() => {
 }
 )
 const mayEditRole = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
+	const role = userProfile.data.roles.data
+	const isPermitted = permissionGroup.hasOneRoleAllowed(role, [
 		UPDATE,
 		ARCHIVE_AND_RESTORE
 	])
@@ -209,7 +232,6 @@ async function refetchRoles() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchRoleInfos()
 }
 
@@ -225,6 +247,25 @@ watch([ offset ], debouncedResetList)
 watch(
 	[ chosenSort, chosenDepartment, slug, existence, offset ],
 	clearOffset
+)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
 )
 
 onMounted(async() => {

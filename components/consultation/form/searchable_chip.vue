@@ -1,87 +1,36 @@
 <template>
-	<div class="field pb-5">
-		<h2 class="text-lg uppercase">
-			{{ header }}
-		</h2>
-		<div
-			v-for="participant in selectedParticipants"
-			:key="participant.id"
-			class="chip selected-participants">
-			<span>
-				{{ participant.name }}
-			</span>
-			<span
-				v-if="!isChipForCurrentUser(participant.id)"
-				id="close-btn"
-				class="material-icons"
-				@click="removeParticipant">
-				close
-			</span>
-		</div>
-		<NonSensitiveTextField
-			v-if="mayAddOtherParticipants"
-			v-model="slug"
-			:label="textFieldLabel"
-			type="text"/>
-		<Suspensible :is-loaded="isLoaded">
-			<div
-				v-for="participant in otherParticipants"
-				:key="participant.id"
-				class="chip other-participants cursor-pointer hover:bg-gray-300"
-				@click="addParticipant">
-				{{ participant.name }}
-			</div>
-		</Suspensible>
-	</div>
+	<SearchableChip
+		v-model="slug"
+		:header="header"
+		:is-loaded="isLoaded"
+		:text-field-label="textFieldLabel"
+		:maximum-chips="maximumParticipants"
+		:unselected-chips="otherParticipantChips"
+		:selected-chips="selectedParticipantChips"
+		@add-chip="addParticipant"
+		@remove-chip="removeParticipant"/>
 </template>
 
 <style lang="scss">
-@import "@styles/btn.scss";
-
-.chip {
-	@apply inline-flex items-center text-sm;
-
-	margin:5px;
-	border-radius: 25px;
-	padding: 0 15px;
-
-	height: 30px;
-
-	color: black;
-	background-color:#f1f1f1;
-}
-
-#close-btn {
-  padding-left: 10px;
-  color: #888;
-  font-weight: bold;
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-#close-btn:hover {
-  color: #000;
-}
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue"
+import { ref, computed, watch } from "vue"
 
 import type { UserKind } from "$/types/database"
+import type { ChipData } from "$@/types/component"
 import type { DeserializedUserResource } from "$/types/documents/user"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/user"
 import debounce from "$@/helpers/debounce"
 
-import Suspensible from "@/helpers/suspensible.vue"
-import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
-import RequestEnvironment from "$/singletons/request_environment"
+import SearchableChip from "@/helpers/filters/searchable_chip.vue"
 
 const props = defineProps<{
-	currentUserId?: string
+	currentUser: DeserializedUserResource
 	header: string,
 	modelValue: DeserializedUserResource[],
 	maximumParticipants: number,
@@ -94,8 +43,15 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const otherParticipants = ref<DeserializedUserResource[]>([])
 const slug = ref<string>("")
+const otherParticipants = ref<DeserializedUserResource[]>([])
+const otherParticipantChips = computed<ChipData[]>(() => otherParticipants.value.map(
+	participant => ({
+		"data": participant.name,
+		"id": participant.id,
+		"mayRemove": false
+	})
+))
 const selectedParticipants = computed<DeserializedUserResource[]>({
 	get(): DeserializedUserResource[] {
 		return props.modelValue
@@ -104,26 +60,19 @@ const selectedParticipants = computed<DeserializedUserResource[]>({
 		emit("update:modelValue", newValue)
 	}
 })
-const mayAddOtherParticipants = computed<boolean>(
-	() => props.modelValue.length < props.maximumParticipants
-)
-
-let rawFetcher: Fetcher|null = null
-
-function fetcher(): Fetcher {
-	if (rawFetcher === null) throw new Error("User cannot be processed yet")
-
-	return rawFetcher
-}
-
-function isChipForCurrentUser(participantId: string) {
-	return props.currentUserId === participantId
-}
+const selectedParticipantChips = computed<ChipData[]>(() => selectedParticipants.value.map(
+	participant => ({
+		"data": participant.name,
+		"id": participant.id,
+		"mayRemove": participant.id !== props.currentUser.id
+	})
+))
 
 const isLoaded = ref(true)
+const fetcher = new Fetcher()
 function findMatchedUsers() {
 	isLoaded.value = false
-	fetcher().list({
+	fetcher.list({
 		"filter": {
 			"department": "*",
 			"existence": "exists",
@@ -132,11 +81,12 @@ function findMatchedUsers() {
 			"slug": slug.value
 		},
 		"page": {
-			"limit": 10,
+			"limit": DEFAULT_LIST_LIMIT,
 			"offset": 0
 		},
 		"sort": [ "name" ]
-	}).then(({ body }) => {
+	})
+	.then(({ body }) => {
 		otherParticipants.value = body.data.filter(candidate => {
 			const isNotSelected = selectedParticipants.value.findIndex(selectedParticipant => {
 				const doesMatchSelectedParticipant = candidate.id === selectedParticipant.id
@@ -145,35 +95,23 @@ function findMatchedUsers() {
 
 			return isNotSelected
 		})
+
 		isLoaded.value = true
 	})
 }
-
 watch(slug, debounce(findMatchedUsers, DEBOUNCED_WAIT_DURATION))
 
-function removeParticipant(event: Event): void {
-	const { target } = event
-	const castTarget = target as HTMLSpanElement
-	const button = castTarget.previousElementSibling as HTMLButtonElement
-	const text = RequestEnvironment.isOnTest
-		? button.innerHTML
-		: button.innerText
-
+function removeParticipant(id: string): void {
 	selectedParticipants.value = selectedParticipants.value.filter(user => {
-		const isNameMatching = text.includes(user.name)
-		return !isNameMatching
+		const doesNotMatchesID = user.id !== id
+		return doesNotMatchesID
 	})
 }
 
-function addParticipant(event: Event): void {
-	const target = event.target as HTMLDivElement
-	const participantName = RequestEnvironment.isOnTest
-		? target.innerHTML
-		: target.innerText
-
+function addParticipant(id: string): void {
 	const foundParticipant = otherParticipants.value.find(user => {
-		const isNameMatching = participantName.includes(user.name)
-		return isNameMatching
+		const doesMatchesID = user.id === id
+		return doesMatchesID
 	})
 
 	if (foundParticipant) {
@@ -182,7 +120,4 @@ function addParticipant(event: Event): void {
 
 	otherParticipants.value = []
 }
-onMounted(() => {
-	rawFetcher = new Fetcher()
-})
 </script>

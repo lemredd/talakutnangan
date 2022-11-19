@@ -13,6 +13,10 @@ import type {
 	DeserializedDepartmentDocument
 } from "$/types/documents/department"
 import type {
+	TagIdentifierListDocument,
+	DeserializedTagListDocument
+} from "$/types/documents/tag"
+import type {
 	PostAttachmentIdentifierListDocument,
 	DeserializedPostAttachmentListDocument
 } from "$/types/documents/post_attachment"
@@ -77,6 +81,12 @@ extends GeneralRelationshipData {
 			? PostAttachmentIdentifierListDocument|undefined
 			: PostAttachmentIdentifierListDocument,
 		"deserialized": DeserializedPostAttachmentListDocument
+	},
+	tags: {
+		"serialized": T extends "create"|"update"
+			? TagIdentifierListDocument|undefined
+			: TagIdentifierListDocument,
+		"deserialized": DeserializedTagListDocument
 	}
 }
 

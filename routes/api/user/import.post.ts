@@ -290,7 +290,7 @@ export default class extends MultipartController {
 		return [
 			new TransactionCommitter(),
 			CommonMiddlewareList.newUserNotification,
-			new ActionAuditor("user.import")
+			new ActionAuditor("user.import", () => ({ "isSensitive": true }))
 		]
 	}
 }

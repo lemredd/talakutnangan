@@ -6,33 +6,54 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="createSemester">
-		<label class="block">
-			Semester name:
-			<input
-				v-model="titleSemester"
-				class="name border-solid"
-				type="text"/>
-			<Selectable
-				v-model="semesterOrder"
-				class="order"
-				:options="semesterOption"/>
-			<input
-				v-model="startAt"
-				class="start-at"
-				type="date"/>
-			<input
-				v-model="endAt"
-				class="end-at"
-				type="date"/>
-		</label>
-		<input type="submit" value="Create semester"/>
+		<TextualField
+			v-model="titleSemester"
+			label="Name: "
+			class="field name"
+			type="text"/>
+		<Selectable
+			v-model="semesterOrder"
+			label="Order: "
+			class="order"
+			:options="semesterOption"/>
+		<DateSelector
+			v-model="startAt"
+			class="start date"
+			label="Starts at:"
+			type="date"/>
+		<DateSelector
+			v-model="endAt"
+			class="end date"
+			label="Ends at:"
+			type="date"/>
+		<button
+			class="btn btn-primary"
+			type="submit">
+			Create Semester
+		</button>
 	</form>
 </template>
 
+<style lang="scss">
+	label {
+		@apply my-4;
+	}
+</style>
+
 <style scoped lang="scss">
-		.start, .end {
-			@apply flex justify-between;
-		}
+@import "@styles/btn.scss";
+	.start, .end {
+		@apply flex flex-row;
+		@apply mt-4;
+	}
+
+	.date {
+		@apply flex flex-col w-max;
+	}
+
+	.btn-primary {
+		@apply mt-8;
+	}
 </style>
 
 <script setup lang="ts">
@@ -46,20 +67,21 @@ import convertToTitle from "$/string/convert_to_title"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import DateSelector from "@/fields/date_selector.vue"
 import Selectable from "@/fields/selectable_options.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
+import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 import makeOptionInfo from "$@/helpers/make_option_info"
 
 const name = ref<string>("")
-const endAt = ref<string>("")
-const startAt = ref<string>("")
 const semesterOrder = ref<Order>("first")
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 const fetcher = new SemesterFetcher()
-
+const endAt = ref(new Date())
+const startAt = ref(new Date())
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
@@ -80,8 +102,8 @@ function createSemester() {
 	})
 	.then(() => {
 		name.value = ""
-		endAt.value = ""
-		startAt.value = ""
+		endAt.value = new Date("")
+		startAt.value = new Date("")
 		semesterOrder.value = "first"
 		fillSuccessMessages(receivedErrors, successMessages)
 	})

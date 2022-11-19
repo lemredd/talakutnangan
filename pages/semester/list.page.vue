@@ -20,13 +20,18 @@
 		<template #resources>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<ResourceList
+				v-if="mayEditSemester"
+				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_SEMESTER"
 				:headers="headers"
 				:list="tableData"
-				:may-edit="mayEditSemester"/>
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
-				:max-count="resourceCount"
+				:max-resource-count="resourceCount"
 				class="centered-page-counter"/>
 		</template>
 	</ResourceManager>
@@ -44,6 +49,7 @@
 <script setup lang="ts">
 import { inject, ref, watch, computed, Ref } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -54,12 +60,16 @@ import { READ_SEMESTER } from "$/constants/template_page_paths"
 import { semester as permissionGroup } from "$/permissions/permission_list"
 import { CREATE, UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/semester_combinations"
 
+import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+
 import debounce from "$@/helpers/debounce"
 import Fetcher from "$@/fetchers/semester"
+import makeManagementInfo from "@/semester/make_management_info"
+import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import formatToCompleteFriendlyTime from "$@/helpers/format_to_complete_friendly_time"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -68,28 +78,39 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
-	| "semesters"
+| "userProfile"
+| "semesters"
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 
+const selectedIDs = ref<string[]>([])
+
 const fetcher = new Fetcher()
 
+const { userProfile } = pageProps
 const isLoaded = ref<boolean>(true)
 
 const headers = [ "Name", "Order", "Start at", "End at" ]
 const list = ref<DeserializedSemesterListDocument>(
-	pageProps.semesters as DeserializedSemesterListDocument
-)
+	pageProps.semesters as DeserializedSemesterListDocument)
+
 const tableData = computed<TableData[]>(() => {
-	const data = list.value.data.map(resource => ({
-		"data": [
-			resource.name,
-			resource.semesterOrder,
-			formatToCompleteFriendlyTime(resource.startAt),
-			formatToCompleteFriendlyTime(resource.endAt)
-		],
-		"id": resource.id
-	}))
+	const data = list.value.data.map(resource => {
+		const managementInfo = makeManagementInfo(userProfile, resource)
+		return {
+			"data": [
+				resource.name,
+				resource.semesterOrder,
+				formatToFriendlyDate(resource.startAt),
+				formatToFriendlyDate(resource.endAt)
+			],
+			"id": resource.id,
+			"mayArchive": managementInfo.mayArchiveSemester,
+			"mayEdit": managementInfo.mayArchiveSemester
+				|| managementInfo.mayRestoreSemester,
+			"mayRestore": managementInfo.mayRestoreSemester
+		}
+	})
 
 	return data
 })
@@ -130,7 +151,7 @@ const sortNames = computed<OptionInfo[]>(() => [
 ])
 const chosenSort = ref("name")
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -140,6 +161,8 @@ const resourceCount = computed<number>(() => {
 
 const receivedErrors = ref<string[]>([])
 async function fetchSemesterInfos() {
+	isLoaded.value = false
+
 	await loadRemainingResource(
 		list as Ref<DeserializedSemesterListDocument>,
 		fetcher,
@@ -149,8 +172,8 @@ async function fetchSemesterInfos() {
 				"slug": slug.value
 			},
 			"page": {
-				"limit": 10,
-				"offset": list.value.data.length
+				"limit": DEFAULT_LIST_LIMIT,
+				"offset": offset.value
 			},
 			"sort": [ chosenSort.value ]
 		}),
@@ -162,8 +185,6 @@ async function fetchSemesterInfos() {
 
 	isLoaded.value = true
 }
-
-const { userProfile } = pageProps
 
 const mayCreateSemester = computed<boolean>(() => {
 	const roles = userProfile.data.roles.data
@@ -191,7 +212,6 @@ async function refetchSemester() {
 			"count": 0
 		}
 	}
-	isLoaded.value = false
 	await fetchSemesterInfos()
 }
 
@@ -204,4 +224,23 @@ function clearOffset() {
 
 watch([ offset ], debouncedResetList)
 watch([ chosenSort, slug, existence ], clearOffset)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
+)
 </script>

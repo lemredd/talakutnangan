@@ -77,6 +77,12 @@ export default async function(
 			const getEncodedError = encodeToBase64(unitError)
 
 			response.redirect(`${redirectURL}?error=${getEncodedError}`)
+
+			Log.errorMessage("middleware", `Error: Output multiple errors${
+				RequestEnvironment.isNotOnProduction
+					? ` (${error.name}'s stack: ${error.stack})`
+					: ""
+			}`)
 		} else if (request.accepts(JSON_API_MEDIA_TYPE)) {
 			let unitError: UnitError|UnitError[] = {
 				"code": "-1",

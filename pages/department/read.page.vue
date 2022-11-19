@@ -65,16 +65,15 @@ import { ref, inject, computed } from "vue"
 
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
+import type { DepartmentManagementInfo } from "$@/types/independent"
 import type { DeserializedDepartmentDocument } from "$/types/documents/department"
 
 import Fetcher from "$@/fetchers/department"
 import makeSwitch from "$@/helpers/make_switch"
+import makeManagementInfo from "@/department/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-
-import { department as permissionGroup } from "$/permissions/permission_list"
-import { UPDATE, ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 
 import Checkbox from "@/fields/checkbox.vue"
 import Suspensible from "@/helpers/suspensible.vue"
@@ -98,29 +97,26 @@ const capitalAcronym = computed({
 	}
 })
 
+const departments = ref<DeserializedDepartmentDocument>(
+	{
+		...pageProps.department,
+		"data": {
+			...pageProps.department.data
+		}
+	} as DeserializedDepartmentDocument
+)
 
-const isDeleted = computed<boolean>(() => Boolean(department.value.data.deletedAt))
+const managementInfo = computed<DepartmentManagementInfo>(
+	() => makeManagementInfo(userProfile, departments.value.data)
+)
 
-const mayUpdateDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
-
-	return isPermitted
-})
-const mayArchiveOrRestoreDepartment = computed<boolean>(() => {
-	const roles = userProfile.data.roles.data
-	const isPermitted = permissionGroup.hasOneRoleAllowed(roles, [
-		ARCHIVE_AND_RESTORE
-	])
-
-	return isPermitted
-})
+const mayUpdateDepartment = computed<boolean>(() => managementInfo.value.mayUpdateDepartment)
 
 const mayArchiveDepartment = computed<boolean>(
-	() => !isDeleted.value && mayArchiveOrRestoreDepartment.value
+	() => managementInfo.value.mayArchiveDepartment
 )
 const mayRestoreDepartment = computed<boolean>(
-	() => isDeleted.value && mayArchiveOrRestoreDepartment.value
+	() => managementInfo.value.mayRestoreDepartment
 )
 
 const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")

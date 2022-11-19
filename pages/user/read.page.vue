@@ -164,6 +164,7 @@ import {
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
+import type { UserManagementInfo } from "$@/types/independent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
@@ -171,20 +172,12 @@ import type { DeserializedDepartmentListDocument } from "$/types/documents/depar
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import DepartmentFetcher from "$@/fetchers/department"
+import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import loadRemainingRoles from "@/resource_management/load_remaining_roles"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
-
-import { user as permissionGroup } from "$/permissions/permission_list"
-import {
-	RESET_PASSWORD,
-	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-	UPDATE_ANYONE_ON_ALL_DEPARTMENTS,
-	ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT,
-	ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
-} from "$/permissions/user_combinations"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
@@ -230,63 +223,18 @@ const selectableDepartments = computed(() => departments.value.data.map(
 ))
 
 const { userProfile } = pageProps
-const isOnSameDepartment = computed<boolean>(() => {
-	const ownDepartment = userProfile.data.department.data.id
-	return ownDepartment === user.value.data.department.data.id
-})
+const managementInfo = computed<UserManagementInfo>(
+	() => makeManagementInfo(userProfile, user.value.data)
+)
 
-const isDeleted = computed<boolean>(() => Boolean(user.value.data.deletedAt))
-const doesViewOwn = computed<boolean>(() => user.value.data.id === userProfile.data.id)
-const mayUpdateAnyone = computed<boolean>(() => {
-	const userRoles = userProfile.data.roles.data
+const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
+const mayUpdateUser = computed<boolean>(() => managementInfo.value.mayUpdateUser)
 
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userRoles, [
-		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-	])
+const mayArchiveUser = computed<boolean>(() => managementInfo.value.mayArchiveUser)
+const mayRestoreUser = computed<boolean>(() => managementInfo.value.mayRestoreUser)
 
-	return isLimitedUpToGlobalScope
-})
-
-const mayUpdateUser = computed<boolean>(() => {
-	const userRoles = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
-		UPDATE_ANYONE_ON_OWN_DEPARTMENT
-	]) && isOnSameDepartment.value
-
-	const isLimitedUpToGlobalScope = mayUpdateAnyone.value
-
-	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
-})
-
-const mayArchiveOrRestoreUser = computed<boolean>(() => {
-	const userRoles = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(userRoles, [
-		ARCHIVE_AND_RESTORE_ANYONE_ON_OWN_DEPARTMENT
-	]) && isOnSameDepartment.value
-
-	const isLimitedUpToGlobalScope = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT
-	])
-
-	return isLimitedUpToDepartmentScope || isLimitedUpToGlobalScope
-})
-const mayArchiveUser = computed<boolean>(() => {
-	const isPermitted = !isDeleted.value && mayArchiveOrRestoreUser.value
-
-	return !doesViewOwn.value && isPermitted
-})
-const mayRestoreUser = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreUser.value)
-
-const mayUpdateAttachedRoles = computed<boolean>(() => !doesViewOwn.value && mayUpdateAnyone.value)
-
-const mayResetPassword = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(users, [
-		RESET_PASSWORD
-	])
-
-	return isLimitedUpToDepartmentScope && !isDeleted.value
-})
+const mayUpdateAttachedRoles = computed<boolean>(() => managementInfo.value.mayUpdateAttachedRoles)
+const mayResetPassword = computed<boolean>(() => managementInfo.value.mayResetPassword)
 
 const textFieldStatus = ref<FieldStatus>(mayUpdateUser.value ? "enabled" : "disabled")
 const emailVerified = computed<string>(() => {
@@ -320,6 +268,7 @@ const successMessages = ref<string[]>([])
 async function updateUser() {
 	hasSubmittedUser.value = false
 	await fetcher.update(user.value.data.id, {
+		"deletedAt": null,
 		"email": user.value.data.email,
 		"emailVerifiedAt": user.value.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": user.value.data.kind,
