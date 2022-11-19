@@ -37,9 +37,10 @@
 <script setup lang="ts">
 import { inject, ref, watch, computed } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
-import type { TableData, OptionInfo } from "$@/types/component"
 import type { ResourceCount } from "$/types/documents/base"
+import type { TableData, OptionInfo } from "$@/types/component"
 import type { DeserializedAuditTrailListDocument } from "$/types/documents/audit_trail"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
@@ -114,7 +115,7 @@ const chosenSort = ref("-createdAt")
 
 const isLoaded = ref<boolean>(true)
 const slug = ref<string>("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 const castedResourceListMeta = list.value.meta as ResourceCount
 const resourceCount = computed(() => castedResourceListMeta.count)
 const offset = ref(0)

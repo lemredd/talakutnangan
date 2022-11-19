@@ -16,6 +16,7 @@ describe("Page: tag/read", () => {
 				"name": "Tagexample1"
 			}
 		}
+
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -39,8 +40,7 @@ describe("Page: tag/read", () => {
 				}
 			}
 		})
-
-		const nameInput = wrapper.find("input.name").element as HTMLInputElement
+		const nameInput = wrapper.find(".name input").element as HTMLInputElement
 
 		expect(nameInput.value).toEqual(tag.data.name)
 	})
@@ -83,7 +83,7 @@ describe("Page: tag/read", () => {
 			}
 		})
 
-		const nameInput = wrapper.find("input.name")
+		const nameInput = wrapper.find(".name input")
 		const submitBtn = wrapper.find("button[type=submit]")
 
 		await nameInput.setValue(updatedTag.data.name)

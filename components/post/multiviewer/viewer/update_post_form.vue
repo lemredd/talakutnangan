@@ -16,6 +16,16 @@
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
+				<SearchableChip
+					v-model:model-value="tags"
+					header="Optional tags"
+					:maximum-tags="MAX_TAGS"
+					text-field-label="Type the tags to add"/>
+				<Suspensible :is-loaded="hasUpdatedTags">
+					<button type="button" @click="updateTags">
+						Update tags
+					</button>
+				</Suspensible>
 			</DraftForm>
 			<form @submit.prevent>
 				<input
@@ -89,42 +99,46 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 
-.preview-img{
-	@apply py-5;
-	max-width:100%;
-	max-height:100%;
-}
+	.preview-img{
+		@apply py-5;
+		max-width:100%;
+		max-height:100%;
+	}
 
-.close{
-	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
-}
+	.close{
+		@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+	}
 </style>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
+import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
+import { MAX_TAGS } from "$/constants/numerical"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
+import { READ_POST } from "$/constants/template_page_paths"
 
 import Fetcher from "$@/fetchers/post"
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
-import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
+import SearchableChip from "@/post/searchable_chip.vue"
+import Suspensible from "@/helpers/suspensible.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const userFetcher = new UserFetcher()
@@ -206,6 +220,7 @@ const roleID = computed<string>({
 })
 
 const postID = computed<string>(() => props.modelValue.id)
+const tags = ref<DeserializedTagResource[]>([])
 const content = computed<string>({
 	get(): string {
 		return props.modelValue.content
@@ -298,6 +313,13 @@ function updatePost(): void {
 		)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
+}
+
+const hasUpdatedTags = ref<boolean>(true)
+function updateTags() {
+	hasUpdatedTags.value = false
+	// Add code to update the tags
+	hasUpdatedTags.value = true
 }
 
 watch(isShown, newValue => {

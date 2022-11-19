@@ -45,6 +45,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -55,10 +56,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -154,6 +155,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -164,10 +166,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -223,6 +225,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -233,10 +236,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -326,6 +329,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -336,10 +340,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -401,6 +405,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -411,10 +416,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -470,6 +475,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -480,10 +486,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -591,6 +597,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -601,10 +608,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -667,6 +674,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -677,10 +685,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
@@ -766,6 +774,7 @@ describe("Helper: Filter Link Infos", () => {
 			"pageProps": {
 				"userProfile": {
 					"data": {
+						"deletedAt": null,
 						"department": {
 							"data": {
 								"acronym": "A",
@@ -776,10 +785,10 @@ describe("Helper: Filter Link Infos", () => {
 							}
 						},
 						"email": "",
+						"emailVerifiedAt": null,
 						"id": "1",
 						"kind": "unreachable_employee",
 						"name": "",
-						"emailVerifiedAt": null,
 						"prefersDark": false,
 						"roles": {
 							"data": [
