@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "!/types/dependent"
 import RequestEnvironment from "$/singletons/request_environment"
 import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
 
-export default class ForceMaintenance extends ForceRedirector {
+export default class MaintenanceGuard extends ForceRedirector {
 	constructor() {
 		super("/", RequestEnvironment.status.TEMPORARY_REDIRECT)
 	}
