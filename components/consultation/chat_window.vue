@@ -18,7 +18,7 @@
 			@hide-action-taken-overlay="hideActionTakenOverlay"
 			@cancel-consultation="cancelConsultation"
 			@finish-consultation="finishConsultation"/>
-		<div class="selected-consultation-chats">
+		<div ref="selectedConsultationChats" class="selected-consultation-chats">
 			<div
 				v-if="!isOngoing"
 				class="selected-consultation-new">
@@ -113,10 +113,13 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageActivityResource
+} from "$/types/documents/chat_message_activity"
 import type {
 	ConsultationAttributes,
 	DeserializedConsultationResource
@@ -151,11 +154,13 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	currentConsultationActivity: DeserializedChatMessageActivityResource[]
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	hasLoadedChatMessages: boolean,
 	isConsultationListShown: boolean
 }>()
 
+const selectedConsultationChats = ref<HTMLDivElement|null>(null)
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
 	return [ ...rawData ].sort((left, right) => {
@@ -165,6 +170,15 @@ const sortedMessagesByTime = computed(() => {
 		return Math.sign(leftSeconds - rightSeconds)
 	})
 })
+
+const chatMessageActivities = computed(() => props.currentConsultationActivity)
+watch(chatMessageActivities, () => {
+	const height = selectedConsultationChats.value?.clientHeight
+	selectedConsultationChats.value?.scrollBy(0, height as number)
+}, {
+	"flush": "post"
+})
+
 function loadPreviousMessages() {
 	emit("loadPreviousMessages")
 }
