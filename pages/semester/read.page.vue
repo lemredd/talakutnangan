@@ -16,22 +16,14 @@
 			class="order field"
 			label="Order: "
 			:options="semesterOption"/>
-		<div class="field date-container">
-			Starts at:
-			<div class="date">
-				<DateSelect
-					v-model="semester.data.startAt"
-					class="start-at border-solid"/>
-			</div>
-		</div>
-		<div class="field date-container">
-			Ends at:
-			<div class="date">
-				<DateSelect
-					v-model="semester.data.endAt"
-					class="end-at border-solid"/>
-			</div>
-		</div>
+		<DateSelect
+			v-model="semester.data.startAt"
+			label="Starts at: "
+			class="start-at field date"/>
+		<DateSelect
+			v-model="semester.data.endAt"
+			label="Ends at: "
+			class="end-at field date"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedSemester">
 				<button type="submit" class="update-user-btn btn btn-primary">
@@ -66,15 +58,15 @@
 @import "@styles/btn.scss";
 
 	.controls{
-		@apply mt-4;
+		@apply mt-8;
 		@apply flex justify-between;
 	}
 
 	.field {
 		@apply my-4;
 
-		.date {
-			@apply w-max p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5;
+		&.date {
+			@apply flex flex-col w-max;
 		}
 	}
 </style>
