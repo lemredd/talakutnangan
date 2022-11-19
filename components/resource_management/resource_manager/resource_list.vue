@@ -131,8 +131,8 @@ const props = defineProps<{
 interface CustomEvents {
 	(event: "archive", id: string): void,
 	(event: "restore", id: string): void,
-	(event: "batchArchive"): void,
-	(event: "batchRestore"): void,
+	(event: "batchArchive", IDs: string[]): void,
+	(event: "batchRestore", IDs: string[]): void,
 	(event: "update:selectedIDs", newSelection: string[]): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -147,16 +147,18 @@ const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
 const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
 
 const archivableItems = computed<TableData[]>(() => props.list.filter(item => item.mayArchive))
+const archivableItemIDs = computed<string[]>(() => archivableItems.value.map(item => item.id))
 const selectedArchivableItems = computed<string[]>(() => props.selectedIDs.filter(
-	id => archivableItems.value.findIndex(item => item.id === id) > -1
+	id => archivableItemIDs.value.indexOf(id) > -1
 ))
 const friendlySelectedArchivableQuantity = computed<string>(
 	() => pluralize("item", selectedArchivableItems.value.length)
 )
 
 const restorableItems = computed<TableData[]>(() => props.list.filter(item => item.mayRestore))
+const restorableItemIDs = computed<string[]>(() => restorableItems.value.map(item => item.id))
 const selectedRestorableItems = computed<string[]>(() => props.selectedIDs.filter(
-	id => restorableItems.value.findIndex(item => item.id === id) > -1
+	id => restorableItemIDs.value.indexOf(id) > -1
 ))
 const friendlySelectedRestorableQuantity = computed<string>(
 	() => pluralize("item", selectedRestorableItems.value.length)
@@ -188,11 +190,11 @@ function restore(id: string) {
 }
 
 function batchArchive() {
-	emit("batchArchive")
+	emit("batchArchive", selectedArchivableItems.value)
 }
 
 function batchRestore() {
-	emit("batchRestore")
+	emit("batchRestore", selectedRestorableItems.value)
 }
 
 function canSelect(id: string) {
