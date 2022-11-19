@@ -268,6 +268,7 @@ function saveNewSchedule() {
 		const { data } = body
 		emit("pushNewSchedule", data)
 		fillSuccessMessages(receivedErrors, successMessages)
+		discard()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
