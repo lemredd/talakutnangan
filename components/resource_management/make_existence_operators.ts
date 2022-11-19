@@ -85,19 +85,22 @@ export default function<
 
 	async function batchArchive(IDs: string[]) {
 		UIState.isLoaded.value = false
-		await fetcher.archive(IDs).catch(
-			responseWithErrors => extractAllErrorDetails(responseWithErrors, UIState.receivedErrors)
-		)
-		if (queryState.existence.value === "exists") {
-			removeData(IDs)
-		} else if (queryState.existence.value === "*") {
-			renewExistence(IDs, item => ({
-				...item,
-				"deletedAt": new Date()
-			}))
+		try {
+			await fetcher.archive(IDs)
+			if (queryState.existence.value === "exists") {
+				removeData(IDs)
+			} else if (queryState.existence.value === "*") {
+				renewExistence(IDs, item => ({
+					...item,
+					"deletedAt": new Date()
+				}))
+			}
+			selectedIDs.value = selectedIDs.value.filter(selectedID => IDs.indexOf(selectedID) === -1)
+		} catch (responseWithErrors) {
+			extractAllErrorDetails(responseWithErrors, UIState.receivedErrors)
+		} finally {
+			UIState.isLoaded.value = true
 		}
-		selectedIDs.value = selectedIDs.value.filter(selectedID => IDs.indexOf(selectedID) === -1)
-		UIState.isLoaded.value = true
 	}
 
 	async function batchRestore(IDs: string[]) {
