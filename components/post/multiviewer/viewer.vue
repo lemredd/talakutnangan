@@ -117,6 +117,24 @@
 	</article>
 </template>
 
+<style lang="scss">
+	@screen sm {
+		.overlay .content {
+			margin: 5% 0 !important;
+			max-height: 100vh !important;
+		}
+	}
+
+	.post-content {
+		h1 { @apply text-5xl; }
+		h2 { @apply text-4xl; }
+		h3 { @apply text-3xl; }
+		h4 { @apply text-2xl; }
+		h5 { @apply text-xl; }
+		h6 { @apply text-xl; }
+	}
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
