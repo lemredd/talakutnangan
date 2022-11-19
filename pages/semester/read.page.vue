@@ -132,7 +132,7 @@ const managementInfo = computed<SemesterManagementInfo>(
 const mayUpdateSemester = computed<boolean>(() => managementInfo.value.mayUpdateSemester)
 
 const mayArchiveOrRestoreSemester = computed<boolean>(
-	() => managementInfo.value.mayArchiveSemester && managementInfo.value.mayRestoreSemester)
+	() => managementInfo.value.mayArchiveSemester || managementInfo.value.mayRestoreSemester)
 
 const mayArchiveSemester = computed<boolean>(
 	() => !isDeleted.value && mayArchiveOrRestoreSemester.value
