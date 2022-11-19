@@ -6,29 +6,26 @@
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
 	<form @submit.prevent="createSemester">
-		<label class="block">
-			Semester name:
-			<TextualField
-				v-model="titleSemester"
-				class="mb-10"
-				type="text"/>
-			<Selectable
-				v-model="semesterOrder"
-				label="Order: "
-				class="order mb-10"
-				:options="semesterOption"/>
-			Start:
-			<input
-				v-model="startAt"
-				class="start date"
-				label="Start: "
-				type="date"/>
-			End:
-			<input
-				v-model="endAt"
-				class="end date"
-				type="date"/>
-		</label>
+		<TextualField
+			v-model="titleSemester"
+			label="Name: "
+			class="field name"
+			type="text"/>
+		<Selectable
+			v-model="semesterOrder"
+			label="Order: "
+			class="order"
+			:options="semesterOption"/>
+		<DateSelector
+			v-model="startAt"
+			class="start date"
+			label="Starts at:"
+			type="date"/>
+		<DateSelector
+			v-model="endAt"
+			class="end date"
+			label="Ends at:"
+			type="date"/>
 		<button
 			class="btn btn-primary"
 			type="submit">
@@ -36,6 +33,12 @@
 		</button>
 	</form>
 </template>
+
+<style lang="scss">
+	label {
+		@apply my-4;
+	}
+</style>
 
 <style scoped lang="scss">
 @import "@styles/btn.scss";
@@ -45,7 +48,7 @@
 	}
 
 	.date {
-			@apply p-2 bg-gray-300 shadow-inner rounded-0.5rem ml-5;
+		@apply flex flex-col w-max;
 	}
 
 	.btn-primary {
@@ -64,6 +67,7 @@ import convertToTitle from "$/string/convert_to_title"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import DateSelector from "@/fields/date_selector.vue"
 import Selectable from "@/fields/selectable_options.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import TextualField from "@/fields/non-sensitive_text_capital.vue"
@@ -76,8 +80,8 @@ const name = ref<string>("")
 const semesterOrder = ref<Order>("first")
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 const fetcher = new SemesterFetcher()
-const endAt = ref<string>("")
-const startAt = ref<string>("")
+const endAt = ref(new Date())
+const startAt = ref(new Date())
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
@@ -98,8 +102,8 @@ function createSemester() {
 	})
 	.then(() => {
 		name.value = ""
-		endAt.value = ""
-		startAt.value = ""
+		endAt.value = new Date("")
+		startAt.value = new Date("")
 		semesterOrder.value = "first"
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
