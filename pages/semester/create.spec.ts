@@ -18,6 +18,7 @@ describe("Page: /semester", () => {
 				}
 			}
 		}), { "status": RequestEnvironment.status.OK })
+
 		const wrapper = mount(Page, {
 			"global": {
 				"provide": {
@@ -35,11 +36,11 @@ describe("Page: /semester", () => {
 			}
 		}
 
-		const nameInput = wrapper.find("input.name")
+		const nameInput = wrapper.find(".name input")
 		const orderInput = wrapper.find(".order select")
-		const startAtInput = wrapper.find("input.start-at")
-		const endAtInput = wrapper.find("input.end-at")
-		const submitBtn = wrapper.find("input[type=submit]")
+		const startAtInput = wrapper.find(".start input")
+		const endAtInput = wrapper.find(".end input")
+		const submitBtn = wrapper.find("button[type=submit]")
 
 		await nameInput.setValue(semester.data.name)
 		await orderInput.setValue(semester.data.semesterOrder)

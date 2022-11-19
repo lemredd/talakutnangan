@@ -128,6 +128,7 @@ import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
+import { MAX_TAGS } from "$/constants/numerical"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
 
 import Fetcher from "$@/fetchers/post"
@@ -149,7 +150,6 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const MAX_TAGS = 5
 const CREATE_POST_FORM_ID = "create-post"
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()

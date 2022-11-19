@@ -34,7 +34,11 @@
 				v-model:selectedIDs="selectedIDs"
 				:template-path="READ_USER"
 				:headers="headers"
-				:list="tableData"/>
+				:list="tableData"
+				@archive="archive"
+				@restore="restore"
+				@batch-archive="batchArchive"
+				@batch-restore="batchRestore"/>
 			<PageCounter
 				v-model="offset"
 				:max-count="resourceCount"
@@ -60,6 +64,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref, watch, Ref } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { ResourceCount } from "$/types/documents/base"
 import type { TableData, OptionInfo } from "$@/types/component"
@@ -81,11 +86,12 @@ import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
+import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import loadRemainingRoles from "@/resource_management/load_remaining_roles"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
-import { IMPORT_USERS } from "$/permissions/user_combinations"
+import { IMPORT_USERS, READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 import PageCounter from "@/helpers/page_counter.vue"
@@ -102,6 +108,9 @@ type RequiredExtraProps =
 const pageContext = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { pageProps } = pageContext
 const userProfile = pageProps.userProfile as DeserializedUserProfile<"roles" | "department">
+const mayReadAll = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+])
 
 const fetcher = new Fetcher()
 const roleFetcher = new RoleFetcher()
@@ -190,19 +199,26 @@ const chosenRole = ref("*")
 const departments = ref<DeserializedDepartmentListDocument>(
 	pageProps.departments as DeserializedDepartmentListDocument
 )
-const departmentNames = computed<OptionInfo[]>(() => [
-	{
-		"label": "All",
-		"value": "*"
-	},
-	...departments.value.data.map(data => ({
-		"label": data.acronym,
-		"value": data.id
-	}))
-])
-const chosenDepartment = ref("*")
+const departmentNames = computed<OptionInfo[]|undefined>(() => {
+	if (mayReadAll) {
+		return [
+			{
+				"label": "All",
+				"value": "*"
+			},
+			...departments.value.data.map(data => ({
+				"label": data.acronym,
+				"value": data.id
+			}))
+		]
+	}
+
+	// eslint-disable-next-line no-undefined
+	return undefined
+})
+const chosenDepartment = ref(mayReadAll ? "*" : userProfile.data.department.data.id)
 const slug = ref("")
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 
 const offset = ref(0)
 const resourceCount = computed<number>(() => {
@@ -213,6 +229,7 @@ const resourceCount = computed<number>(() => {
 const receivedErrors = ref<string[]>([])
 async function fetchUserInfo() {
 	isLoaded.value = false
+
 	await loadRemainingResource(list as Ref<DeserializedUserListDocument>, fetcher, () => ({
 		"filter": {
 			"department": currentResourceManager.isAdmin()
@@ -267,6 +284,25 @@ watch([ offset ], debouncedResetList)
 watch(
 	[ chosenRole, slug, chosenDepartment, existence, chosenSort ],
 	clearOffset
+)
+
+const {
+	archive,
+	batchArchive,
+	batchRestore,
+	restore
+} = makeExistenceOperators(
+	list as Ref<DeserializedUserListDocument>,
+	fetcher,
+	{
+		existence,
+		offset
+	},
+	selectedIDs,
+	{
+		isLoaded,
+		receivedErrors
+	}
 )
 
 onMounted(async() => {
