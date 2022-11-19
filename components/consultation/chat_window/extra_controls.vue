@@ -6,6 +6,7 @@
 			<div class="buttons">
 				<a
 					:href="linkToPrintableForm"
+					target="_blank"
 					class="additional-control view-printable-form-link">
 					View consultation form
 				</a>
