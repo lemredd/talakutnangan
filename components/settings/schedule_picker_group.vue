@@ -42,7 +42,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { ref } from "vue"
 
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
@@ -55,14 +55,13 @@ const props = defineProps<{
 	schedules: DeserializedEmployeeScheduleResource[]
 }>()
 
-const schedules = ref(props.schedules)
-const daySchedules = computed<DeserializedEmployeeScheduleResource[]>(
-	() => schedules.value.filter(schedule => schedule.dayName === props.dayName)
+const daySchedules = ref<DeserializedEmployeeScheduleResource[]>(
+	props.schedules.filter(schedule => schedule.dayName === props.dayName)
 )
 
 function pushNewSchedule(newSchedule: DeserializedEmployeeScheduleResource) {
-	schedules.value = [
-		...schedules.value,
+	daySchedules.value = [
+		...daySchedules.value,
 		newSchedule
 	]
 }

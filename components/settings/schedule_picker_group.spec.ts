@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
 
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
@@ -33,8 +34,9 @@ describe("Component: Schedule Picker Group", () => {
 	})
 
 	it("should concatenate new schedule", async() => {
+		const dayName = "monday"
 		const newSchedule = {
-			"dayName": "sunday",
+			dayName,
 			"id": "1",
 			"scheduleEnd": 1365,
 			"scheduleStart": 1350,
@@ -43,15 +45,18 @@ describe("Component: Schedule Picker Group", () => {
 
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
-				"dayName": "monday",
+				dayName,
 				"schedules": []
 			}
 		})
 		const newSchedulePicker = wrapper.findComponent({ "name": "SchedulePicker" })
 		newSchedulePicker.vm.$emit("pushNewSchedule", newSchedule)
 
-		// Ensure
-		const castWrapper = wrapper.vm as any
-		expect(castWrapper.schedules).toHaveLength(1)
+		await nextTick()
+		const filledSchedulePicker = wrapper.find(".filled-schedule-picker")
+		expect(filledSchedulePicker.attributes("schedulestart"))
+		.toEqual(String(newSchedule.scheduleStart))
+		expect(filledSchedulePicker.attributes("scheduleend"))
+		.toEqual(String(newSchedule.scheduleEnd))
 	})
 })

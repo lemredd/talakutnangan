@@ -74,7 +74,6 @@ describe("Component: Schedule Picker", () => {
 
 		const castFetch = fetch as jest.Mock<any, any>
 		const [ [ request ] ] = castFetch.mock.calls
-
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", `/api/employee_schedule/${wrapper.props().scheduleId}`)
 		expect(await request.json()).toStrictEqual({
@@ -156,7 +155,6 @@ describe("Component: Schedule Picker", () => {
 		expect(request).toHaveProperty("url", "/api/employee_schedule")
 
 		const expectedEmission = wrapper.emitted("pushNewSchedule")
-		console.log(expectedEmission, "\n\n\n")
 		expect(expectedEmission).toHaveProperty("0.0", {
 			...newSchedule.attributes,
 			"id": newSchedule.id,
