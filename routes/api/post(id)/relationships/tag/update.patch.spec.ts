@@ -32,7 +32,7 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		.tag(() => Promise.resolve(tag))
 		.insertOne()
 
-		const adminRole = await new RoleFactory().userFlags(
+		const adminRole = await new RoleFactory().postFlags(
 			permissionGroup.generateMask(...TAG_PUBLIC_POST_ON_ANY_DEPARTMENT)
 		).insertOne()
 		const admin = await new UserFactory()
@@ -68,7 +68,7 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		.tag(() => Promise.resolve(tag))
 		.insertOne()
 
-		const deanRole = await new RoleFactory().userFlags(
+		const deanRole = await new RoleFactory().postFlags(
 			permissionGroup.generateMask(...TAG_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		).insertOne()
 		const dean = await new UserFactory()
