@@ -40,6 +40,16 @@
 			}
 		}
 	}
+
+	@screen md {
+		.selectable {
+			@apply flex-row;
+
+			select {
+				@apply ml-2;
+			}
+		}
+	}
 </style>
 
 <script setup lang="ts">

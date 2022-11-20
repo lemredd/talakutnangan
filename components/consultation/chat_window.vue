@@ -18,8 +18,10 @@
 			@hide-action-taken-overlay="hideActionTakenOverlay"
 			@cancel-consultation="cancelConsultation"
 			@finish-consultation="finishConsultation"/>
-		<div class="selected-consultation-chats">
-			<div class="selected-consultation-new">
+		<div ref="selectedConsultationChats" class="selected-consultation-chats">
+			<div
+				v-if="!isOngoing"
+				class="selected-consultation-new">
 				<p class="consultation-details">
 					<strong>
 						This is {{ age }} consultation.
@@ -29,7 +31,9 @@
 				<ul class="selected-consultation-additional-details">
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
-					<li>Scheduled at: {{ readableScheduledAt }}</li>
+					<li class="scheduled-at">
+						Scheduled at: {{ readableScheduledAt }}
+					</li>
 
 					<li>
 						<a
@@ -98,17 +102,24 @@
 
 			ul.selected-consultation-additional-details {
 				@apply bg-gray-400 bg-opacity-10 border border-gray-400 rounded-md p-5;
-				@apply my-5 w-max mx-auto;
+				@apply my-5 mx-auto;
+
+				.scheduled-at {
+					word-break: normal;
+				}
 			}
 		}
 	}
 </style>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 
 import type { FullTime } from "$@/types/independent"
 import type { DeserializedChatMessageListDocument } from "$/types/documents/chat_message"
+import type {
+	DeserializedChatMessageActivityResource
+} from "$/types/documents/chat_message_activity"
 import type {
 	ConsultationAttributes,
 	DeserializedConsultationResource
@@ -143,11 +154,13 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
 	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	currentConsultationActivity: DeserializedChatMessageActivityResource[]
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	hasLoadedChatMessages: boolean,
 	isConsultationListShown: boolean
 }>()
 
+const selectedConsultationChats = ref<HTMLDivElement|null>(null)
 const sortedMessagesByTime = computed(() => {
 	const { "chatMessages": { "data": rawData } } = props
 	return [ ...rawData ].sort((left, right) => {
@@ -157,6 +170,15 @@ const sortedMessagesByTime = computed(() => {
 		return Math.sign(leftSeconds - rightSeconds)
 	})
 })
+
+const chatMessageActivities = computed(() => props.currentConsultationActivity)
+watch(chatMessageActivities, () => {
+	const height = selectedConsultationChats.value?.clientHeight
+	selectedConsultationChats.value?.scrollBy(0, height as number)
+}, {
+	"flush": "post"
+})
+
 function loadPreviousMessages() {
 	emit("loadPreviousMessages")
 }

@@ -1,11 +1,14 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import RoleManager from "%/managers/role"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { role as permissionGroup } from "$/permissions/permission_list"
@@ -24,6 +27,13 @@ export default class extends JSONController {
 		])
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules("role", archived, RoleManager)
 	}
@@ -38,9 +48,10 @@ export default class extends JSONController {
 		return new NoContentResponseInfo()
 	}
 
-	get postJobs(): ActionAuditor[] {
+	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("role.restore", () => ({ "isSensitive": true }))
+			new ActionAuditor("role.restore", () => ({ "isSensitive": true })),
+			new TransactionCommitter()
 		]
 	}
 }

@@ -166,10 +166,10 @@ const friendlySelectedRestorableQuantity = computed<string>(
 
 const mayBatchArchive = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayArchive
-))
+) && selectedArchivableItems.value.length > 0)
 const mayBatchRestore = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayRestore
-))
+) && selectedRestorableItems.value.length > 0)
 
 function makePath(id: string): string {
 	if (props.templatePath) {
@@ -198,11 +198,17 @@ function batchRestore() {
 }
 
 function canSelect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) === -1
+	const canBeSelected = maySelect.value && props.selectedIDs.indexOf(id) === -1
+	return canBeSelected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function canDeselect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) > -1
+	const canBeDeselected = maySelect.value && props.selectedIDs.indexOf(id) > -1
+	return canBeDeselected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function select(id: string) {

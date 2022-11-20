@@ -49,7 +49,7 @@ import { computed } from "vue"
 import type { OptionInfo } from "$@/types/component"
 
 type ComponentProps = {
-	title: string,
+	label?: string,
 	modelValue: string,
 	options: OptionInfo[]
 }

@@ -41,8 +41,6 @@ describe("Component: page counter", () => {
 		const previousBtn = wrapper.find(".previous-btn")
 		await previousBtn.trigger("click")
 
-		console.log(wrapper.emitted(), "\n\n\n")
-
 		expect(wrapper.emitted()).not.toHaveProperty("update:modelValue")
 	})
 

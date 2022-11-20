@@ -1,10 +1,10 @@
 <template>
-	<div v-if="isInMaintenance">
+	<MaintenanceMessage v-if="isInMaintenanceMode"/>
+	<div v-else>
 		<Opening/>
 		<Instructions/>
 		<ChangePassword v-if="hasDefaultPassword"/>
 	</div>
-	<MaintenanceMessage v-else/>
 </template>
 
 <script lang="ts" setup>
@@ -20,7 +20,7 @@ import ChangePassword from "@/authentication/change_password.vue"
 import MaintenanceMessage from "@/helpers/maintenance_message.vue"
 
 const { pageProps } = inject("pageContext") as PageContext<"deserialized">
-const { userProfile, isInMaintenance } = pageProps
+const { userProfile, isInMaintenanceMode } = pageProps
 
 const hasDefaultPassword = userProfile !== null
 	&& !isUndefined(userProfile.meta.hasDefaultPassword)

@@ -8,7 +8,7 @@
 		:department-names="departmentNames"
 		:sort-names="sortNames">
 		<template #header>
-			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
+			<TabbedPageHeader title="Role management" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
 					<a
 						v-if="mayCreateRole"
