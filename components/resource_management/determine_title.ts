@@ -13,10 +13,10 @@ export default function<T, U extends PermissionGroup<any, T>>(
 	} else if (permissionGroup.hasOneRoleAllowed(roles, [ departmentScope ])) {
 		const department = userProfile.data.department.data
 		if (department.mayAdmit) {
-			return `Users of ${department.name}`
+			return `Users of ${department.fullName}`
 		}
 
-		return `Employees of ${department.name}`
+		return `Employees of ${department.fullName}`
 	}
 
 	throw new Error("Unauthorized user")
