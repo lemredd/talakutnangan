@@ -77,6 +77,10 @@
 					@screen sm {
 						@apply mb-0;
 					}
+
+					&.department {
+						@apply flex-col;
+					}
 				}
 
 				.existence {
