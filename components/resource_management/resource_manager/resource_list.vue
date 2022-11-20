@@ -198,11 +198,17 @@ function batchRestore() {
 }
 
 function canSelect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) === -1
+	const canBeSelected = maySelect.value && props.selectedIDs.indexOf(id) === -1
+	return canBeSelected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function canDeselect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) > -1
+	const canBeDeselected = maySelect.value && props.selectedIDs.indexOf(id) > -1
+	return canBeDeselected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function select(id: string) {
