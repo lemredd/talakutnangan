@@ -14,16 +14,16 @@
 		<Selectable
 			v-model="semesterOrder"
 			label="Order: "
-			class="order"
+			class="field order"
 			:options="semesterOption"/>
 		<DateSelector
 			v-model="startAt"
-			class="start date"
+			class="field start-at date"
 			label="Starts at:"
 			type="date"/>
 		<DateSelector
 			v-model="endAt"
-			class="end date"
+			class="field end date"
 			label="Ends at:"
 			type="date"/>
 		<button
@@ -34,21 +34,11 @@
 	</form>
 </template>
 
-<style lang="scss">
-	label {
-		@apply my-4;
-	}
-</style>
-
 <style scoped lang="scss">
 @import "@styles/btn.scss";
-	.start, .end {
-		@apply flex flex-row;
-		@apply mt-4;
-	}
 
-	.date {
-		@apply flex flex-col w-max;
+	.field {
+		@apply my-4;
 	}
 
 	.btn-primary {
