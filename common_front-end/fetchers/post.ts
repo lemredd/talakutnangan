@@ -13,7 +13,11 @@ import type {
 	PostIdentifierListDocument
 } from "$/types/documents/post"
 
-import { POST_LINK, COUNT_COMMENTS } from "$/constants/template_links"
+import {
+	POST_LINK,
+	COUNT_COMMENTS,
+	UPDATE_TAG_OF_POST_LINK
+} from "$/constants/template_links"
 
 import BaseFetcher from "$@/fetchers/base"
 import specializePath from "$/helpers/specialize_path"
@@ -66,5 +70,32 @@ export default class PostFetcher extends BaseFetcher<
 			DeserializedPostResource,
 			PostIdentifierListDocument
 		>>
+	}
+
+	async updateAttachedTags(id: string, attachedRoleIDs: string[]): Promise<Response<
+		PostResourceIdentifier,
+		PostAttributes<"serialized">,
+		PostAttributes<"deserialized">,
+		PostResource,
+		DeserializedPostResource,
+		null
+	>> {
+		return await this.handleResponse(
+			this.patchJSON(UPDATE_TAG_OF_POST_LINK, {
+				id
+			}, {
+				"data": attachedRoleIDs.map(roleID => ({
+					"id": roleID,
+					"type": "role"
+				}))
+			})
+		) as Response<
+			PostResourceIdentifier,
+			PostAttributes<"serialized">,
+			PostAttributes<"deserialized">,
+			PostResource,
+			DeserializedPostResource,
+			null
+		>
 	}
 }
