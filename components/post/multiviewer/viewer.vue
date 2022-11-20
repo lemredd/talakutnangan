@@ -393,9 +393,7 @@ async function submitChangesSeparately(): Promise<void> {
 						"id": post.value.posterRole.data.id,
 						"type": "role"
 					}
-				},
-				// eslint-disable-next-line no-undefined
-				"tags": undefined
+				}
 			}
 		}
 	}).then(() => {
