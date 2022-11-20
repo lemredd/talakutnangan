@@ -231,10 +231,7 @@ const roleID = computed<string>({
 
 const postID = computed<string>(() => props.modelValue.id)
 const tags = ref<DeserializedTagResource[]>([
-	{
-		"deletedAt": null,
-		"id": null
-	}
+	...props.modelValue.tags.data
 ])
 const content = computed<string>({
 	get(): string {
