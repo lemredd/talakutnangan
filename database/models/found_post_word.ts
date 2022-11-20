@@ -6,7 +6,6 @@ import {
 	ForeignKey
 } from "sequelize-typescript"
 
-import ProfanityFilter from "%/models/profanity_filter"
 import Post from "%/models/post"
 
 @Table({
@@ -22,13 +21,4 @@ export default class FoundPostWord extends Model {
 
 	@BelongsTo(() => Post)
 		post!: Post
-
-	@ForeignKey(() => ProfanityFilter)
-	@Column({
-		"allowNull": false
-	})
-		profanityFilterID!: number
-
-	@BelongsTo(() => ProfanityFilter)
-		profanityFilter!: ProfanityFilter
 }

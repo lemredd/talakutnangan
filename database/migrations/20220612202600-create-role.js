@@ -37,10 +37,6 @@ module.exports = {
 				allowNull: false,
 				type: Sequelize.INTEGER
 			},
-			profanityFlags: {
-				allowNull: false,
-				type: Sequelize.INTEGER
-			},
 			userFlags: {
 				allowNull: false,
 				type: Sequelize.INTEGER

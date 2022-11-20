@@ -6,7 +6,6 @@ import {
 	ForeignKey
 } from "sequelize-typescript"
 
-import ProfanityFilter from "%/models/profanity_filter"
 import Comment from "%/models/comment"
 
 @Table({
@@ -22,13 +21,4 @@ export default class FoundCommentWord extends Model {
 
 	@BelongsTo(() => Comment)
 		comment!: Comment
-
-	@ForeignKey(() => ProfanityFilter)
-	@Column({
-		"allowNull": false
-	})
-		profanityFilterID!: number
-
-	@BelongsTo(() => ProfanityFilter)
-		profanityFilter!: ProfanityFilter
 }
