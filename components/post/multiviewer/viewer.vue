@@ -132,6 +132,15 @@
 		h4 { @apply text-2xl; }
 		h5 { @apply text-xl; }
 		h6 { @apply text-xl; }
+		strong { @apply font-bold; }
+		em { @apply italic; }
+		blockquote {
+			@apply bg-light-100 dark:bg-opacity-20
+			pl-2 border-l-8 border-blue-800;
+			}
+		code{ @apply text-sm; }
+		hr{ @apply border-b light:border-b-dark-500; }
+		a{ @apply text-blue-800; }
 	}
 </style>
 
