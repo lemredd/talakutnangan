@@ -26,9 +26,9 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
 		const tag = await new TagFactory().insertOne()
-		const post = await new PostFactory().insertOne()
+		const model = await new PostFactory().insertOne()
 		await new PostTagFactory()
-		.post(() => Promise.resolve(post))
+		.post(() => Promise.resolve(model))
 		.tag(() => Promise.resolve(tag))
 		.insertOne()
 
@@ -42,7 +42,7 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn(() => true),
 			"params": {
-				"id": post.id
+				"id": model.id
 			},
 			"user": {
 				...admin,
@@ -62,9 +62,9 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
 		const tag = await new TagFactory().insertOne()
-		const post = await new PostFactory().insertOne()
+		const model = await new PostFactory().insertOne()
 		await new PostTagFactory()
-		.post(() => Promise.resolve(post))
+		.post(() => Promise.resolve(model))
 		.tag(() => Promise.resolve(tag))
 		.insertOne()
 
@@ -78,7 +78,7 @@ describe("Controller: PATCH /api/post/:id/relationships/tag", () => {
 		requester.customizeRequest({
 			"isAuthenticated": jest.fn(() => true),
 			"params": {
-				"id": post.id
+				"id": model.id
 			},
 			"user": {
 				...dean,
