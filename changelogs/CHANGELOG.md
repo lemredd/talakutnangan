@@ -1,113 +1,54 @@
 # Changelog
 
-## v1.3.0
+## v1.4.0
 
 ### 🚀 Enhancements
-- **consultation:** Open form in new tab (87e35d60)
-- **post:** Make route to update attached tags (87428b40)
-- **chat:** Scroll automatically (0942d4a4)
-- **tag:** Generalize the title for tag management (449a88b8)
-- **resource management:** Hide selection if existence is unmodifiable (5cacdd75)
-- **role:** Generalize the title for management (96e251c0)
-- **role:** Generalize the title for management (d5cadb89)
-- **semester:** Generalize the title for management (7e045850)
-- **audit trail:** Generalize the title for management (c052469b)
-- **user:** Generalize the title for management (e8a641c5)
-- **resource management:** Hide batch buttons if none are selected (20a9e89e)
+- **post:** Allow updating attached tags (ec50ed3f)
+- **post:** Show status messages (176e6171)
 
 ### 🩹 Fixes
-- **post:** Include tags properly (045f715b)
-- **post:** Pass the required ID (81be8734)
-- **chat:** Use matching data profile picture (dc8704f8)
-- **page:** Rename page props properly (490c1ac0)
-- **resource management:** Correct the resource tab infos (5134c9bd)
-- **user:** Show other tabs for dean (5b06d606)
-- **user:** Use the full name department (4ec85835)
-
-### 💅 Refactors
-- **user:** Redetermine the title of the resource page (5cf708b1)
-- **user:** Specialize the determination of title of user management (2bed244b)
+- **constants:** Remove global expression (a9108159)
+- **fetcher:** Correct type and parameter names (3d253d49)
+- **component:** Use proper prop (47b1a640)
+- **server:** Override constraints (09e1c555)
 
 ### 🏡 Chore
-- **fix:** Fix merge conflicts (ff768394)
+- **post:** Remove unused relationship (a4569673)
 
 ### 🎨 Styles
-- **component:** Break words (ac138e18)
-- **post:** Add margin and style button (7939aa64)
-- **component:** Adjust background color (0cd1bf7d)
-- **field:** Make the selectable shown as row in desktop (61a60ab7)
-
-### 🤖 CI
-- Split the unit tests for back-end tests (e1dfd93f)
-- Increase the timeout for unit route tests (243b46d7)
-
-### 🗒️ Configurations
-- Remove unnecessary configuration (4fc0c190)
+- **post:** Style overlay (9ff1e5af)
+- **post:** Style markdown properly (32d107f3)
+- **component:** Pad inner container (7f957699)
+- **post:** Adjust some styles (5c35ace9)
+- **post:** Style markdown properly (607fbb7e)
+- **post:** Style markdown properly (d914d17b)
+- **post:** Appear as column (7b617ed4)
+- **component:** Appear as column (072fc541)
+- **post:** Adjust margins (57024361)
+- **page:** Join header and button (3160c1b5)
+- **component:** Adjust margin and responsiveness (eb47b93f)
+- **page:** Adjust opacity (e0215f75)
+- **post:** Unnest class-based style (a87c2a5b)
 
 ### 👓 Reformed Templates
-- **consultation:** View new details conditionally (dc537b74)
-- **consultation:** Show controls conditionally (2c6e5e07)
-- **consultation:** Pass message activities (f7e3c94b)
+- **post:** Move tags below post content (ff627a2b)
+- **post:** Add header (a8acec8f)
+- **post:** Show success messages (7ff45e0d)
+- **post:** Reorder position of tags (c00a31e5)
+- **post:** Add a space (1dd72d2a)
 
 ### 🔩 Internals
-- **manager:** Add method to reattach the tags (9564c489)
-- **server:** Include the enhancers for the pages to guard them (82f89087)
-- **server:** Default to maintenance mode (ca6c68fa)
-- **route:** Add transaction in chat message archive (be946b30)
-- **route:** Add transaction in chat message activity archive (ada16268)
-- **route:** Add transaction in comment archive (47edb0fd)
-- **route:** Add transaction in comment vote archive (8707b49a)
-- **route:** Add transaction in consultation archive (6afc93d1)
-- **route:** Add transaction in department archive (216de591)
-- **route:** Add transaction in employee schedule archive (14337482)
-- **route:** Add transaction in post archive (e111bafa)
-- **route:** Add transaction in post attachment archive (ab24b32c)
-- **route:** Add transaction in profanity filter archive (27b725b7)
-- **route:** Add transaction in role archive (d42c7453)
-- **route:** Add transaction in semester archive (9735f084)
-- **route:** Add transaction in tag archive (3a0a78a7)
-- **route:** Add transaction in user archive (bd2a389f)
-- **route:** Add transaction in chat message restore (2fe4e841)
-- **route:** Add transaction in chat message activity restore (c94e6f73)
-- **route:** Add transaction in comment restore (284430ea)
-- **route:** Add transaction in comment vote restore (36dbad16)
-- **route:** Add transaction in consultation restore (9fb81593)
-- **route:** Add transaction in department restore (73acf09d)
-- **route:** Add transaction in post restore (46cbd3e1)
-- **route:** Add transaction in profanity filter restore (89b30cde)
-- **route:** Add transaction in role restore (29c7421a)
-- **route:** Add transaction in semester restore (e58a086f)
-- **route:** Add transaction in tag restore (fdeff57b)
-- **route:** Add transaction in user restore (59c7b236)
-- **post:** Include the department of owner (0b03269d)
-- **post:** Add the tag controllers (91976ece)
-- **component:** Make prop optional (52c6963d)
-- **consultation:** Pass current activities (c7ed82a6)
-- **listener:** Filter matching user data (05d2e6ce)
-- **page:** Correct the conditions to show maintenance message (dae6632a)
-- **resource management:** Make function to determine the title (9968b52a)
-
-### 🌐 Shareables
-- **permission:** Make combination for tag (6b013b5e)
-- **constant:** Make the link to update the tag of post (f8b76bbd)
-
-### 🔦 Developer Experience
-- **command:** Remove deprecated command name (4d6b80b8)
+- **post:** Increase max length (63990ad3)
+- **post:** Associate tags once provided (adcf6a4b)
+- **post:** Destructure post tags (b63afcfb)
+- **fetcher:** Allow updating of post tags (39b8127d)
 
 ### 🦠 Unit Tests
-- **post:** Allow any type of post resource (019ef627)
-- **manager:** Ensure reattachment of tags works as expected (201c8489)
-- **post:** Prepare test to update tags of a post (a7849ff0)
-- **post:** Ensure to set the appropriate flags (a17b9d9d)
-- **consultation:** Ensure scrolling to latest chat (e98cb773)
-- **component:** Remove debuggeres (d1067b3b)
-- **component:** Mock some passed data (a9a79c5d)
-
-### 🕷 Integration Tests
-- **consultation:** Stub element method (e324f43c)
+- **fetcher:** Ensure updating attached tags (d8a13f55)
+- **fetcher:** Prepare test for updating role (49e02c8f)
+- **fetcher:** Ensure updating of attached roles (9dc6d8e4)
 
 ### ❤️  Contributors
-- Angelo Magtoto
 - Ardrin Gregorio
 - Jarlem Red De Peralta
 - Kenneth Trecy Tobias
