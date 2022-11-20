@@ -329,8 +329,10 @@ function updatePost(): void {
 
 const hasUpdatedTags = ref<boolean>(true)
 function updateTags() {
+	const tagIDs = tags.value.map(tag => tag.id)
 	hasUpdatedTags.value = false
-	// Add code to update the tags
+	fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
+	.then()
 	hasUpdatedTags.value = true
 }
 
