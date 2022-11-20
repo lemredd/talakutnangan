@@ -153,7 +153,7 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 
 const userFetcher = new UserFetcher()
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 const props = defineProps<{
 	isShown: boolean,
 	modelValue: DeserializedPostResource<AssociatedPostResource>
