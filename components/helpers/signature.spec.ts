@@ -50,7 +50,6 @@ describe("Component: helpers/signature", () => {
 
 		const image = wrapper.find("img")
 		const source = image.attributes("src")
-		console.log(image.html(), "\n\n\n")
 
 		expect(source).toBe(sampleURL)
 	})
