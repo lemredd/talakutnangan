@@ -64,3 +64,18 @@ export const ARCHIVE_AND_RESTORE_PUBLIC_POST_ON_ANY_DEPARTMENT: Permissions[] = 
 	"archiveAndRestore",
 	"writeOverallScope"
 ]
+
+export const TAG_PERSONAL_POST_ON_OWN_DEPARTMENT: Permissions[] = [
+	"tag",
+	"writeOwnScope"
+]
+
+export const TAG_SOCIAL_POST_ON_OWN_DEPARTMENT: Permissions[] = [
+	"tag",
+	"writeDepartmentScope"
+]
+
+export const TAG_PUBLIC_POST_ON_ANY_DEPARTMENT: Permissions[] = [
+	"tag",
+	"writeOverallScope"
+]

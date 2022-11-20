@@ -114,4 +114,13 @@ export const COUNT_COMMENTS = `${POST_LINK.unbound}/count_comments?:query`
 
 export const COUNT_USERS_OF_DEPARTMENT = `${DEPARTMENT_LINK.unbound}/count_users?:query`
 
+/**
+ * Requires the `id` of the user
+ */
 export const RESET_PASSWORD_LINK = `${USER_LINK.unbound}/reset_password/:id`
+
+/**
+ * Requires the `id` of the post
+ */
+export const UPDATE_TAG_OF_POST_LINK
+= `${POST_LINK.bound}/relationships/${TAG_LINK.type}`

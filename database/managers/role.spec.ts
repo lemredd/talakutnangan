@@ -1,8 +1,8 @@
 import Factory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import Condition from "%/helpers/condition"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
-import Condition from "%/helpers/condition"
 
 import Manager from "./role"
 
