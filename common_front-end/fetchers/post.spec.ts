@@ -1,4 +1,4 @@
-import { COUNT_COMMENTS } from "$/constants/template_links"
+import { COUNT_COMMENTS, UPDATE_TAG_OF_POST_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
@@ -27,5 +27,25 @@ describe("Fetcher: Post", () => {
 			})
 		}))
 		expect(response).toHaveProperty("status", RequestEnvironment.status.OK)
+	})
+
+	it("can update attached tags", async() => {
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+		const postID = "1"
+		const tagIDs = [ "1" ]
+		const fetcher = new Fetcher()
+
+		const response = await fetcher.updateAttachedTags(postID, tagIDs)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", specializePath(UPDATE_TAG_OF_POST_LINK, {
+			"id": postID
+		}))
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
 })
