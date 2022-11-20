@@ -63,7 +63,7 @@
 			overflow-y: scroll;
 
 			.filter-field-container {
-				@apply p-4 mb-4;
+				@apply p-2;
 				@apply flex flex-col justify-between flex-wrap items-stretch;
 				@apply bg-gray-300 bg-opacity-20;
 
@@ -74,7 +74,7 @@
 				.filter{
 					@apply mb-4;
 
-					@screen sm {
+					@screen md {
 						@apply mb-0;
 					}
 
