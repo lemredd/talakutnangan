@@ -72,7 +72,7 @@
 						</small>
 						<span
 							class="remove-file-btn material-icons cursor-pointer"
-							@click="removeFile">
+							@click="removeFile(attachment.id)">
 							close
 						</span>
 					</div>
