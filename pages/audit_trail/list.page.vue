@@ -5,7 +5,7 @@
 		:is-loaded="isLoaded"
 		:sort-names="sortNames">
 		<template #header>
-			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
+			<TabbedPageHeader title="Audit trail management" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
 				</template>
 			</TabbedPageHeader>

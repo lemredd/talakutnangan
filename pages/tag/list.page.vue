@@ -6,7 +6,7 @@
 		:sort-names="sortNames"
 		:is-loaded="isLoaded">
 		<template #header>
-			<TabbedPageHeader title="Admin Configuration" :tab-infos="resourceTabInfos">
+			<TabbedPageHeader title="Tag management" :tab-infos="resourceTabInfos">
 				<template #additional-controls>
 					<a
 						v-if="mayCreateTag"
