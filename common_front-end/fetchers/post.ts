@@ -72,7 +72,7 @@ export default class PostFetcher extends BaseFetcher<
 		>>
 	}
 
-	async updateAttachedTags(id: string, attachedRoleIDs: string[]): Promise<Response<
+	async updateAttachedTags(id: string, attachedTagIDs: string[]): Promise<Response<
 		PostResourceIdentifier,
 		PostAttributes<"serialized">,
 		PostAttributes<"deserialized">,
@@ -84,9 +84,9 @@ export default class PostFetcher extends BaseFetcher<
 			this.patchJSON(UPDATE_TAG_OF_POST_LINK, {
 				id
 			}, {
-				"data": attachedRoleIDs.map(roleID => ({
-					"id": roleID,
-					"type": "role"
+				"data": attachedTagIDs.map(tagID => ({
+					"id": tagID,
+					"type": "tag"
 				}))
 			})
 		) as Response<
