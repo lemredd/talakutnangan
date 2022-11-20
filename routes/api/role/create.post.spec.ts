@@ -25,7 +25,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": role.postFlags,
 						"commentFlags": role.commentFlags,
 						"semesterFlags": role.semesterFlags,
-						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
@@ -54,7 +53,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": role.postFlags,
 						"commentFlags": role.commentFlags,
 						"semesterFlags": role.semesterFlags,
-						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
@@ -84,7 +82,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": role.postFlags,
 						"commentFlags": role.commentFlags,
 						"semesterFlags": role.semesterFlags,
-						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
@@ -117,7 +114,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": newRole.postFlags,
 						"commentFlags": newRole.commentFlags,
 						"semesterFlags": newRole.semesterFlags,
-						"profanityFlags": newRole.profanityFlags,
 						"auditTrailFlags": newRole.auditTrailFlags
 					}
 				}
@@ -150,7 +146,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": role.postFlags,
 						"commentFlags": role.commentFlags,
 						"semesterFlags": role.semesterFlags,
-						"profanityFlags": role.profanityFlags,
 						"auditTrailFlags": role.auditTrailFlags
 					}
 				}
@@ -181,7 +176,6 @@ describe("Controller: POST /api/role", () => {
 						"postFlags": role.postFlags + 1,
 						"commentFlags": role.commentFlags + 1,
 						"semesterFlags": role.semesterFlags + 1,
-						"profanityFlags": role.profanityFlags + 1,
 						"auditTrailFlags": role.auditTrailFlags + 1
 					}
 				}
@@ -191,13 +185,12 @@ describe("Controller: POST /api/role", () => {
 		await requester.runMiddleware(bodyValidationFunction)
 
 		const body = requester.expectFailure(ErrorBag).toJSON()
-		expect(body).toHaveLength(7)
+		expect(body).toHaveLength(6)
 		expect(body).toHaveProperty("0.source.pointer", "data.attributes.auditTrailFlags")
 		expect(body).toHaveProperty("1.source.pointer", "data.attributes.commentFlags")
 		expect(body).toHaveProperty("2.source.pointer", "data.attributes.postFlags")
-		expect(body).toHaveProperty("3.source.pointer", "data.attributes.profanityFlags")
-		expect(body).toHaveProperty("4.source.pointer", "data.attributes.semesterFlags")
-		expect(body).toHaveProperty("5.source.pointer", "data.attributes.tagFlags")
-		expect(body).toHaveProperty("6.source.pointer", "data.attributes.userFlags")
+		expect(body).toHaveProperty("3.source.pointer", "data.attributes.semesterFlags")
+		expect(body).toHaveProperty("4.source.pointer", "data.attributes.tagFlags")
+		expect(body).toHaveProperty("5.source.pointer", "data.attributes.userFlags")
 	})
 })

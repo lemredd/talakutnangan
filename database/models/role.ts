@@ -52,11 +52,6 @@ export default class Role extends Model {
 	@Column({
 		"allowNull": false
 	})
-		profanityFlags!: number
-
-	@Column({
-		"allowNull": false
-	})
 		userFlags!: number
 
 	@Column({

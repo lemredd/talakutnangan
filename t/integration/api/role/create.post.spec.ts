@@ -32,7 +32,6 @@ describe("POST /api/role", () => {
 					"tagFlags": role.tagFlags,
 					"postFlags": role.postFlags,
 					"commentFlags": role.commentFlags,
-					"profanityFlags": role.profanityFlags,
 					"userFlags": role.userFlags,
 					"auditTrailFlags": role.auditTrailFlags
 				}

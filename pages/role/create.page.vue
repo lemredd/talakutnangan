@@ -62,7 +62,6 @@ const INITIAL_VALUE: RoleAttributes<"deserialized"> = {
 	"departmentFlags": 1,
 	"name": "",
 	"postFlags": 0,
-	"profanityFlags": 0,
 	"roleFlags": 1,
 	"semesterFlags": 0,
 	"tagFlags": 0,

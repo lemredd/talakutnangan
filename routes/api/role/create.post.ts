@@ -16,7 +16,6 @@ import {
 	post,
 	comment,
 	semester,
-	profanity,
 	auditTrail
 } from "$/permissions/permission_list"
 
@@ -56,7 +55,6 @@ export default class extends JSONController {
 			...makeFlagRules("tagFlags", tag),
 			...makeFlagRules("postFlags", post),
 			...makeFlagRules("commentFlags", comment),
-			...makeFlagRules("profanityFlags", profanity),
 			...makeFlagRules("userFlags", user),
 			...makeFlagRules("auditTrailFlags", auditTrail)
 		}
