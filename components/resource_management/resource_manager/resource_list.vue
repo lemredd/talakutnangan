@@ -166,10 +166,10 @@ const friendlySelectedRestorableQuantity = computed<string>(
 
 const mayBatchArchive = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayArchive
-))
+) && selectedArchivableItems.value.length > 0)
 const mayBatchRestore = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayRestore
-))
+) && selectedRestorableItems.value.length > 0)
 
 function makePath(id: string): string {
 	if (props.templatePath) {
