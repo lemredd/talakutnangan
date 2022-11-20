@@ -101,7 +101,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 const post = ref<DeserializedPostResource<AssociatedPostResource>>(
 	pageProps.post.data as DeserializedPostResource<AssociatedPostResource>
 )

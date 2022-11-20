@@ -1,5 +1,4 @@
 import ControllerLike from "!/bases/controller-like"
-import RequestEnvironment from "$!/singletons/request_environment"
 
 import GetHome from "!%/enhancer/home.get"
 import GetIndex from "!%/enhancer/index.get"
@@ -14,19 +13,17 @@ import { controllers as userSettingsControllers } from "!%/enhancer/settings/rou
 import { controllers as auditTrailControllers } from "!%/enhancer/audit_trail/router"
 import { controllers as consultationControllers } from "!%/enhancer/consultation/router"
 
-export const controllers: (new() => ControllerLike)[] = RequestEnvironment.isInMaintenanceMode
-	? [ GetIndex ]
-	: [
-		...tagControllers,
-		...userControllers,
-		...roleControllers,
-		...postControllers,
-		...forumControllers,
-		...auditTrailControllers,
-		...semesterControllers,
-		...departmentControllers,
-		...consultationControllers,
-		...userSettingsControllers,
-		GetHome,
-		GetIndex
-	]
+export const controllers: (new() => ControllerLike)[] = [
+	...tagControllers,
+	...userControllers,
+	...roleControllers,
+	...postControllers,
+	...forumControllers,
+	...auditTrailControllers,
+	...semesterControllers,
+	...departmentControllers,
+	...consultationControllers,
+	...userSettingsControllers,
+	GetHome,
+	GetIndex
+]
