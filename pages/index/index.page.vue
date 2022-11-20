@@ -1,10 +1,10 @@
 <template>
-	<div v-if="isInMaintenanceMode">
+	<MaintenanceMessage v-if="isInMaintenanceMode"/>
+	<div v-else>
 		<Opening/>
 		<Instructions/>
 		<ChangePassword v-if="hasDefaultPassword"/>
 	</div>
-	<MaintenanceMessage v-else/>
 </template>
 
 <script lang="ts" setup>
