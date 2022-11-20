@@ -119,7 +119,7 @@ const isLoaded = ref(true)
 const determinedTitle = computed<string>(() => {
 	const roles = userProfile.data.roles.data
 	if (permissionGroup.hasOneRoleAllowed(roles, [ READ_ANYONE_ON_ALL_DEPARTMENTS ])) {
-		return "Administrator Configuration"
+		return "General user management"
 	} else if (permissionGroup.hasOneRoleAllowed(roles, [ READ_ANYONE_ON_OWN_DEPARTMENT ])) {
 		const department = userProfile.data.department.data
 		if (department.mayAdmit) {
