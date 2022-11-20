@@ -22,7 +22,10 @@
 					:maximum-tags="MAX_TAGS"
 					text-field-label="Type the tags to add"/>
 				<Suspensible :is-loaded="hasUpdatedTags">
-					<button type="button" @click="updateTags">
+					<button
+						type="button"
+						class="btn btn-primary"
+						@click="updateTags">
 						Update tags
 					</button>
 				</Suspensible>
@@ -101,6 +104,13 @@
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 
+	.optional-tags {
+		@apply mt-5 mb-5;
+	}
+
+	.btn {
+		@apply mb-5;
+	}
 	.preview-img{
 		@apply py-5;
 		max-width:100%;
@@ -220,7 +230,12 @@ const roleID = computed<string>({
 })
 
 const postID = computed<string>(() => props.modelValue.id)
-const tags = ref<DeserializedTagResource[]>([])
+const tags = ref<DeserializedTagResource[]>([
+	{
+		"deletedAt": null,
+		"id": null
+	}
+])
 const content = computed<string>({
 	get(): string {
 		return props.modelValue.content
