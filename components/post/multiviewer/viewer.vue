@@ -44,7 +44,7 @@
 				</button>
 			</template>
 		</Overlay>
-		<header>
+		<header class="post-header">
 			<div class="post-details">
 				<div class="poster">
 					<ProfilePicture
@@ -79,6 +79,16 @@
 					@archive-post="confirmArchive"
 					@restore-post="confirmRestore"/>
 			</div>
+			<div v-if="hasExistingTags" class="attached-tags">
+				<div
+					v-for="tag in tags"
+					:key="tag.id"
+					class="tag selected">
+					<span>
+						{{ tag.name }}
+					</span>
+				</div>
+			</div>
 		</header>
 		<!-- eslint-disable-next-line vue/no-v-html -->
 		<p class="post-content" v-html="formattedContent"></p>
@@ -107,18 +117,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="post-footer">
-			<div v-if="hasExistingTags" class="attached-tags">
-				<h6 class="attached-tags-header">Tags</h6>
-				<div
-					v-for="tag in tags"
-					:key="tag.id"
-					class="tag selected">
-					<span>
-						{{ tag.name }}
-					</span>
-				</div>
-			</div>
+		<footer class="post-footer">
 			<a :href="readPostPath" class="comment-count">
 				<span class="material-icons icon">
 					comment
@@ -127,7 +126,7 @@
 					{{ friendlyCommentCount }}
 				</span>
 			</a>
-		</div>
+		</footer>
 	</article>
 </template>
 
@@ -161,9 +160,8 @@
 		@apply p-4 bg-gray-400 bg-opacity-20 shadow-md;
 		@apply dark:bg-opacity-10;
 
-		header {
-			@apply flex flex-row justify-between;
-
+		.post-header {
+			@apply flex flex-col justify-between;
 			.post-details {
 				@apply mb-4;
 				@apply flex-1 flex flex-row justify-between;
@@ -187,6 +185,10 @@
 					}
 				}
 			}
+
+			.attached-tags {
+				@apply mb-4;
+			}
 		}
 
 		.comment-count {
@@ -198,16 +200,9 @@
 			word-wrap: normal;
 		}
 
+
 		.post-footer {
 			@apply mt-8;
-
-			.attached-tags {
-				@apply mb-4;
-
-				.attached-tags-header {
-					@apply text-sm;
-				}
-			}
 		}
 	}
 
