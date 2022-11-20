@@ -176,8 +176,7 @@ Param(
 		"unit:server",
 		"unit:database",
 		"intg:back",
-		"unit_ci:back",
-		"unit_ci:back_database"
+		"unit_ci:back"
 	)]
 	[string]
 	$SuiteName,

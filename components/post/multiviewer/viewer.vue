@@ -73,13 +73,15 @@
 						</span>
 					</div>
 				</div>
-				<div
-					v-for="tag in post.tags.data"
-					:key="tag.id"
-					class="tag selected">
-					<span>
-						{{ tag.name }}
-					</span>
+				<div v-if="hasExistingTags">
+					<div
+						v-for="tag in tags"
+						:key="tag.id"
+						class="tag selected">
+						<span>
+							{{ tag.name }}
+						</span>
+					</div>
 				</div>
 				<Menu
 					:post="post"
@@ -88,7 +90,8 @@
 					@restore-post="confirmRestore"/>
 			</div>
 		</header>
-		<p v-html="formattedContent" class="post-content"></p>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<p class="post-content" v-html="formattedContent"></p>
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
@@ -198,7 +201,7 @@
 import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
-
+import type { DeserializedTagResource, DeserializedTagListDocument } from "$/types/documents/tag"
 import type {
 	DeserializedPostAttachmentResource,
 	DeserializedPostAttachmentListDocument
@@ -257,7 +260,6 @@ const formattedContent = computed<string>(() => {
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
-
 	return hasAttachments
 })
 const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
@@ -266,6 +268,20 @@ const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 		.postAttachments as DeserializedPostAttachmentListDocument
 
 		return attachments.data
+	}
+
+	return []
+})
+
+const hasExistingTags = computed<boolean>(() => {
+	const hasTags = !isUndefined(props.modelValue.tags)
+	return hasTags
+})
+const tags = computed<DeserializedTagResource[]>(() => {
+	if (hasExistingTags.value) {
+		const tagList = props.modelValue.tags as DeserializedTagListDocument
+
+		return tagList.data
 	}
 
 	return []
@@ -349,8 +365,6 @@ async function submitChangesSeparately(): Promise<void> {
 				"department": undefined,
 				// eslint-disable-next-line no-undefined
 				"postAttachments": undefined,
-				// eslint-disable-next-line no-undefined
-				"tags": undefined,
 				"poster": {
 					"data": {
 						"id": post.value.poster.data.id,
@@ -362,7 +376,9 @@ async function submitChangesSeparately(): Promise<void> {
 						"id": post.value.posterRole.data.id,
 						"type": "role"
 					}
-				}
+				},
+				// eslint-disable-next-line no-undefined
+				"tags": undefined
 			}
 		}
 	}).then(() => {
