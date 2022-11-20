@@ -144,4 +144,24 @@ describe("Fetcher: User", () => {
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 		expect(response).toHaveProperty("body", null)
 	})
+
+	it("can update attached tags", async() => {
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+		const postID = "1"
+		const tagIDs = [ "1" ]
+		const fetcher = new Fetcher()
+
+		const response = await fetcher.updateAttachedTags(postID, tagIDs)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", specializePath(UPDATE_TAG_OF_POST_LINK, {
+			"id": postID
+		}))
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
+	})
 })
