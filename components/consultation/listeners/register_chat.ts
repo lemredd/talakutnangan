@@ -29,6 +29,9 @@ export default function(
 	currentChatMessageActivityResource: ComputedRef<
 		DeserializedChatMessageActivityResource<"user"|"consultation">
 	>,
+	currentConsultationActivities: ComputedRef<
+		DeserializedChatMessageActivityResource<"user"|"consultation">[]
+	>,
 	chatMessageActivityFetcher: ChatMessageActivityFetcher
 ) {
 	let isWindowShown = false

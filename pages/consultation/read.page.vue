@@ -253,6 +253,7 @@ onMounted(async() => {
 		consultation,
 		chatMessages,
 		ownCurrentConsultationActivityResource,
+		currentConsultationActivity,
 		chatMessageActivityFetcher
 	)
 	registerConsultationListeners(consultation, consultations, userProfile.data.id)
