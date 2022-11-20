@@ -50,14 +50,12 @@
 			}
 
 			.date {
-				@apply p-2;
 				@apply w-max;
-				@apply border border-gray-400;
 			}
 		}
 
 		.date-range {
-			@apply flex-1 mr-2;
+			@apply flex-1 flex-col mr-2;
 		}
 	}
 </style>
