@@ -66,7 +66,7 @@
 								</span>
 								<span class="timestamp" :title="completeFriendlyPostTimestamp">
 									{{
-										friendlyPostTimestamp
+										` ${friendlyPostTimestamp}`
 									}}
 								</span>
 							</small>
@@ -176,10 +176,12 @@
 						@apply flex flex-col;
 
 						.department-and-timestamp {
-							@apply flex flex-col sm:flex-row;
+							small {
+								@apply flex flex-col sm:flex-row;
 
-							.timestamp {
-								@apply sm:ml-2;
+								.timestamp {
+									@apply sm:ml-2;
+								}
 							}
 						}
 					}
