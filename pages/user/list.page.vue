@@ -11,7 +11,7 @@
 		:role-names="roleNames">
 		<template #header>
 			<TabbedPageHeader
-				:title="determineTitle"
+				:title="determinedTitle"
 				:tab-infos="resourceTabInfos">
 				<template #additional-controls>
 					<a
@@ -75,6 +75,7 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
+import determineTitle from "@/resource_management/determine_title"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
@@ -82,8 +83,12 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import makeExistenceOperators from "@/resource_management/make_existence_operators"
 import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
-import { IMPORT_USERS, READ_ANYONE_ON_ALL_DEPARTMENTS } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
+import {
+	IMPORT_USERS,
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+} from "$/permissions/user_combinations"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
@@ -111,16 +116,12 @@ const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 const isLoaded = ref(true)
 
-const determineTitle = computed(() => {
-	if (currentResourceManager.isInstituteLimited()) {
-		return `Users of ${currentUserDepartment.fullName}`
-	}
-	if (currentResourceManager.isStudentServiceLimited()) {
-		return `Employees of ${currentUserDepartment.fullName}`
-	}
-
-	return "Administrator Configuration"
-})
+const determinedTitle = computed(() => determineTitle(
+	userProfile,
+	permissionGroup,
+	READ_ANYONE_ON_OWN_DEPARTMENT,
+	READ_ANYONE_ON_ALL_DEPARTMENTS
+))
 
 const headers = [ "Name", "E-mail", "Kind", "Department" ]
 const list = ref<DeserializedUserListDocument<"roles"|"department">>(
