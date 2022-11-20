@@ -268,7 +268,6 @@ const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
-const receivedErrors = ref<string[]>([])
 
 function removeFile(id: string) {
 	postAttachmentFetcher.archive(
@@ -340,7 +339,16 @@ function updateTags() {
 	const tagIDs = tags.value.map(tag => tag.id)
 	hasUpdatedTags.value = false
 	fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
-	.then()
+	.then(() => fillSuccessMessages(
+		receivedErrors,
+		successMessages,
+		"Successfully update tags."
+	))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors,
+		receivedErrors,
+		successMessages
+	))
 	hasUpdatedTags.value = true
 }
 
