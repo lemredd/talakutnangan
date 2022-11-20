@@ -44,7 +44,7 @@
 				</button>
 			</template>
 		</Overlay>
-		<header>
+		<header class="post-header">
 			<div class="post-details">
 				<div class="poster">
 					<ProfilePicture
@@ -66,20 +66,10 @@
 								</span>
 								<span class="timestamp" :title="completeFriendlyPostTimestamp">
 									{{
-										friendlyPostTimestamp
+										` ${friendlyPostTimestamp}`
 									}}
 								</span>
 							</small>
-						</span>
-					</div>
-				</div>
-				<div v-if="hasExistingTags">
-					<div
-						v-for="tag in tags"
-						:key="tag.id"
-						class="tag selected">
-						<span>
-							{{ tag.name }}
 						</span>
 					</div>
 				</div>
@@ -88,6 +78,16 @@
 					@update-post="openUpdateForm"
 					@archive-post="confirmArchive"
 					@restore-post="confirmRestore"/>
+			</div>
+			<div v-if="hasExistingTags" class="attached-tags">
+				<div
+					v-for="tag in tags"
+					:key="tag.id"
+					class="tag selected">
+					<span>
+						{{ tag.name }}
+					</span>
+				</div>
 			</div>
 		</header>
 		<!-- eslint-disable-next-line vue/no-v-html -->
@@ -117,14 +117,16 @@
 				</div>
 			</div>
 		</div>
-		<a :href="readPostPath" class="comment-count">
-			<span class="material-icons icon">
-				comment
-			</span>
-			<span>
-				{{ friendlyCommentCount }}
-			</span>
-		</a>
+		<footer class="post-footer">
+			<a :href="readPostPath" class="comment-count">
+				<span class="material-icons icon">
+					comment
+				</span>
+				<span>
+					{{ friendlyCommentCount }}
+				</span>
+			</a>
+		</footer>
 	</article>
 </template>
 
@@ -223,12 +225,13 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
+		@apply p-4 bg-gray-400 bg-opacity-20 shadow-md;
+		@apply dark:bg-opacity-10;
 
-		header {
-			@apply flex flex-row justify-between;
-
+		.post-header {
+			@apply flex flex-col justify-between;
 			.post-details {
+				@apply mb-4;
 				@apply flex-1 flex flex-row justify-between;
 
 				.poster {
@@ -241,24 +244,35 @@
 						@apply flex flex-col;
 
 						.department-and-timestamp {
-							@apply flex flex-col sm:flex-row;
+							small {
+								@apply flex flex-col sm:flex-row;
 
-							.timestamp {
-								@apply sm:ml-2;
+								.timestamp {
+									@apply sm:ml-2;
+								}
 							}
 						}
 					}
 				}
 			}
+
+			.attached-tags {
+				@apply mb-4;
+			}
 		}
 
 		.comment-count {
-			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
+			@apply flex-initial flex flex-row flex-nowrap justify-start items-center;
 		}
 
 		> p {
 			word-break: normal;
 			word-wrap: normal;
+		}
+
+
+		.post-footer {
+			@apply mt-8;
 		}
 	}
 
@@ -444,9 +458,7 @@ async function submitChangesSeparately(): Promise<void> {
 						"id": post.value.posterRole.data.id,
 						"type": "role"
 					}
-				},
-				// eslint-disable-next-line no-undefined
-				"tags": undefined
+				}
 			}
 		}
 	}).then(() => {

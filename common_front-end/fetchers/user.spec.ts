@@ -1,11 +1,15 @@
 /* eslint-disable no-undef */
 import type { UnitError } from "$/types/server"
 
-import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
+import {
+	UPDATE_PASSWORD_LINK,
+	UPDATE_ROLE_OF_USER_LINK
+} from "$/constants/template_links"
 
-import UserFetcher from "$@/fetchers/user"
 import specializePath from "$/helpers/specialize_path"
 import RequestEnvironment from "$/singletons/request_environment"
+
+import Fetcher from "./user"
 
 describe("Fetcher: User", () => {
 	it("can log in", async() => {
@@ -19,7 +23,7 @@ describe("Fetcher: User", () => {
 			{ "status": RequestEnvironment.status.OK }
 		)
 
-		const fetcher = new UserFetcher()
+		const fetcher = new Fetcher()
 		const response = await fetcher.logIn({
 			"email": "sample@example.com",
 			"password": "1234"
@@ -44,7 +48,7 @@ describe("Fetcher: User", () => {
 			{ "status": RequestEnvironment.status.NO_CONTENT }
 		)
 
-		const fetcher = new UserFetcher()
+		const fetcher = new Fetcher()
 		const response = await fetcher.logOut()
 		expect(response).toHaveProperty("body", null)
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
@@ -64,7 +68,7 @@ describe("Fetcher: User", () => {
 			}),
 			{ "status": RequestEnvironment.status.UNAUTHORIZED }
 		)
-		const fetcher = new UserFetcher()
+		const fetcher = new Fetcher()
 
 		const response = await fetcher.logOut()
 		const { body } = response
@@ -87,7 +91,7 @@ describe("Fetcher: User", () => {
 			}),
 			{ "status": RequestEnvironment.status.CREATED }
 		)
-		const fetcher = new UserFetcher()
+		const fetcher = new Fetcher()
 
 		const response = await fetcher.import({} as FormData)
 
@@ -114,7 +118,7 @@ describe("Fetcher: User", () => {
 		const CONFIRM_NEW_PASSWORD = "!"
 		fetchMock.mockResponse("", { "status": RequestEnvironment.status.NO_CONTENT })
 
-		const fetcher = new UserFetcher()
+		const fetcher = new Fetcher()
 		const response = await fetcher.updatePassword(
 			USER_ID,
 			CURRENT_PASSWORD,
@@ -143,5 +147,25 @@ describe("Fetcher: User", () => {
 		})
 		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 		expect(response).toHaveProperty("body", null)
+	})
+
+	it("can update attached tags", async() => {
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+		const postID = "1"
+		const tagIDs = [ "1" ]
+		const fetcher = new Fetcher()
+
+		const response = await fetcher.updateAttachedRole(postID, tagIDs)
+
+		const castFetch = fetch as jest.Mock<any, any>
+		const [ [ request ] ] = castFetch.mock.calls
+		expect(request).toHaveProperty("method", "PATCH")
+		expect(request).toHaveProperty("url", specializePath(UPDATE_ROLE_OF_USER_LINK, {
+			"id": postID
+		}))
+		expect(response).toHaveProperty("status", RequestEnvironment.status.NO_CONTENT)
 	})
 })

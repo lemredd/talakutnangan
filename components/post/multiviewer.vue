@@ -89,12 +89,12 @@
 			}
 		}
 
+		.viewer {
+			@apply flex-1 my-4;
+		}
+
 		.viewer-group {
 			@apply flex-1 flex flex-col;
-
-			.viewer {
-				@apply flex-1 mb-8;
-			}
 		}
 		.load-others {
 			@apply flex-1;

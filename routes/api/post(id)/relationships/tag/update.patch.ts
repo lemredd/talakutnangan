@@ -5,6 +5,8 @@ import type { TagIdentifierListDocument } from "$/types/documents/tag"
 import type { DeserializedPostDocument } from "$/types/documents/post"
 import type { AuthenticatedIDRequest, Response, BaseManagerClass } from "!/types/dependent"
 
+import { MAX_TAGS } from "$/constants/numerical"
+
 import Log from "$!/singletons/log"
 import Policy from "!/bases/policy"
 import Manager from "%/managers/tag"
@@ -67,7 +69,17 @@ export default class extends BoundJSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
-		return makeResourceIdentifierListDocumentRules("tag", exists, Manager)
+		return makeResourceIdentifierListDocumentRules("tag", exists, Manager, {
+			"postDataRules": {
+				"constraints": {
+					"length": {
+						"maximum": MAX_TAGS,
+						"minimum": 0
+					}
+				},
+				"pipes": []
+			}
+		})
 	}
 
 	get manager(): BaseManagerClass { return PostManager }
