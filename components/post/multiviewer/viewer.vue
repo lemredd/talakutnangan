@@ -73,16 +73,6 @@
 						</span>
 					</div>
 				</div>
-				<div v-if="hasExistingTags">
-					<div
-						v-for="tag in tags"
-						:key="tag.id"
-						class="tag selected">
-						<span>
-							{{ tag.name }}
-						</span>
-					</div>
-				</div>
 				<Menu
 					:post="post"
 					@update-post="openUpdateForm"
@@ -117,14 +107,26 @@
 				</div>
 			</div>
 		</div>
-		<a :href="readPostPath" class="comment-count">
-			<span class="material-icons icon">
-				comment
-			</span>
-			<span>
-				{{ friendlyCommentCount }}
-			</span>
-		</a>
+		<div class="post-footer">
+			<div v-if="hasExistingTags" class="attached-tags">
+				<div
+					v-for="tag in tags"
+					:key="tag.id"
+					class="tag selected">
+					<span>
+						{{ tag.name }}
+					</span>
+				</div>
+			</div>
+			<a :href="readPostPath" class="comment-count">
+				<span class="material-icons icon">
+					comment
+				</span>
+				<span>
+					{{ friendlyCommentCount }}
+				</span>
+			</a>
+		</div>
 	</article>
 </template>
 
@@ -161,6 +163,7 @@
 			@apply flex flex-row justify-between;
 
 			.post-details {
+				@apply mb-4;
 				@apply flex-1 flex flex-row justify-between;
 
 				.poster {
@@ -185,12 +188,20 @@
 		}
 
 		.comment-count {
-			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
+			@apply flex-initial flex flex-row flex-nowrap justify-start items-center;
 		}
 
 		> p {
 			word-break: normal;
 			word-wrap: normal;
+		}
+
+		.post-footer {
+			@apply mt-8;
+
+			.attached-tags {
+				@apply mb-4;
+			}
 		}
 	}
 
