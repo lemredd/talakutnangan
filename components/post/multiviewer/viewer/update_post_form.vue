@@ -5,6 +5,10 @@
 		</template>
 		<template #default>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedSuccessMessages
+				v-if="successMessages.length"
+				:received-success-messages="successMessages"/>
+
 			<DraftForm
 				:id="postID"
 				v-model="content"
@@ -142,6 +146,7 @@ import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
@@ -150,6 +155,7 @@ import SearchableChip from "@/post/searchable_chip.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const userFetcher = new UserFetcher()
 
@@ -247,6 +253,8 @@ const content = computed<string>({
 
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 function isImage(type: string): boolean {
 	return type.includes("image")
