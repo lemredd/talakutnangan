@@ -128,6 +128,74 @@
 	</article>
 </template>
 
+<style lang="scss">
+	@screen sm {
+		.overlay .content {
+			margin: 5% 0 !important;
+			max-height: 100vh !important;
+		}
+	}
+
+	.post-content {
+		h1 { @apply text-5xl; }
+
+		h2 { @apply text-4xl; }
+
+		h3 { @apply text-3xl; }
+
+		h4 { @apply text-2xl; }
+
+		h5 { @apply text-xl; }
+
+		h6 { @apply text-xl; }
+
+		strong { @apply font-bold; }
+
+		em { @apply italic; }
+
+		blockquote {
+			@apply bg-light-100 dark:bg-opacity-20
+			pl-2 border-l-8 border-blue-800;
+			}
+
+		ol {
+			li {
+				@apply list-item;
+			}
+		}
+		ul {
+			li {
+				@apply ml-6;
+			}
+		}
+		code{ @apply text-sm; }
+
+		hr{ @apply border-b border-b-dark-500 dark:border-b-light-500; }
+
+		a{ @apply text-blue-800; }
+
+		table, th, td {
+				@apply border border-dark-500 dark:border-light-500;
+			}
+
+		pre {
+			@apply dark:bg-gray-800 bg-gray-800  text-light-500;
+		}
+
+		del { @apply line-through; }
+
+		ul {
+			li[class="task-list-item"] {
+				@apply ml-12;
+			}
+		}
+
+		p {
+			mark[class="=="] { @apply bg-yellow-300; }
+		}
+	}
+</style>
+
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	@import "@styles/variables.scss";

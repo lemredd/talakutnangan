@@ -61,7 +61,7 @@ export default class extends JSONController {
 			"content": {
 				"constraints": {
 					"length": {
-						"maximum": 1000,
+						"maximum": 2000,
 						"minimum": 5
 					},
 					"regex": {
