@@ -1,7 +1,7 @@
 <template>
 	<div class="selectable-radio">
 		<h6 class="title">
-			{{ title }}
+			{{ label }}
 		</h6>
 		<div class="options">
 			<label
