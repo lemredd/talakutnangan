@@ -412,6 +412,9 @@ describe("UI Page: Communicate with consultation resource", () => {
 				}
 			}
 		})
+		const selectedConsultationChats
+		= wrapper.find(".selected-consultation-chats").element as HTMLDivElement
+		selectedConsultationChats.scrollBy = jest.fn()
 
 		await flushPromises()
 		await nextTick()
