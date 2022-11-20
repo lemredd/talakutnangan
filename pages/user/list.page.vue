@@ -11,7 +11,6 @@
 		:role-names="roleNames">
 		<template #header>
 			<TabbedPageHeader
-				v-if="currentResourceManager.isAdmin()"
 				:title="determineTitle"
 				:tab-infos="resourceTabInfos">
 				<template #additional-controls>
@@ -23,9 +22,6 @@
 					</a>
 				</template>
 			</TabbedPageHeader>
-			<h1 v-else class="resource-config-header">
-				{{ determineTitle }}
-			</h1>
 		</template>
 
 		<template #resources>
@@ -49,11 +45,6 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
-
-	.resource-config-header {
-		font-size: 1.75em;
-		text-transform: uppercase;
-	}
 
 	.centered-page-counter {
 		@apply mt-4;
