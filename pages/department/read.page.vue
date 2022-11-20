@@ -1,4 +1,6 @@
 <template>
+	<ListRedirector resource-type="semester"/>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -77,6 +79,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Checkbox from "@/fields/checkbox.vue"
 import Suspensible from "@/helpers/suspensible.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"

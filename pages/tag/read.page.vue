@@ -1,4 +1,6 @@
 <template>
+	<ListRedirector resource-type="tag"/>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -62,6 +64,7 @@ import makeManagementInfo from "@/tag/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import TextualField from "@/fields/non-sensitive_text.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
