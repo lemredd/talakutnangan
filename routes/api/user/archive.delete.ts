@@ -1,4 +1,5 @@
 import { FieldRules } from "!/types/validation"
+import type { OptionalMiddleware } from "!/types/independent"
 import { AuthenticatedIDRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 
@@ -9,6 +10,8 @@ import JSONController from "!/controllers/json"
 import AuthorizationError from "$!/errors/authorization"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -45,6 +48,13 @@ export default class extends JSONController {
 		})
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedIDRequest): FieldRules {
 		return makeResourceIdentifierListDocumentRules("user", exists, UserManager)
 	}
@@ -61,9 +71,10 @@ export default class extends JSONController {
 		return new NoContentResponseInfo()
 	}
 
-	get postJobs(): ActionAuditor[] {
+	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("user.archive", () => ({ "isSensitive": true }))
+			new ActionAuditor("user.archive", () => ({ "isSensitive": true })),
+			new TransactionCommitter()
 		]
 	}
 }
