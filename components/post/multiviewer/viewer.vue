@@ -177,15 +177,19 @@
 		table, th, td {
 				@apply border border-dark-500 dark:border-light-500;
 			}
+
 		pre {
 			@apply dark:bg-gray-800 bg-gray-800  text-light-500;
 		}
+
 		del { @apply line-through; }
+
 		ul {
 			li[class="task-list-item"] {
 				@apply ml-12;
 			}
 		}
+
 		p {
 			mark[class="=="] { @apply bg-yellow-300; }
 		}
