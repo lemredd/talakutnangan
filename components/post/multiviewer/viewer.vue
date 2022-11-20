@@ -109,6 +109,7 @@
 		</div>
 		<div class="post-footer">
 			<div v-if="hasExistingTags" class="attached-tags">
+				<h6 class="attached-tags-header">Tags</h6>
 				<div
 					v-for="tag in tags"
 					:key="tag.id"
@@ -201,6 +202,10 @@
 
 			.attached-tags {
 				@apply mb-4;
+
+				.attached-tags-header {
+					@apply text-sm;
+				}
 			}
 		}
 	}
