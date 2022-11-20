@@ -7,7 +7,6 @@ import PostPermissions from "$/permissions/post"
 import UserPermissions from "$/permissions/user"
 import CommentPermissions from "$/permissions/comment"
 import SemesterPermissions from "$/permissions/semester"
-import ProfanityPermissions from "$/permissions/profanity"
 import DepartmentPermissions from "$/permissions/department"
 import AuditTrailPermissions from "$/permissions/audit_trail"
 
@@ -18,7 +17,6 @@ async function main() {
 	const user = new UserPermissions()
 	const comment = new CommentPermissions()
 	const semester = new SemesterPermissions()
-	const profanity = new ProfanityPermissions()
 	const department = new DepartmentPermissions()
 	const auditTrail = new AuditTrailPermissions()
 
@@ -68,14 +66,6 @@ async function main() {
 				"writeOverallScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"create",
-				"update",
-				"archiveAndRestore",
-				"readOverallScope",
-				"writeOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -122,10 +112,6 @@ async function main() {
 				"writeDepartmentScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -167,10 +153,6 @@ async function main() {
 				"readDepartmentScope",
 				"writeDepartmentScope",
 				"vote"
-			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
 			),
 			"userFlags": user.generateMask(
 				"view",
@@ -214,10 +196,6 @@ async function main() {
 				"readDepartmentScope",
 				"writeOwnScope",
 				"vote"
-			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
 			),
 			"userFlags": user.generateMask(
 				"view",
@@ -263,10 +241,6 @@ async function main() {
 				"writeDepartmentScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -310,10 +284,6 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -355,10 +325,6 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -395,10 +361,6 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
-				"view",
-				"readOverallScope"
-			),
 			"userFlags": user.generateMask(
 				"view",
 				"create",
@@ -419,7 +381,6 @@ async function main() {
 		 *    tagFlags: tag.generateMask(),
 		 *    postFlags: post.generateMask(),
 		 *    commentFlags: comment.generateMask(),
-		 *    profanityFlags: profanity.generateMask(),
 		 *    userFlags: user.generateMask(),
 		 *    auditTrailFlags: auditTrail.generateMask("view")
 		 * }
