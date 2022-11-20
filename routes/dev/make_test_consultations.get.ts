@@ -32,7 +32,6 @@ import {
 	post,
 	comment,
 	semester,
-	profanity,
 	department,
 	role
 } from "$/permissions/permission_list"
@@ -108,7 +107,6 @@ export default class extends DevController {
 				"writeOwnScope",
 				"vote"
 			))
-			.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 			.userFlags(user.generateMask(
 				"view",
 				"create",
@@ -162,7 +160,6 @@ export default class extends DevController {
 				"writeOwnScope",
 				"vote"
 			))
-			.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 			.userFlags(user.generateMask(
 				"view",
 				"create",

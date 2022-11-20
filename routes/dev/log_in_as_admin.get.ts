@@ -44,7 +44,6 @@ export default class extends DevController {
 				.tagFlags(0xFFF)
 				.postFlags(0xFFF)
 				.commentFlags(0xFFF)
-				.profanityFlags(0xFFF)
 				.userFlags(0xFFF)
 				.auditTrailFlags(0xFFF)
 				.insertOne()
