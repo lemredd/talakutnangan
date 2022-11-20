@@ -3,6 +3,7 @@ import { COUNT_COMMENTS, UPDATE_TAG_OF_POST_LINK } from "$/constants/template_li
 import specializePath from "$/helpers/specialize_path"
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
+
 import Fetcher from "./post"
 
 describe("Fetcher: Post", () => {
