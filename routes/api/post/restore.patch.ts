@@ -1,10 +1,13 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Policy from "!/bases/policy"
+import Manager from "%/managers/post"
 import JSONController from "!/controllers/json"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import Manager from "%/managers/post"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { post as permissionGroup } from "$/permissions/permission_list"
@@ -29,6 +32,13 @@ export default class extends JSONController {
 		])
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules(
 			"post",
@@ -44,5 +54,11 @@ export default class extends JSONController {
 		await manager.restoreBatch(IDs)
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			new TransactionCommitter()
+		]
 	}
 }

@@ -1,11 +1,14 @@
 import type { FieldRules } from "!/types/validation"
 import type { Request, Response } from "!/types/dependent"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import JSONController from "!/controllers/json"
 import DepartmentManager from "%/managers/department"
 import NoContentResponseInfo from "!/response_infos/no_content"
 import ActionAuditor from "!/middlewares/miscellaneous/action_auditor"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import PermissionBasedPolicy from "!/policies/permission-based"
 import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
@@ -24,6 +27,13 @@ export default class extends JSONController {
 		])
 	}
 
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
+	}
+
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
 		return makeResourceIdentifierListDocumentRules("department", exists, DepartmentManager)
 	}
@@ -37,9 +47,10 @@ export default class extends JSONController {
 		return new NoContentResponseInfo()
 	}
 
-	get postJobs(): ActionAuditor[] {
+	get postJobs(): OptionalMiddleware[] {
 		return [
-			new ActionAuditor("department.archive", () => ({ "isSensitive": true }))
+			new ActionAuditor("department.archive", () => ({ "isSensitive": true })),
+			new TransactionCommitter()
 		]
 	}
 }

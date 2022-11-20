@@ -1,6 +1,7 @@
 import type { FieldRules } from "!/types/validation"
 import type { AuthenticatedRequest, Response } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
+import type { OptionalMiddleware } from "!/types/independent"
 
 import Policy from "!/bases/policy"
 import deserialize from "$/object/deserialize"
@@ -8,6 +9,8 @@ import JSONController from "!/controllers/json"
 import Manager from "%/managers/chat_message_activity"
 import ConsultationManager from "%/managers/consultation"
 import NoContentResponseInfo from "!/response_infos/no_content"
+import TransactionCommitter from "!/middlewares/miscellaneous/transaction_committer"
+import TransactionInitializer from "!/middlewares/miscellaneous/transaction_initializer"
 
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 
@@ -20,6 +23,13 @@ export default class extends JSONController {
 
 	get policy(): Policy {
 		return CommonMiddlewareList.consultationParticipantsOnlyPolicy
+	}
+
+	get postValidationMiddlewares(): OptionalMiddleware[] {
+		const initializer = new TransactionInitializer()
+		return [
+			initializer
+		]
 	}
 
 	makeBodyRuleGenerator(unusedRequest: AuthenticatedRequest): FieldRules {
@@ -50,5 +60,11 @@ export default class extends JSONController {
 		}
 
 		return new NoContentResponseInfo()
+	}
+
+	get postJobs(): OptionalMiddleware[] {
+		return [
+			new TransactionCommitter()
+		]
 	}
 }
