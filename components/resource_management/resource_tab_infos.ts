@@ -42,7 +42,7 @@ import {
 
 const linkInfos: ConditionalLinkInfo<any, any>[] = [
 	{
-		"kinds": [],
+		"kinds": null,
 		"links": [
 			{
 				"icon": "",
@@ -63,7 +63,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"permissionGroup": user
 	},
 	{
-		"kinds": [],
+		"kinds": null,
 		"links": [
 			{
 				"icon": "",
@@ -81,7 +81,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"permissionGroup": role
 	},
 	{
-		"kinds": [],
+		"kinds": null,
 		"links": [
 			{
 				"icon": "",
@@ -99,7 +99,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"permissionGroup": department
 	},
 	{
-		"kinds": [],
+		"kinds": null,
 		"links": [
 			{
 				"icon": "",
@@ -117,7 +117,7 @@ const linkInfos: ConditionalLinkInfo<any, any>[] = [
 		"permissionGroup": semester
 	},
 	{
-		"kinds": [],
+		"kinds": null,
 		"links": [
 			{
 				"icon": "",
