@@ -49,6 +49,7 @@ describe("Component: consultation/chat_window", () => {
 				const fakeChatMessage = {
 					"data": []
 				} as DeserializedChatMessageListDocument
+
 				const wrapper = shallowMount<any>(Component, {
 					"global": {
 						"provide": {
@@ -62,6 +63,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -117,6 +119,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -191,6 +194,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -248,6 +252,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -344,6 +349,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -361,10 +367,12 @@ describe("Component: consultation/chat_window", () => {
 				await nextTick()
 
 				const castedWrapper = wrapper.vm as any
+				// eslint-disable-next-line no-magic-numbers
 				expect(castedWrapper.remainingTime.minutes).toEqual(5)
 				expect(castedWrapper.remainingTime.seconds).toEqual(0)
 				ConsultationTimerManager.nextInterval()
 				expect(castedWrapper.remainingTime.minutes).toEqual(4)
+				// eslint-disable-next-line no-magic-numbers
 				expect(castedWrapper.remainingTime.seconds).toEqual(59)
 
 				const events = wrapper.emitted("updatedConsultationAttributes")
@@ -388,6 +396,61 @@ describe("Component: consultation/chat_window", () => {
 				expect(firstRequestBody).toHaveProperty("data.id", "1")
 				expect(firstRequestBody).toHaveProperty("data.type", "consultation")
 				ConsultationTimerManager.clearAllListeners()
+			})
+
+			it("should scroll to the latest message", async() => {
+				const scheduledStartAt = new Date()
+				const consultant = {
+					"data": {
+						"id": "10",
+						"kind": "reachable_employee",
+						"type": "user"
+					}
+				}
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
+				const id = "1"
+				const fakeConsultation = {
+					"actionTaken": null,
+					consultant,
+					"finishedAt": null,
+					id,
+					"reason": "",
+					scheduledStartAt,
+					"startedAt": null,
+					"type": "consultation"
+				} as DeserializedConsultationResource
+				const fakeChatMessage = {
+					"data": []
+				} as DeserializedChatMessageListDocument
+				const wrapper = shallowMount<any>(Component, {
+					"global": {
+						"provide": {
+							"pageContext": {
+								"pageProps": {
+									"userProfile": consultant
+								}
+							}
+						}
+					},
+					"props": {
+						"chatMessages": fakeChatMessage,
+						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
+						"hasLoadedChatMessages": true,
+						"isConsultationListShown": false
+					}
+				})
+				const selectedConsultationChats
+				= wrapper.find(".selected-consultation-chats").element as HTMLDivElement
+				selectedConsultationChats.scrollBy = jest.fn()
+				await wrapper.setProps({
+					"currentConsultationActivity": [
+						{}
+					]
+				})
+
+				expect(selectedConsultationChats.scrollBy).toHaveBeenCalled()
 			})
 		})
 
@@ -430,6 +493,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -524,6 +588,7 @@ describe("Component: consultation/chat_window", () => {
 					"props": {
 						"chatMessages": fakeChatMessage,
 						"consultation": fakeConsultation,
+						"currentConsultationActivity": [],
 						"hasLoadedChatMessages": true,
 						"isConsultationListShown": false
 					}
@@ -642,6 +707,7 @@ describe("Component: consultation/chat_window", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"currentConsultationActivity": [],
 					"hasLoadedChatMessages": true,
 					"isConsultationListShown": false
 				}
@@ -714,6 +780,7 @@ describe("Component: consultation/chat_window", () => {
 				"props": {
 					"chatMessages": fakeChatMessage,
 					"consultation": fakeConsultation,
+					"currentConsultationActivity": [],
 					"hasLoadedChatMessages": true,
 					"isConsultationListShown": false
 				}
