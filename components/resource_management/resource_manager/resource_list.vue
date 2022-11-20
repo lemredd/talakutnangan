@@ -32,7 +32,7 @@
 					<td v-for="(data, i) in resource.data" :key="i">
 						{{ data }}
 					</td>
-					<td v-if="mayManage">
+					<td v-if="mayManage" class="management-btns">
 						<a
 							v-if="resource.mayEdit"
 							:href="makePath(resource.id)"
@@ -87,8 +87,13 @@
 			border-bottom-width: 1px;
 			padding-bottom: .5rem;
 
-			.btn1 {
-				@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+			.management-btns {
+				@apply mr-4;
+				@apply flex flex-col;
+
+				.btn {
+					@apply my-1;
+				}
 			}
 
 			&.active {
