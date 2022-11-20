@@ -158,7 +158,8 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
+		@apply p-4 bg-gray-400 bg-opacity-20 shadow-md;
+		@apply dark:bg-opacity-10;
 
 		header {
 			@apply flex flex-row justify-between;
