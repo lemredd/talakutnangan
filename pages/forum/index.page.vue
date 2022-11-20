@@ -30,9 +30,12 @@
 		@apply flex flex-col flex-nowrap justify-center items-stretch;
 
 		.forum-header {
+			@apply p-2 bg-gray-400 bg-opacity-20;
+
+			@apply flex justify-between items-center;
+
 			h1 {
-				@apply p-2 bg-gray-400 bg-opacity-10;
-				@apply text-xl;
+				@apply text-base font-semibold sm:text-xl;
 			}
 			.account-attachment {
 				@apply h-6 w-auto;
