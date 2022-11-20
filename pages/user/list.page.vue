@@ -116,12 +116,21 @@ const currentResourceManager = new Manager(userProfile)
 const currentUserDepartment = userProfile.data.department.data
 const isLoaded = ref(true)
 
-const determinedTitle = computed(() => determineTitle(
-	userProfile,
-	permissionGroup,
-	READ_ANYONE_ON_OWN_DEPARTMENT,
-	READ_ANYONE_ON_ALL_DEPARTMENTS
-))
+const determinedTitle = computed<string>(() => {
+	const roles = userProfile.data.roles.data
+	if (permissionGroup.hasOneRoleAllowed(roles, [ READ_ANYONE_ON_ALL_DEPARTMENTS ])) {
+		return "Administrator Configuration"
+	} else if (permissionGroup.hasOneRoleAllowed(roles, [ READ_ANYONE_ON_OWN_DEPARTMENT ])) {
+		const department = userProfile.data.department.data
+		if (department.mayAdmit) {
+			return `User management for ${department.fullName}`
+		}
+
+		return `Employee management for ${department.fullName}`
+	}
+
+	throw new Error("Unauthorized user")
+})
 
 const headers = [ "Name", "E-mail", "Kind", "Department" ]
 const list = ref<DeserializedUserListDocument<"roles"|"department">>(
