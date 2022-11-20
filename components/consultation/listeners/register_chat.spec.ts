@@ -28,6 +28,22 @@ describe("Listener: Chats", () => {
 		const consultation = ref({ id }) as any
 		const chatMessages = ref({ "data": [] }) as any
 		const currentChatMessageActivityResource = ref({}) as any
+		const currentConsultationActivities = ref([
+			{
+				"user": {
+					"data": {
+						"id": "1",
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						},
+						"type": "user"
+					}
+				}
+			}
+		]) as any
 		const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 		const consultationChatNamespace = makeConsultationChatNamespace(id)
 		const sampleUpdatedChatMessageResource = {
@@ -36,15 +52,42 @@ describe("Listener: Chats", () => {
 					"createdAt": new Date().toJSON()
 				},
 				id,
+				"relationships": {
+					"user": {
+						"data": {
+							"id": "1",
+							"type": "user"
+						}
+					}
+				},
 				"type": "chat_message"
-			}
-		}
+			},
+			"included": [
+				{
+					"id": "1",
+					"relationships": {
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						}
+					},
+					"type": "user"
+				},
+				{
+					"id": "1",
+					"type": "profile_picture"
+				}
+			]
+		} as unknown as ChatMessageDocument<"read">
 		Socket.initialize()
 
 		listener(
 			consultation,
 			chatMessages,
 			currentChatMessageActivityResource,
+			currentConsultationActivities,
 			chatMessageActivityFetcher
 		)
 		Socket.emitMockEvent(
@@ -62,6 +105,22 @@ describe("Listener: Chats", () => {
 		const consultation = ref({ id }) as any
 		const chatMessages = ref({ "data": [] }) as any
 		const currentChatMessageActivityResource = ref({}) as any
+		const currentConsultationActivities = ref([
+			{
+				"user": {
+					"data": {
+						"id": "1",
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						},
+						"type": "user"
+					}
+				}
+			}
+		]) as any
 		const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 		const consultationChatNamespace = makeConsultationChatNamespace(id)
 		const sampleUpdatedChatMessageResource = {
@@ -70,15 +129,42 @@ describe("Listener: Chats", () => {
 					"createdAt": new Date().toJSON()
 				},
 				id,
+				"relationships": {
+					"user": {
+						"data": {
+							"id": "1",
+							"type": "user"
+						}
+					}
+				},
 				"type": "chat_message"
-			}
-		}
+			},
+			"included": [
+				{
+					"id": "1",
+					"relationships": {
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						}
+					},
+					"type": "user"
+				},
+				{
+					"id": "1",
+					"type": "profile_picture"
+				}
+			]
+		} as unknown as ChatMessageDocument<"read">
 		Socket.initialize()
 
 		listener(
 			consultation,
 			chatMessages,
 			currentChatMessageActivityResource,
+			currentConsultationActivities,
 			chatMessageActivityFetcher
 		)
 		Socket.emitMockEvent(
@@ -99,6 +185,22 @@ describe("Listener: Chats", () => {
 		const consultation = ref({ id }) as any
 		const chatMessages = ref({ "data": [] }) as any
 		const currentChatMessageActivityResource = ref({ id }) as any
+		const currentConsultationActivities = ref([
+			{
+				"user": {
+					"data": {
+						"id": "1",
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						},
+						"type": "user"
+					}
+				}
+			}
+		]) as any
 		const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 		const consultationChatNamespace = makeConsultationChatNamespace(id)
 		const sampleUpdatedChatMessageResource = {
@@ -107,15 +209,42 @@ describe("Listener: Chats", () => {
 					"createdAt": new Date().toJSON()
 				},
 				id,
+				"relationships": {
+					"user": {
+						"data": {
+							"id": "1",
+							"type": "user"
+						}
+					}
+				},
 				"type": "chat_message"
-			}
-		}
+			},
+			"included": [
+				{
+					"id": "1",
+					"relationships": {
+						"profilePicture": {
+							"data": {
+								"id": "1",
+								"type": "profile_picture"
+							}
+						}
+					},
+					"type": "user"
+				},
+				{
+					"id": "1",
+					"type": "profile_picture"
+				}
+			]
+		} as unknown as ChatMessageDocument<"read">
 		Socket.initialize()
 
 		listener(
 			consultation,
 			chatMessages,
 			currentChatMessageActivityResource,
+			currentConsultationActivities,
 			chatMessageActivityFetcher
 		)
 		DocumentVisibility.emitMockEvent("visible")
