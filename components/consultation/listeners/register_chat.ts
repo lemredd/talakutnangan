@@ -71,6 +71,10 @@ export default function(
 
 	function createMessage(message: ChatMessageDocument<"read">): void {
 		const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
+		const { "id": userIDFromDeserializedMessage } = deserializedMessage.data.user.data
+		const [ matchingChatMessageActivity ] = currentConsultationActivities.value.filter(
+			activity => activity.user.data.id === userIDFromDeserializedMessage
+		)
 		mergeDeserializedMessages(chatMessages, [ deserializedMessage.data ])
 
 		ConsultationTimerManager.restartTimerFor(consultation.value)
