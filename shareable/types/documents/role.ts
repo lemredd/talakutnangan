@@ -33,7 +33,6 @@ export interface RoleAttributes<T extends Format = "serialized"> extends Attribu
 	tagFlags: number,
 	postFlags: number,
 	commentFlags: number,
-	profanityFlags: number,
 	userFlags: number,
 	auditTrailFlags: number,
 	deletedAt: (T extends "serialized" ? string : Date)|null
