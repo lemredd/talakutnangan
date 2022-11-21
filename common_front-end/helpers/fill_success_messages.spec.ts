@@ -23,6 +23,20 @@ describe("Helper: fill success messages", () => {
 		expect(receivedErrors.value).toHaveLength(0)
 	})
 
+	it("can override other success message", () => {
+		const receivedErrors = ref<string[]>([])
+		const successMessages = ref<string[]>([
+			"message 2",
+			"message 3"
+		])
+		const message1 = "message 1"
+
+		helper(receivedErrors, successMessages, message1, true)
+		expect(successMessages.value).toContainEqual(message1)
+		expect(successMessages.value).toHaveLength(1)
+		expect(receivedErrors.value).toHaveLength(0)
+	})
+
 	it("should use general message", () => {
 		const receivedErrors = ref<string[]>([])
 		const successMessages = ref<string[]>([])
