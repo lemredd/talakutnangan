@@ -140,21 +140,31 @@ function updateTag() {
 
 async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
-	.then(() => fillSuccessMessages(
-		receivedErrors,
-		successMessages,
-		"Tag has been archived successfully."
-	))
+	.then(() => {
+		if (!tags.value.data.deletedAt) tags.value.data.deletedAt = new Date()
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Tag has been archived successfully.",
+			true
+		)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
-	.then(() => fillSuccessMessages(
-		receivedErrors,
-		successMessages,
-		"Tag has been restored successfully."
-	))
+	.then(() => {
+		if (tags.value.data.deletedAt) tags.value.data.deletedAt = null
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Tag has been restored successfully.",
+			true
+		)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
