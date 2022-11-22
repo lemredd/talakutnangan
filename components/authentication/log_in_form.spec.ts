@@ -19,7 +19,23 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK })
 
-		const wrapper = shallowMount(Component)
+		const listOfAdminEmails = [
+			"sample1@email.com",
+			"sample2@email.com",
+			"sample3@email.com"
+		]
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							listOfAdminEmails
+						}
+					}
+				}
+			}
+		})
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find(".submit-btn")
@@ -41,7 +57,22 @@ describe("Component: Log In Form", () => {
 	})
 
 	it("should show error from authentication-guarded route", () => {
-		const wrapper = shallowMount<any>(Component, {
+		const listOfAdminEmails = [
+			"sample1@email.com",
+			"sample2@email.com",
+			"sample3@email.com"
+		]
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							listOfAdminEmails
+						}
+					}
+				}
+			},
 			"props": {
 				"receivedErrorFromPageContext": {
 					"detail": "redirected from authentication-guarded route"
@@ -82,7 +113,23 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
-		const wrapper = shallowMount(Component)
+		const listOfAdminEmails = [
+			"sample1@email.com",
+			"sample2@email.com",
+			"sample3@email.com"
+		]
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							listOfAdminEmails
+						}
+					}
+				}
+			}
+		})
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find(".submit-btn")
