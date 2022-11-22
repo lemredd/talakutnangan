@@ -42,10 +42,26 @@
 				Log in
 			</button>
 			<button
-				role="button">
+				role="button"
+				@click="forgetPassword">
 				Forgot Password?
 			</button>
 		</div>
+
+		<Overlay :is-shown="isOverlayShown" @close="cancel">
+			<template #header>
+				<h1>Ask the admin</h1>
+			</template>
+			<template #default>
+				<p class="mb-5">
+					You can directly go to school and ask the admin personally, or
+					contact the admin in one of the following details below:
+				</p>
+				<ul>
+					<li>*<strong>admin.example.1@mcc.edu.ph</strong>.</li>
+				</ul>
+			</template>
+		</Overlay>
 	</div>
 </template>
 
@@ -120,9 +136,11 @@ import type { Serializable } from "$/types/general"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import UserFetcher from "$@/fetchers/user"
+import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
+import Overlay from "@/helpers/overlay.vue"
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
@@ -156,6 +174,19 @@ function logIn() {
 	})
 }
 
+const {
+	"off": closeDialog,
+	"on": openDialog,
+	"state": isOverlayShown
+} = makeSwitch(false)
+
+function forgetPassword(): void {
+	openDialog()
+}
+
+function cancel(): void {
+	closeDialog()
+}
 const defaultProfessor = "default_professor"
 const selectableRoles = [
 	{ "value": "student" },
