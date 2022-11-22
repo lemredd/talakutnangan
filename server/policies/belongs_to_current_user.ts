@@ -3,6 +3,8 @@ import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AdvanceAuthenticationOptions } from "!/types/independent"
 import type { BaseManagerClass, AuthenticatedRequest } from "!/types/dependent"
 
+import { HOME } from "$/constants/template_page_paths"
+
 import deserialize from "$/object/deserialize"
 import PermissionGroup from "$/permissions/base"
 import isUndefined from "$/type_guards/is_undefined"
@@ -55,7 +57,7 @@ export default class <
 		await super.authorize(request)
 
 		if (isUndefined(request.params.id)) {
-			throw new AuthorizationError("Resource ID should be provided.")
+			throw new AuthorizationError("Resource ID should be provided.", HOME)
 		}
 
 		const user = deserialize(request.user) as DeserializedUserProfile<"roles">
@@ -76,7 +78,10 @@ export default class <
 			}
 
 			if (!isPermitted) {
-				throw new AuthorizationError("Only the owner of the resource can do the operation.")
+				throw new AuthorizationError(
+					"Only the owner of the resource can do the operation.",
+					HOME
+				)
 			}
 		}
 
