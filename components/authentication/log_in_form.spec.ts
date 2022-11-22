@@ -104,15 +104,9 @@ describe("Component: Log In Form", () => {
 
 	it("can list the first 3 admin emails", async() => {
 		const listOfAdminEmails = [
-			{
-				"email": "sample1@email.com"
-			},
-			{
-				"email": "sample2@email.com"
-			},
-			{
-				"email": "sample3@email.com"
-			}
+			"sample1@email.com",
+			"sample2@email.com",
+			"sample3@email.com"
 		]
 
 		const wrapper = shallowMount(Component, {
@@ -135,7 +129,7 @@ describe("Component: Log In Form", () => {
 
 		const contacts = wrapper.findAll(".contact")
 		contacts.forEach(
-			(contact, index) => expect(contact.text()).toEqual(listOfAdminEmails[index].email)
+			(contact, index) => expect(contact.text()).toEqual(listOfAdminEmails[index])
 		)
 	})
 })
