@@ -51,15 +51,20 @@
 
 		<Overlay :is-shown="isOverlayShown" @close="cancel">
 			<template #header>
-				<h1>Ask the admin</h1>
+				<h1>Ask the admins</h1>
 			</template>
 			<template #default>
 				<p class="mb-5">
 					You can directly go to school and ask the admin personally, or
 					contact the admin in one of the following details below:
 				</p>
-				<ul>
-					<li>*<strong>admin.example.1@mcc.edu.ph</strong>.</li>
+				<ul class="list-of-contacts">
+					<li
+						v-for="contact in contacts"
+						:key="contact"
+						class="contact">
+						*<strong>{{ contact }}</strong>
+					</li>
 				</ul>
 			</template>
 		</Overlay>
@@ -129,14 +134,15 @@ form {
 </style>
 
 <script setup lang="ts">
-import { Ref, ref } from "vue"
+import { inject, Ref, ref } from "vue"
 
 import type { UnitError } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { PageContext } from "$/types/renderer"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
-import UserFetcher from "$@/fetchers/user"
+import Fetcher from "$@/fetchers/user"
 import makeSwitch from "$@/helpers/make_switch"
 import assignPath from "$@/external/assign_path"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -145,6 +151,11 @@ import Overlay from "@/helpers/overlay.vue"
 import PasswordField from "@/fields/sensitive_text.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import RoleSelector from "@/fields/selectable_options.vue"
+
+type AdditionalPageProps = "adminEmails"
+const pageContext = inject("pageContext") as PageContext<"deserialized", AdditionalPageProps>
+const { pageProps } = pageContext
+const contacts = pageProps.adminEmails as string[]
 
 const props = defineProps<{
 	receivedErrorFromPageContext?: UnitError & Serializable
@@ -157,6 +168,7 @@ const receivedErrors = ref<string|string[]>(
 		? props.receivedErrorFromPageContext.detail
 		: []
 )
+const fetcher = new Fetcher()
 
 function logIn() {
 	const details = {
@@ -164,7 +176,7 @@ function logIn() {
 		"password": password.value
 	}
 
-	new UserFetcher().logIn(details)
+	fetcher.logIn(details)
 	.then(() => assignPath("/"))
 	.catch(response => {
 		extractAllErrorDetails(response, receivedErrors as Ref<string[]>)
@@ -180,14 +192,13 @@ const {
 	"on": openDialog,
 	"state": isOverlayShown
 } = makeSwitch(false)
-
 function forgotPassword(): void {
 	openDialog()
 }
-
 function cancel(): void {
 	closeDialog()
 }
+
 const defaultProfessor = "default_professor"
 const selectableRoles = [
 	{ "value": "student" },
