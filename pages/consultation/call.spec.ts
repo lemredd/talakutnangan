@@ -3,6 +3,8 @@ import { flushPromises, mount } from "@vue/test-utils"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Page from "./call.page.vue"
+import { nextTick } from "vue"
+import Stub from "$/singletons/stub"
 
 describe("Page: consultation/call", () => {
 	const mockGetUserMedia = jest.fn(
@@ -72,13 +74,24 @@ describe("Page: consultation/call", () => {
 		expect(castedWrapper.token).toEqual(sampleToken)
 	})
 
-	it.skip("can join with local tracks", async() => {
+	it("can join with local tracks", async() => {
 		fetchMock.mockResponseOnce(
 			JSON.stringify({
-				"meta": {}
+				"meta": {
+					"RTCToken": "RandomString"
+				}
 			}),
 			{ "status": RequestEnvironment.status.OK }
 		)
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+		fetchMock.mockResponseOnce(
+			"",
+			{ "status": RequestEnvironment.status.NO_CONTENT }
+		)
+
 		const userProfile = {
 			"data": {
 				"id": "1",
@@ -111,19 +124,18 @@ describe("Page: consultation/call", () => {
 				}
 			}
 		})
-		const castedWrapper = wrapper.vm as any
-		const joinCallBtn = wrapper.find(".join-call-btn")
-		const toggleVideoBtn = wrapper.find(".toggle-video")
-		const toggleMicBtn = wrapper.find(".toggle-mic")
-		await joinCallBtn.trigger("click")
-		await toggleVideoBtn.trigger("click")
-		await toggleMicBtn.trigger("click")
 
-		const {
-			mustShowVideo,
-			mustTransmitAudio
-		} = castedWrapper
-		expect(mustShowVideo).toBeTruthy()
-		expect(mustTransmitAudio).toBeTruthy()
+		const castWrapper = wrapper.vm as any
+
+		// Mock ready state of calling
+		castWrapper.isReadyForCalling = true
+		await nextTick()
+
+		const joinCallBtn = wrapper.find(".join-call-btn")
+		await joinCallBtn.trigger("click")
+
+		const previousCalls = Stub.consumePreviousCalls()
+		expect(previousCalls).toHaveProperty("0.functionName", "initiateVideoConferenceEngine")
+		expect(previousCalls).toHaveProperty("1.functionName", "joinAndPresentLocalTracks")
 	})
 })
