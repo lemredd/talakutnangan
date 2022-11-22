@@ -175,13 +175,21 @@ async function updateSemester() {
 
 async function archiveSemester() {
 	await fetcher.archive([ semester.value.data.id ])
-	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.then(() => {
+		if (!semester.value.data.deletedAt) semester.value.data.deletedAt = new Date()
+
+		fillSuccessMessages(receivedErrors, successMessages)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreSemester() {
 	await fetcher.restore([ semester.value.data.id ])
-	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.then(() => {
+		if (semester.value.data.deletedAt) semester.value.data.deletedAt = null
+
+		fillSuccessMessages(receivedErrors, successMessages)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
