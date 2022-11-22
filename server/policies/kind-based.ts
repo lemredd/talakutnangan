@@ -3,10 +3,11 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
 import type { AdvanceAuthenticationOptions } from "!/types/independent"
 
+import { HOME } from "$/constants/template_page_paths"
+
 import deserialize from "$/object/deserialize"
 import AuthorizationError from "$!/errors/authorization"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
-
 
 /**
  * Creates middleware to only allow certain kinds of user.
@@ -45,7 +46,7 @@ export default class <
 		const { kind } = user.data
 
 		if (!this.kinds.includes(kind)) {
-			throw new AuthorizationError("Correct user kind can invoke the action.")
+			throw new AuthorizationError("Correct user kind can invoke the action.", HOME)
 		}
 
 		await this.checkOthers(request)
