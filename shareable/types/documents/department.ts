@@ -29,6 +29,7 @@ export interface DepartmentAttributes<T extends Format = "serialized"> extends A
 	fullName: string,
 	acronym: string,
 	mayAdmit: boolean
+	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 
 export type DepartmentResource<T extends Completeness = "read"> = Resource<
