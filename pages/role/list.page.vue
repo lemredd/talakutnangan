@@ -232,6 +232,8 @@ async function refetchRoles() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchRoleInfos()
 }
 
