@@ -34,6 +34,7 @@ describe("PATCH /api/role/:id", () => {
 					"tagFlags": newRole.tagFlags,
 					"postFlags": newRole.postFlags,
 					"commentFlags": newRole.commentFlags,
+					"profanityFlags": newRole.profanityFlags,
 					"userFlags": newRole.userFlags,
 					"auditTrailFlags": newRole.auditTrailFlags
 				}

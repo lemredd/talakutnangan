@@ -146,6 +146,7 @@ async function updateRole() {
 		"departmentFlags": role.value.data.departmentFlags,
 		"name": role.value.data.name,
 		"postFlags": role.value.data.postFlags,
+		"profanityFlags": role.value.data.profanityFlags,
 		"roleFlags": role.value.data.roleFlags,
 		"semesterFlags": role.value.data.semesterFlags,
 		"tagFlags": role.value.data.tagFlags,

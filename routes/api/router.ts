@@ -10,6 +10,7 @@ import { controllers as commentControllers } from "!%/api/comment/router"
 import { controllers as boundPostControllers } from "!%/api/post(id)/router"
 import { controllers as commentVoteControllers } from "!%/api/comment_vote/router"
 import { controllers as postAttachmentControllers } from "!%/api/post_attachment/router"
+import { controllers as profanityFilterControllers } from "!%/api/profanity_filter/router"
 
 import { controllers as userControllers } from "!%/api/user/router"
 import { controllers as roleControllers } from "!%/api/role/router"
@@ -51,6 +52,7 @@ const forumRelatedControllers = [
 	...commentControllers,
 	...boundPostControllers,
 	...postAttachmentControllers,
+	...profanityFilterControllers,
 	...commentVoteControllers
 ]
 

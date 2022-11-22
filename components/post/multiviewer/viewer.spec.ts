@@ -21,7 +21,7 @@ import Component from "./viewer.vue"
 
 jest.useFakeTimers()
 describe("Component: post/viewer", () => {
-	it.skip("should submit post errors", async() => {
+	it("should submit post errors", async() => {
 		const userID = "1"
 		const postID = "2"
 		const roleID = "3"
@@ -127,7 +127,7 @@ describe("Component: post/viewer", () => {
 		expect(updateEvent).toHaveProperty("0.0", modelValue)
 	})
 
-	it.skip("should request for archiving the post", async() => {
+	it("should request for archiving the post", async() => {
 		const userID = "1"
 		const postID = "2"
 		const roleID = "3"

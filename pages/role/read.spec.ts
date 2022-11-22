@@ -11,6 +11,7 @@ import {
 	post,
 	comment,
 	semester,
+	profanity,
 	department,
 	role
 } from "$/permissions/permission_list"
@@ -26,6 +27,7 @@ describe("UI Page: Read resource by ID", () => {
 		.tagFlags(tag.generateMask("view"))
 		.postFlags(post.generateMask("view"))
 		.commentFlags(comment.generateMask("view"))
+		.profanityFlags(profanity.generateMask("view"))
 		.userFlags(user.generateMask("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
@@ -103,6 +105,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 		.userFlags(user.generateMask(
 			"view",
 			"create",
@@ -161,6 +164,7 @@ describe("UI Page: Read resource by ID", () => {
 		.tagFlags(tag.generateMask("view"))
 		.postFlags(post.generateMask("view"))
 		.commentFlags(comment.generateMask("view", "create"))
+		.profanityFlags(profanity.generateMask("view"))
 		.userFlags(user.generateMask("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
@@ -212,6 +216,7 @@ describe("UI Page: Read resource by ID", () => {
 		.tagFlags(tag.generateMask("view"))
 		.postFlags(0)
 		.commentFlags(0)
+		.profanityFlags(profanity.generateMask("view"))
 		.userFlags(user.generateMask("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
@@ -278,6 +283,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 		.userFlags(user.generateMask(
 			"view",
 			"create",
@@ -349,6 +355,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 		.userFlags(user.generateMask(
 			"view",
 			"create",
@@ -419,6 +426,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
+		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
 		.userFlags(user.generateMask(
 			"view",
 			"create",

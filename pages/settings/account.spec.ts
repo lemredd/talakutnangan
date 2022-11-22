@@ -84,6 +84,7 @@ describe("Page: settings/account", () => {
 					"id": "1",
 					"name": "A",
 					"postFlags": 0,
+					"profanityFlags": 0,
 					"roleFlags": 0,
 					"semesterFlags": 0,
 					"tagFlags": 0,

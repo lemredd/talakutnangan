@@ -18,6 +18,7 @@ export default class extends Transformer<Role, void> {
 			"tagFlags",
 			"postFlags",
 			"commentFlags",
+			"profanityFlags",
 			"userFlags",
 			"auditTrailFlags",
 			"deletedAt"

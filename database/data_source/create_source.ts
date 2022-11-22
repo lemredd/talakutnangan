@@ -21,6 +21,7 @@ import StudentDetail from "%/models/student_detail"
 import FoundPostWord from "%/models/found_post_word"
 import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
+import ProfanityFilter from "%/models/profanity_filter"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
 import AsynchronousFile from "%/models/asynchronous_file"
@@ -49,6 +50,7 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		FoundPostWord,
 		ProfilePicture,
 		PostAttachment,
+		ProfanityFilter,
 		EmployeeSchedule,
 		AsynchronousFile,
 		FoundCommentWord,

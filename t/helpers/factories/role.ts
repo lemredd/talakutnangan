@@ -23,6 +23,7 @@ import {
 	post,
 	comment,
 	semester,
+	profanity,
 	department,
 	auditTrail
 } from "$/permissions/permission_list"
@@ -46,6 +47,7 @@ export default class RoleFactory extends BaseFactory<
 	#tagFlags = 0
 	#postFlags = 0
 	#commentFlags = 0
+	#profanityFlags = 0
 	#userFlags = 0
 	#auditTrailFlags = 0
 
@@ -60,6 +62,7 @@ export default class RoleFactory extends BaseFactory<
 			"departmentFlags": this.#departmentFlags,
 			"name": this.#name(),
 			"postFlags": this.#postFlags,
+			"profanityFlags": this.#profanityFlags,
 			"roleFlags": this.#roleFlags,
 			"semesterFlags": this.#semesterFlags,
 			"tagFlags": this.#tagFlags,
@@ -102,6 +105,11 @@ export default class RoleFactory extends BaseFactory<
 		return this
 	}
 
+	profanityFlags(flags: number): RoleFactory {
+		this.#profanityFlags = flags
+		return this
+	}
+
 	userFlags(flags: number): RoleFactory {
 		this.#userFlags = flags
 		return this
@@ -120,6 +128,7 @@ export default class RoleFactory extends BaseFactory<
 		.postFlags(post.generateSuperMask())
 		.commentFlags(comment.generateSuperMask())
 		.semesterFlags(semester.generateSuperMask())
+		.profanityFlags(profanity.generateSuperMask())
 		.departmentFlags(department.generateSuperMask())
 		.auditTrailFlags(auditTrail.generateSuperMask())
 	}
