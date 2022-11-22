@@ -2,8 +2,7 @@
 	<div class="call">
 		<div class="participants">
 			<SelfParticipant
-				v-model:must-show-video="isShowingVideo"
-				v-model:must-transmit-audio="isTransmittingAudio"
+				v-model:is-showing-video="isShowingVideo"
 				:is-joined="isJoined"
 				:container-id="selfParticipantID"
 				class="local-participant"/>
