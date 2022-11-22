@@ -1,5 +1,8 @@
 <template>
-	<MinorDropdown v-if="shouldHaveMenu" v-model="isDropdownShown">
+	<MinorDropdown
+		v-if="shouldHaveMenu"
+		v-model="isDropdownShown"
+		class="menu">
 		<template #dropdown-contents>
 			<button v-if="mayUpdatePost" @click="updatePost">
 				Update post
@@ -13,6 +16,12 @@
 		</template>
 	</MinorDropdown>
 </template>
+
+<style>
+	.menu .dropdown-container {
+		@apply p-2;
+	}
+</style>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";

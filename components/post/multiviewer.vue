@@ -63,7 +63,7 @@
 			overflow-y: scroll;
 
 			.filter-field-container {
-				@apply p-4 mb-4;
+				@apply p-2;
 				@apply flex flex-col justify-between flex-wrap items-stretch;
 				@apply bg-gray-300 bg-opacity-20;
 
@@ -74,8 +74,12 @@
 				.filter{
 					@apply mb-4;
 
-					@screen sm {
+					@screen md {
 						@apply mb-0;
+					}
+
+					&.department {
+						@apply flex-col;
 					}
 				}
 
@@ -85,12 +89,12 @@
 			}
 		}
 
+		.viewer {
+			@apply flex-1 my-4;
+		}
+
 		.viewer-group {
 			@apply flex-1 flex flex-col;
-
-			.viewer {
-				@apply flex-1 mb-8;
-			}
 		}
 		.load-others {
 			@apply flex-1;
@@ -102,6 +106,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject, Ref, onMounted } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type {
@@ -134,7 +139,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
@@ -236,7 +241,7 @@ async function retrievePosts() {
 				"end": rangeEnd.value
 			},
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
-			"existence": existence.value as "exists"|"archived"|"*"
+			"existence": existence.value as Existence
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,

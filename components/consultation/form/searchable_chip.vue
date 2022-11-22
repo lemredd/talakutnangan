@@ -85,7 +85,8 @@ function findMatchedUsers() {
 			"offset": 0
 		},
 		"sort": [ "name" ]
-	}).then(({ body }) => {
+	})
+	.then(({ body }) => {
 		otherParticipants.value = body.data.filter(candidate => {
 			const isNotSelected = selectedParticipants.value.findIndex(selectedParticipant => {
 				const doesMatchSelectedParticipant = candidate.id === selectedParticipant.id
@@ -94,8 +95,9 @@ function findMatchedUsers() {
 
 			return isNotSelected
 		})
+
+		isLoaded.value = true
 	})
-	isLoaded.value = true
 }
 watch(slug, debounce(findMatchedUsers, DEBOUNCED_WAIT_DURATION))
 

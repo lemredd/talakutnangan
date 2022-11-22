@@ -44,7 +44,7 @@
 				</button>
 			</template>
 		</Overlay>
-		<header>
+		<header class="post-header">
 			<div class="post-details">
 				<div class="poster">
 					<ProfilePicture
@@ -66,20 +66,12 @@
 								</span>
 								<span class="timestamp" :title="completeFriendlyPostTimestamp">
 									{{
-										friendlyPostTimestamp
+										` ${friendlyPostTimestamp}`
 									}}
 								</span>
 							</small>
 						</span>
 					</div>
-				</div>
-				<div
-					v-for="tag in post.tags.data"
-					:key="tag.id"
-					class="tag selected">
-					<span>
-						{{ tag.name }}
-					</span>
 				</div>
 				<Menu
 					:post="post"
@@ -87,8 +79,19 @@
 					@archive-post="confirmArchive"
 					@restore-post="confirmRestore"/>
 			</div>
+			<div v-if="hasExistingTags" class="attached-tags">
+				<div
+					v-for="tag in tags"
+					:key="tag.id"
+					class="tag selected">
+					<span>
+						{{ tag.name }}
+					</span>
+				</div>
+			</div>
 		</header>
-		<p v-html="formattedContent" class="post-content"></p>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<p class="post-content" v-html="formattedContent"></p>
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
@@ -114,16 +117,86 @@
 				</div>
 			</div>
 		</div>
-		<a :href="readPostPath" class="comment-count">
-			<span class="material-icons icon">
-				comment
-			</span>
-			<span>
-				{{ friendlyCommentCount }}
-			</span>
-		</a>
+		<footer class="post-footer">
+			<a :href="readPostPath" class="comment-count">
+				<span class="material-icons icon">
+					comment
+				</span>
+				<span>
+					{{ friendlyCommentCount }}
+				</span>
+			</a>
+		</footer>
 	</article>
 </template>
+
+<style lang="scss">
+	@screen sm {
+		.overlay .content {
+			margin: 5% 0 !important;
+			max-height: 100vh !important;
+		}
+	}
+
+	.post-content {
+		h1 { @apply text-5xl; }
+
+		h2 { @apply text-4xl; }
+
+		h3 { @apply text-3xl; }
+
+		h4 { @apply text-2xl; }
+
+		h5 { @apply text-xl; }
+
+		h6 { @apply text-xl; }
+
+		strong { @apply font-bold; }
+
+		em { @apply italic; }
+
+		blockquote {
+			@apply bg-light-100 dark:bg-opacity-20
+			pl-2 border-l-8 border-blue-800;
+			}
+
+		ol {
+			li {
+				@apply list-item;
+			}
+		}
+		ul {
+			li {
+				@apply ml-6;
+			}
+		}
+		code{ @apply text-sm; }
+
+		hr{ @apply border-b border-b-dark-500 dark:border-b-light-500; }
+
+		a{ @apply text-blue-800; }
+
+		table, th, td {
+				@apply border border-dark-500 dark:border-light-500;
+			}
+
+		pre {
+			@apply dark:bg-gray-800 bg-gray-800  text-light-500;
+		}
+
+		del { @apply line-through; }
+
+		ul {
+			li[class="task-list-item"] {
+				@apply ml-12;
+			}
+		}
+
+		p {
+			mark[class="=="] { @apply bg-yellow-300; }
+		}
+	}
+</style>
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
@@ -152,12 +225,13 @@
 
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
-		@apply p-2 bg-gray-400 bg-opacity-10 shadow-md;
+		@apply p-4 bg-gray-400 bg-opacity-20 shadow-md;
+		@apply dark:bg-opacity-10;
 
-		header {
-			@apply flex flex-row justify-between;
-
+		.post-header {
+			@apply flex flex-col justify-between;
 			.post-details {
+				@apply mb-4;
 				@apply flex-1 flex flex-row justify-between;
 
 				.poster {
@@ -170,24 +244,35 @@
 						@apply flex flex-col;
 
 						.department-and-timestamp {
-							@apply flex flex-col sm:flex-row;
+							small {
+								@apply flex flex-col sm:flex-row;
 
-							.timestamp {
-								@apply sm:ml-2;
+								.timestamp {
+									@apply sm:ml-2;
+								}
 							}
 						}
 					}
 				}
 			}
+
+			.attached-tags {
+				@apply mb-4;
+			}
 		}
 
 		.comment-count {
-			@apply flex-initial mt-10 flex flex-row flex-nowrap justify-start items-center;
+			@apply flex-initial flex flex-row flex-nowrap justify-start items-center;
 		}
 
 		> p {
 			word-break: normal;
 			word-wrap: normal;
+		}
+
+
+		.post-footer {
+			@apply mt-8;
 		}
 	}
 
@@ -198,7 +283,7 @@
 import { ref, computed, onMounted } from "vue"
 
 import type { DeserializedPostResource } from "$/types/documents/post"
-
+import type { DeserializedTagResource, DeserializedTagListDocument } from "$/types/documents/tag"
 import type {
 	DeserializedPostAttachmentResource,
 	DeserializedPostAttachmentListDocument
@@ -257,7 +342,6 @@ const formattedContent = computed<string>(() => {
 
 const hasExistingAttachments = computed<boolean>(() => {
 	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
-
 	return hasAttachments
 })
 const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
@@ -266,6 +350,20 @@ const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 		.postAttachments as DeserializedPostAttachmentListDocument
 
 		return attachments.data
+	}
+
+	return []
+})
+
+const hasExistingTags = computed<boolean>(() => {
+	const hasTags = !isUndefined(props.modelValue.tags)
+	return hasTags
+})
+const tags = computed<DeserializedTagResource[]>(() => {
+	if (hasExistingTags.value) {
+		const tagList = props.modelValue.tags as DeserializedTagListDocument
+
+		return tagList.data
 	}
 
 	return []
@@ -349,8 +447,6 @@ async function submitChangesSeparately(): Promise<void> {
 				"department": undefined,
 				// eslint-disable-next-line no-undefined
 				"postAttachments": undefined,
-				// eslint-disable-next-line no-undefined
-				"tags": undefined,
 				"poster": {
 					"data": {
 						"id": post.value.poster.data.id,

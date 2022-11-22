@@ -30,9 +30,12 @@
 		@apply flex flex-col flex-nowrap justify-center items-stretch;
 
 		.forum-header {
+			@apply p-2 bg-gray-400 bg-opacity-20;
+
+			@apply flex justify-between items-center;
+
 			h1 {
-				@apply p-2 bg-gray-400 bg-opacity-10;
-				@apply text-xl;
+				@apply text-base font-semibold sm:text-xl;
 			}
 			.account-attachment {
 				@apply h-6 w-auto;
@@ -70,7 +73,7 @@ import makeSwitch from "$@/helpers/make_switch"
 import SemesterFetcher from "$@/fetchers/semester"
 import DepartmentFetcher from "$@/fetchers/department"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
 import { READ as READ_SEMESTERS } from "$/permissions/semester_combinations"
 import {
@@ -92,8 +95,9 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const posts = ref<DeserializedPostListDocument<"poster"|"posterRole"|"department">>(
-	pageProps.posts as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
+const posts = ref<DeserializedPostListDocument<AssociatedPostResource>>(
+	pageProps.posts as DeserializedPostListDocument<AssociatedPostResource>
 )
 
 const departments = ref<DeserializedDepartmentListDocument>(

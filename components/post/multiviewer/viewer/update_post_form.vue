@@ -5,6 +5,10 @@
 		</template>
 		<template #default>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+			<ReceivedSuccessMessages
+				v-if="successMessages.length"
+				:received-success-messages="successMessages"/>
+
 			<DraftForm
 				:id="postID"
 				v-model="content"
@@ -16,6 +20,19 @@
 						placeholder="Choose the role"
 						:options="roleNames"/>
 				</div>
+				<SearchableChip
+					v-model:model-value="tags"
+					header="Optional tags"
+					:maximum-tags="MAX_TAGS"
+					text-field-label="Type the tags to add"/>
+				<Suspensible :is-loaded="hasUpdatedTags">
+					<button
+						type="button"
+						class="btn btn-primary"
+						@click="updateTags">
+						Update tags
+					</button>
+				</Suspensible>
 			</DraftForm>
 			<form @submit.prevent>
 				<input
@@ -62,7 +79,7 @@
 						</small>
 						<span
 							class="remove-file-btn material-icons cursor-pointer"
-							@click="removeFile">
+							@click="removeFile(attachment.id)">
 							close
 						</span>
 					</div>
@@ -89,47 +106,60 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 
-.preview-img{
-	@apply py-5;
-	max-width:100%;
-	max-height:100%;
-}
+	.optional-tags {
+		@apply mt-5 mb-5;
+	}
 
-.close{
-	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
-}
+	.btn {
+		@apply mb-5;
+	}
+	.preview-img{
+		@apply py-5;
+		max-width:100%;
+		max-height:100%;
+	}
+
+	.close{
+		@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+	}
 </style>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
 
 import type { OptionInfo } from "$@/types/component"
+import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedRoleResource } from "$/types/documents/role"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedPostAttachmentResource } from "$/types/documents/post_attachment"
 
+import { MAX_TAGS } from "$/constants/numerical"
 import { MAXIMUM_FILE_SIZE } from "$/constants/measurement"
+import { READ_POST } from "$/constants/template_page_paths"
 
 import Fetcher from "$@/fetchers/post"
 import UserFetcher from "$@/fetchers/user"
 import assignPath from "$@/external/assign_path"
 import isUndefined from "$/type_guards/is_undefined"
 import specializePath from "$/helpers/specialize_path"
-import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
-import SelectableOptionsField from "@/fields/selectable_options.vue"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
+import SearchableChip from "@/post/searchable_chip.vue"
+import Suspensible from "@/helpers/suspensible.vue"
+import SelectableOptionsField from "@/fields/selectable_options.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const userFetcher = new UserFetcher()
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 const props = defineProps<{
 	isShown: boolean,
 	modelValue: DeserializedPostResource<AssociatedPostResource>
@@ -206,6 +236,9 @@ const roleID = computed<string>({
 })
 
 const postID = computed<string>(() => props.modelValue.id)
+const tags = ref<DeserializedTagResource[]>([
+	...props.modelValue.tags.data
+])
 const content = computed<string>({
 	get(): string {
 		return props.modelValue.content
@@ -220,6 +253,8 @@ const content = computed<string>({
 
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
 
 function isImage(type: string): boolean {
 	return type.includes("image")
@@ -233,7 +268,6 @@ const isFileSizeGreaterThanLimit = computed(() => {
 	const castedFileSize = fileSize.value as number
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
-const receivedErrors = ref<string[]>([])
 
 function removeFile(id: string) {
 	postAttachmentFetcher.archive(
@@ -298,6 +332,24 @@ function updatePost(): void {
 		)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
+}
+
+const hasUpdatedTags = ref<boolean>(true)
+function updateTags() {
+	const tagIDs = tags.value.map(tag => tag.id)
+	hasUpdatedTags.value = false
+	fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
+	.then(() => fillSuccessMessages(
+		receivedErrors,
+		successMessages,
+		"Successfully update tags."
+	))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors,
+		receivedErrors,
+		successMessages
+	))
+	hasUpdatedTags.value = true
 }
 
 watch(isShown, newValue => {

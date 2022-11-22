@@ -175,9 +175,9 @@ import DepartmentFetcher from "$@/fetchers/department"
 import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import loadRemainingRoles from "@/resource_management/load_remaining_roles"
-import loadRemainingDepartments from "@/resource_management/load_remaining_departments"
+import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
@@ -268,6 +268,7 @@ const successMessages = ref<string[]>([])
 async function updateUser() {
 	hasSubmittedUser.value = false
 	await fetcher.update(user.value.data.id, {
+		"deletedAt": null,
 		"email": user.value.data.email,
 		"emailVerifiedAt": user.value.data.emailVerifiedAt?.toJSON() ?? null,
 		"kind": user.value.data.kind,

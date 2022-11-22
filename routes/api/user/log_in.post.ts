@@ -69,7 +69,7 @@ export default class extends JSONController {
 
 	get postJobs(): ActionAuditor[] {
 		return [
-			new ActionAuditor("user.log_in")
+			new ActionAuditor("user.log_in", () => ({ "isSensitive": true }))
 		]
 	}
 }

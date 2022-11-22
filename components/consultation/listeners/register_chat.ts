@@ -1,6 +1,7 @@
 import { ComputedRef, Ref } from "vue"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedProfilePictureDocument } from "$/types/documents/profile_picture"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
@@ -29,6 +30,9 @@ export default function(
 	currentChatMessageActivityResource: ComputedRef<
 		DeserializedChatMessageActivityResource<"user"|"consultation">
 	>,
+	currentConsultationActivities: ComputedRef<
+		DeserializedChatMessageActivityResource<"user"|"consultation">[]
+	>,
 	chatMessageActivityFetcher: ChatMessageActivityFetcher
 ) {
 	let isWindowShown = false
@@ -50,7 +54,6 @@ export default function(
 		})
 	}
 
-
 	WindowFocus.addEventListener(newState => {
 		const isWindowFocused = newState === "focus"
 
@@ -68,8 +71,14 @@ export default function(
 
 	function createMessage(message: ChatMessageDocument<"read">): void {
 		const deserializedMessage = deserialize(message) as DeserializedChatMessageDocument<"user">
-		mergeDeserializedMessages(chatMessages, [ deserializedMessage.data ])
+		const { "id": userIDFromDeserializedMessage } = deserializedMessage.data.user.data
+		const [ matchingChatMessageActivity ] = currentConsultationActivities.value.filter(
+			activity => activity.user.data.id === userIDFromDeserializedMessage
+		)
 
+		deserializedMessage.data.user.data.profilePicture
+		= matchingChatMessageActivity.user.data.profilePicture as DeserializedProfilePictureDocument
+		mergeDeserializedMessages(chatMessages, [ deserializedMessage.data ])
 		ConsultationTimerManager.restartTimerFor(consultation.value)
 		debounceUpdateReceivedMessageAt()
 	}

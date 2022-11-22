@@ -53,6 +53,7 @@
 <script setup lang="ts">
 import { computed, onMounted, Ref, ref, watch } from "vue"
 
+import type { Existence } from "$/types/query"
 import type { DeserializedPostResource } from "$/types/documents/post"
 import type {
 	DeserializedCommentListDocument,
@@ -141,7 +142,7 @@ async function countVotesOfComments(): Promise<void> {
 	})
 }
 
-const existence = ref<"exists"|"archived"|"*">("exists")
+const existence = ref<Existence>("exists")
 const isLoaded = ref(true)
 const hasNoComments = computed(() => comments.value.data.length === 0)
 

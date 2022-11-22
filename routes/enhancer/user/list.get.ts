@@ -1,9 +1,11 @@
 import type { Request } from "!/types/dependent"
 import type { DocumentProps } from "$/types/server"
 import type { Serializable } from "$/types/general"
+import type { DeserializedUserProfile } from "$/types/documents/user"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
+import deserialize from "$/object/deserialize"
 import PermissionBasedPolicy from "!/policies/permission-based"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 
@@ -44,18 +46,31 @@ export default class extends PageMiddleware {
 		const manager = new Manager(request)
 		const roleManager = new RoleManager(request)
 		const departmentManager = new DepartmentManager(request)
+
+		const user = deserialize(request.user) as DeserializedUserProfile<"roles"|"department">
+		const mayReadAll = permissionGroup.hasOneRoleAllowed(user.data.roles.data, [
+			READ_ANYONE_ON_ALL_DEPARTMENTS
+		])
+
 		const pageProps = {
-			"departments": await departmentManager.list({
-				"filter": {
-					"existence": "exists",
-					"slug": ""
-				},
-				"page": {
-					"limit": DEFAULT_LIST_LIMIT,
-					"offset": 0
-				},
-				"sort": [ "fullName" ]
-			}),
+			"departments": mayReadAll
+				? {
+					"data": [],
+					"meta": {
+						"count": 0
+					}
+				}
+				: await departmentManager.list({
+					"filter": {
+						"existence": "exists",
+						"slug": ""
+					},
+					"page": {
+						"limit": DEFAULT_LIST_LIMIT,
+						"offset": 0
+					},
+					"sort": [ "fullName" ]
+				}),
 			"roles": await roleManager.list({
 				"filter": {
 					"department": "*",
@@ -70,7 +85,7 @@ export default class extends PageMiddleware {
 			}),
 			"users": await manager.list({
 				"filter": {
-					"department": "*",
+					"department": mayReadAll ? "*" : user.data.department.data.id,
 					"existence": "exists",
 					"kind": "*",
 					"role": "*",

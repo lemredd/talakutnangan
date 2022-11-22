@@ -94,7 +94,8 @@ interface GeneralUserAttributes<T extends Format = "serialized"> extends Attribu
 	name: string,
 	email: string,
 	emailVerifiedAt: (T extends "serialized" ? string : Date)|null,
-	prefersDark: boolean
+	prefersDark: boolean,
+	deletedAt: (T extends "serialized" ? string : Date)|null
 }
 
 export interface StudentAttributes<T extends Format = "serialized">

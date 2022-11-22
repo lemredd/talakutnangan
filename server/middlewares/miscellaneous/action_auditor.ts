@@ -32,8 +32,8 @@ export default class ActionAuditor extends RequestFilter {
 
 		await manager.create({
 			"actionName": this.actionName,
-			"extra": this.extra(request),
 			"createdAt": new Date(),
+			"extra": this.extra(request),
 			userID
 		})
 	}

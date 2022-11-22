@@ -1,7 +1,7 @@
 <template>
 	<SelectableExistence
 		v-model="existence"
-		title="Existence"
+		label="Existence"
 		:options="existenceOptions"/>
 </template>
 

@@ -19,6 +19,7 @@
 				v-if="mayReadComment"
 				v-model="comments"
 				:post="post"
+				class="comment-multiviewer"
 				:may-view-archived-or-restore="mayViewArchivedOrRestore"/>
 		</div>
 	</article>
@@ -32,7 +33,7 @@
 
 		> .comments {
 			@apply flex-1 flex-col flex-nowrap;
-			@apply bg-gray-400 bg-opacity-10 shadow-md;
+			@apply bg-gray-400 bg-opacity-20 shadow-md;
 
 			img.self, img.profile-picture {
 				max-width: 32px;
@@ -101,7 +102,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"
+type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 const post = ref<DeserializedPostResource<AssociatedPostResource>>(
 	pageProps.post.data as DeserializedPostResource<AssociatedPostResource>
 )

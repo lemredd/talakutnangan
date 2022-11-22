@@ -19,7 +19,6 @@ import length from "!/validators/comparison/length"
 import skipAsterisk from "!/validators/comparison/skip_asterisk"
 import makeIDBasedFilterRules from "!/rule_sets/make_id-based_filter"
 
-
 import makeListRules from "!/rule_sets/make_list"
 
 export default class extends QueryController {

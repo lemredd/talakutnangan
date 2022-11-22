@@ -2,6 +2,8 @@ import Router from "!/bases/router"
 import TestRouter from "!%/t/router"
 import DevRouter from "!%/dev/router"
 import { Environment } from "$/types/server"
+import RequestEnvironment from "$!/singletons/request_environment"
+
 import { controllers as APIControllers } from "!%/api/router"
 import { controllers as enhancerControllers } from "!%/enhancer/router"
 
@@ -11,10 +13,10 @@ export default class extends Router {
 	constructor() {
 		super()
 
-		this.useControllersAsync(instantiateSimultaneously([
-			...APIControllers,
-			...enhancerControllers
-		]))
+		this.useControllersAsync(instantiateSimultaneously(RequestEnvironment.isInMaintenanceMode
+			? [ ...enhancerControllers ]
+			: [ ...APIControllers, ...enhancerControllers ]
+		))
 
 		switch (this.environment) {
 			case Environment.Development:

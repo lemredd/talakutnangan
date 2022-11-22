@@ -1,4 +1,6 @@
 <template>
+	<ListRedirector resource-type="role"/>
+
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
@@ -75,6 +77,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Suspensible from "@/helpers/suspensible.vue"
 import FlagSelector from "@/role/flag_selector.vue"
+import ListRedirector from "@/helpers/list_redirector.vue"
 import RoleNameField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"

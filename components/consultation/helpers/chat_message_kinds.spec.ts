@@ -20,12 +20,13 @@ describe("Helper: Chat message kinds", () => {
 			"updatedAt": CURRENT_TIME,
 			"user": {
 				"data": {
+					"deletedAt": null,
 					"email": "",
+					"emailVerifiedAt": null,
 					"id": "1",
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
-					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",
@@ -54,12 +55,13 @@ describe("Helper: Chat message kinds", () => {
 			"updatedAt": CURRENT_TIME,
 			"user": {
 				"data": {
+					"deletedAt": null,
 					"email": "",
+					"emailVerifiedAt": null,
 					"id": "1",
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
-					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",
@@ -88,12 +90,13 @@ describe("Helper: Chat message kinds", () => {
 			"updatedAt": CURRENT_TIME,
 			"user": {
 				"data": {
+					"deletedAt": null,
 					"email": "",
+					"emailVerifiedAt": null,
 					"id": "1",
 					"kind": "reachable_employee",
 					"name": "A",
 					"prefersDark": true,
-					"emailVerifiedAt": null,
 					"profilePicture": {
 						"data": {
 							"fileContents": "http://example.com/image_a",

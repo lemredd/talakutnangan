@@ -7,13 +7,13 @@
 				v-if="mayBatchArchive"
 				class="batch-archive-resource-btn btn"
 				@click="batchArchive">
-				Archive selected items
+				Archive selected {{ friendlySelectedArchivableQuantity }}
 			</span>
 			<span
 				v-if="mayBatchRestore"
 				class="batch-restore-resource-btn btn"
 				@click="batchRestore">
-				Restore selected items
+				Restore selected {{ friendlySelectedRestorableQuantity }}
 			</span>
 		</p>
 		<ResourceTable v-if="list.length">
@@ -32,7 +32,7 @@
 					<td v-for="(data, i) in resource.data" :key="i">
 						{{ data }}
 					</td>
-					<td v-if="mayManage">
+					<td v-if="mayManage" class="management-btns">
 						<a
 							v-if="resource.mayEdit"
 							:href="makePath(resource.id)"
@@ -87,8 +87,13 @@
 			border-bottom-width: 1px;
 			padding-bottom: .5rem;
 
-			.btn1 {
-				@apply dark:bg-dark-300 bg-light-600 rounded-md w-20 text-base h-7;
+			.management-btns {
+				@apply mr-4;
+				@apply flex flex-col;
+
+				.btn {
+					@apply my-1;
+				}
 			}
 
 			&.active {
@@ -131,8 +136,8 @@ const props = defineProps<{
 interface CustomEvents {
 	(event: "archive", id: string): void,
 	(event: "restore", id: string): void,
-	(event: "batchArchive"): void,
-	(event: "batchRestore"): void,
+	(event: "batchArchive", IDs: string[]): void,
+	(event: "batchRestore", IDs: string[]): void,
 	(event: "update:selectedIDs", newSelection: string[]): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -146,12 +151,30 @@ const itemQuantity = computed<number>(() => props.selectedIDs.length)
 const hasSelected = computed<boolean>(() => itemQuantity.value > 0)
 const friendlyItemQuantity = computed<string>(() => pluralize("item", itemQuantity.value))
 
+const archivableItems = computed<TableData[]>(() => props.list.filter(item => item.mayArchive))
+const archivableItemIDs = computed<string[]>(() => archivableItems.value.map(item => item.id))
+const selectedArchivableItems = computed<string[]>(() => props.selectedIDs.filter(
+	id => archivableItemIDs.value.indexOf(id) > -1
+))
+const friendlySelectedArchivableQuantity = computed<string>(
+	() => pluralize("item", selectedArchivableItems.value.length)
+)
+
+const restorableItems = computed<TableData[]>(() => props.list.filter(item => item.mayRestore))
+const restorableItemIDs = computed<string[]>(() => restorableItems.value.map(item => item.id))
+const selectedRestorableItems = computed<string[]>(() => props.selectedIDs.filter(
+	id => restorableItemIDs.value.indexOf(id) > -1
+))
+const friendlySelectedRestorableQuantity = computed<string>(
+	() => pluralize("item", selectedRestorableItems.value.length)
+)
+
 const mayBatchArchive = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayArchive
-))
+) && selectedArchivableItems.value.length > 0)
 const mayBatchRestore = computed<boolean>(() => hasSelected.value && props.list.some(
 	data => data.mayRestore
-))
+) && selectedRestorableItems.value.length > 0)
 
 function makePath(id: string): string {
 	if (props.templatePath) {
@@ -172,19 +195,25 @@ function restore(id: string) {
 }
 
 function batchArchive() {
-	emit("batchArchive")
+	emit("batchArchive", selectedArchivableItems.value)
 }
 
 function batchRestore() {
-	emit("batchRestore")
+	emit("batchRestore", selectedRestorableItems.value)
 }
 
 function canSelect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) === -1
+	const canBeSelected = maySelect.value && props.selectedIDs.indexOf(id) === -1
+	return canBeSelected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function canDeselect(id: string) {
-	return maySelect.value && props.selectedIDs.indexOf(id) > -1
+	const canBeDeselected = maySelect.value && props.selectedIDs.indexOf(id) > -1
+	return canBeDeselected && props.list.some(
+		data => data.id === id && (data.mayArchive || data.mayRestore)
+	)
 }
 
 function select(id: string) {

@@ -122,7 +122,7 @@ import type { DeserializedUserResource, DeserializedStudentResource } from "$/ty
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
 import convertForSentence from "$/string/convert_for_sentence"
-import loadRemainingRoles from "@/resource_management/load_remaining_roles"
+import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"

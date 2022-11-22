@@ -64,10 +64,6 @@
 
 	.field {
 		@apply my-4;
-
-		&.date {
-			@apply flex flex-col w-max;
-		}
 	}
 </style>
 

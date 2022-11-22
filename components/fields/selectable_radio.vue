@@ -1,7 +1,7 @@
 <template>
 	<div class="selectable-radio">
 		<h6 class="title">
-			{{ title }}
+			{{ label }}
 		</h6>
 		<div class="options">
 			<label
@@ -23,8 +23,12 @@
 	.selectable-radio {
 		@apply flex flex-col flex-nowrap sm:flex-row justify-start items-start;
 
+		.title {
+			@apply mr-4;
+		}
+
 		.options {
-			@apply flex-1 flex flex-col md:flex-row justify-start items-start;
+			@apply flex-1 flex flex-col sm:flex-row justify-start items-start;
 		}
 
 		label {
@@ -49,7 +53,7 @@ import { computed } from "vue"
 import type { OptionInfo } from "$@/types/component"
 
 type ComponentProps = {
-	title: string,
+	label?: string,
 	modelValue: string,
 	options: OptionInfo[]
 }

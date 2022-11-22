@@ -15,7 +15,8 @@ describe("Component: chat_window/extra_controls", () => {
 				"consultationId": "1",
 				"isConsultationFinishedOrCancelled": false,
 				"isCurrentUserConsultant": true,
-				"isHeaderControlDropdownShown": true
+				"isHeaderControlDropdownShown": true,
+				"isOngoing": false
 			}
 		})
 
@@ -40,7 +41,8 @@ describe("Component: chat_window/extra_controls", () => {
 				"consultationId": id,
 				"isConsultationFinishedOrCancelled": false,
 				"isCurrentUserConsultant": true,
-				"isHeaderControlDropdownShown": true
+				"isHeaderControlDropdownShown": true,
+				"isOngoing": false
 			}
 		})
 		const printableFormLink = wrapper.find(".view-printable-form-link")
