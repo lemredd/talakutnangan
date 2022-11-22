@@ -42,8 +42,9 @@
 				Log in
 			</button>
 			<button
+				class="forgot-password-btn"
 				role="button"
-				@click="forgetPassword">
+				@click="forgotPassword">
 				Forgot Password?
 			</button>
 		</div>
@@ -180,7 +181,7 @@ const {
 	"state": isOverlayShown
 } = makeSwitch(false)
 
-function forgetPassword(): void {
+function forgotPassword(): void {
 	openDialog()
 }
 
