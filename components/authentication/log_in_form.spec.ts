@@ -101,4 +101,41 @@ describe("Component: Log In Form", () => {
 		expect(error.html()).toContain(errorDetail1)
 		expect(error.html()).toContain(errorDetail2)
 	})
+
+	it("can list the first 3 admin emails", async() => {
+		const listOfAdminEmails = [
+			{
+				"email": "sample1@email.com"
+			},
+			{
+				"email": "sample2@email.com"
+			},
+			{
+				"email": "sample3@email.com"
+			}
+		]
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							listOfAdminEmails
+						}
+					}
+				},
+				"stubs": {
+					"Overlay": false
+				}
+			}
+		})
+		// Mock showing of overlay containing list of contacts
+		const forgotPasswordBtn = wrapper.find(".forgot-password-btn")
+		await forgotPasswordBtn.trigger("click")
+
+		const contacts = wrapper.findAll(".contact")
+		contacts.forEach(
+			(contact, index) => expect(contact.text()).toEqual(listOfAdminEmails[index].email)
+		)
+	})
 })
