@@ -2,14 +2,13 @@
 	<div v-if="shouldShowPagination" class="page-counter">
 		<button
 			class="movement-btn first-page-btn"
-			:class="movementBtnClasses"
 			:disabled="isAtFirstPage"
 			@click="updateOffset(1)">
 			<span class="material-icons">keyboard_double_arrow_left</span>
 		</button>
 		<button
 			class="movement-btn previous-btn"
-			:class="movementBtnClasses"
+			:disabled="isAtFirstPage"
 			@click="goToPreviousPage">
 			<span class="material-icons">chevron_left</span>
 		</button>
@@ -37,13 +36,12 @@
 
 		<button
 			class="movement-btn next-btn"
-			:class="movementBtnClasses"
+			:disabled="isAtLastPage"
 			@click="goToNextPage">
 			<span class="material-icons">chevron_right</span>
 		</button>
 		<button
 			class="movement-btn last-page-btn"
-			:class="movementBtnClasses"
 			:disabled="isAtLastPage"
 			@click="updateOffset(pageLength)">
 			<span class="material-icons">keyboard_double_arrow_right</span>
@@ -53,29 +51,29 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	@mixin disabledBtn {
+		@apply text-gray-400;
+		cursor: initial;
+	}
+
 	.page-counter {
 		@apply flex;
 
 		.movement-btn {
 			@apply flex items-center;
 
+			&:disabled {
+				@apply text-gray-400;
+				cursor: initial;
+			}
+
 			&.previous-btn {
 				@apply mr-2;
-
-				&.disabled-previous-btn {
-					@apply text-gray-400;
-					cursor: initial;
-				}
 			}
 			&.next-btn {
 				@apply ml-3;
-
-				&.disabled-next-btn {
-					@apply text-gray-400;
-					cursor: initial;
-				}
 			}
-
 		}
 
 		.page-count-btn {
@@ -182,10 +180,6 @@ const isAtLastPage = computed(() => {
 	) * DEFAULT_LIST_LIMIT
 	return flooredMaxCount === props.modelValue
 })
-const movementBtnClasses = {
-	"disabled-next-btn": isAtLastPage.value,
-	"disabled-previous-btn": isAtFirstPage.value
-}
 function goToPreviousPage() {
 	if (!isAtFirstPage.value) emit("update:modelValue", props.modelValue - DEFAULT_LIST_LIMIT)
 }
