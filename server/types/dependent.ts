@@ -31,8 +31,12 @@ export interface Request extends BaseRequest, SharedManagerState<TransactionMana
 	isAuthenticated: () => boolean
 	logout: () => void,
 
+	// Added due to `request-ip` package
+	clientIp: string,
+
 	asynchronousOperation: AsynchronousOperationManager|undefined
 }
+
 
 export interface AuthenticatedRequest extends Request {
 	session: Session & {
