@@ -31,6 +31,16 @@ module.exports = {
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
+					"profanityFilterID": {
+						"allowNull": false,
+						"type": Sequelize.BIGINT,
+						"references": {
+							"model": "ProfanityFilters",
+							"key": "id"
+						},
+						"onDelete": "cascade",
+						"onUpdate": "cascade"
+					},
 					"createdAt": {
 						"allowNull": false,
 						"type": Sequelize.DATE
