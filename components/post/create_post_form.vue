@@ -23,7 +23,7 @@
 						:options="roleNames"/>
 				</div>
 				<SearchableChip
-					v-if="mayCreateTag"
+					v-if="mayAddTag"
 					v-model="tags"
 					class="optional-tags"
 					header="Optional tags"
@@ -139,9 +139,11 @@ import { READ_POST } from "$/constants/template_page_paths"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import { post as permissionGroup } from "$/permissions/permission_list"
 import {
-	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
+	CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT,
+	TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
 } from "$/permissions/post_combinations"
-import { CREATE } from "$/permissions/tag_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
@@ -191,11 +193,13 @@ const mayPostGenerally = computed<boolean>(() => {
 	return isLimitedUpToGlobalScope && props.departments.data.length > 1
 })
 
-const mayCreateTag = computed<boolean>(() => {
-	const canCreate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		CREATE
+const mayAddTag = computed<boolean>(() => {
+	const mayAdd = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+		TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+		TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
 	])
-	return canCreate
+	return mayAdd
 })
 
 const tags = ref<DeserializedTagResource[]>([])
