@@ -80,7 +80,7 @@ import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import makeExistenceOperators from "@/resource_management/helpers/make_existence_operators"
 import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
 
 import { user as permissionGroup } from "$/permissions/permission_list"
@@ -271,6 +271,7 @@ async function resetUsersList() {
 		}
 	}
 	receivedErrors.value = []
+	selectedIDs.value = []
 
 	await fetchUserInfo()
 }

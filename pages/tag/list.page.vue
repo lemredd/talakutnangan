@@ -168,6 +168,7 @@ async function refetchTags() {
 		}
 	}
 	receivedErrors.value = []
+	selectedIDs.value = []
 
 	await fetchTagInfos()
 }
