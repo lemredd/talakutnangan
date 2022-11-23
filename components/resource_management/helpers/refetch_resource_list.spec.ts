@@ -1,5 +1,5 @@
 import { Ref, ref } from "vue"
-import helper from "./reset_resource_list"
+import helper from "./refetch_resource_list"
 
 describe("Helper: resource management/resource list resetter", () => {
 	it("can clear resource list data and meta count", () => {
