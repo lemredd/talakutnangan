@@ -19,7 +19,26 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK })
 
-		const wrapper = shallowMount(Component)
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"users": listOfAdminEmails
+						}
+					}
+				}
+			}
+		})
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find(".submit-btn")
@@ -41,7 +60,25 @@ describe("Component: Log In Form", () => {
 	})
 
 	it("should show error from authentication-guarded route", () => {
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
+
 		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"users": listOfAdminEmails
+						}
+					}
+				}
+			},
 			"props": {
 				"receivedErrorFromPageContext": {
 					"detail": "redirected from authentication-guarded route"
@@ -82,7 +119,26 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
-		const wrapper = shallowMount(Component)
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							listOfAdminEmails
+						}
+					}
+				}
+			}
+		})
 		const emailField = wrapper.findComponent({ "name": "TextualField" })
 		const passwordField = wrapper.findComponent({ "name": "PasswordField" })
 		const submitBtn = wrapper.find(".submit-btn")
@@ -100,5 +156,39 @@ describe("Component: Log In Form", () => {
 		expect(error.exists()).toBeTruthy()
 		expect(error.html()).toContain(errorDetail1)
 		expect(error.html()).toContain(errorDetail2)
+	})
+
+	it("can list the first 3 admin emails", async() => {
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
+
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": {
+						"pageProps": {
+							"users": listOfAdminEmails
+						}
+					}
+				},
+				"stubs": {
+					"Overlay": false
+				}
+			}
+		})
+		// Mock showing of overlay containing list of contacts
+		const forgotPasswordBtn = wrapper.find(".forgot-password-btn")
+		await forgotPasswordBtn.trigger("click")
+
+		const contacts = wrapper.findAll(".contact")
+		contacts.forEach(
+			(contact, index) => expect(contact.text()).toContain(listOfAdminEmails.data[index].email)
+		)
 	})
 })

@@ -24,6 +24,9 @@ import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
+import { RESET_PASSWORD } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
+
 import Role from "%/models/role"
 import Model from "%/models/user"
 import Department from "%/models/department"
@@ -291,6 +294,31 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 	get modelChainToUser(): ModelCtor<BaseModel>[] {
 		return []
+	}
+
+	async retrieveResetterEmails(): Promise<Serializable> {
+		try {
+			const { rows, count } = await Model.findAndCountAll({
+				"include": [
+					{
+						"model": Role,
+						"required": true,
+						"where": new Condition().greaterThanOrEqual(
+							"userFlags", permissionGroup.generateMask(...RESET_PASSWORD)
+						).build()
+					}
+				],
+				...this.transaction.transactionObject
+			})
+
+			const document = await this.serialize(rows) as Serializable
+
+			this.integrateCount(document, count)
+
+			return document
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	private async createStudents(
