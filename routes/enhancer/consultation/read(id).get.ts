@@ -50,7 +50,13 @@ export default class extends PageMiddleware {
 				const { id } = request.params
 				const manager = new Manager(request)
 
-				const consultation = await manager.findWithID(Number(id))
+				const consultation = await manager.findWithID(Number(id), {
+					"constraints": {
+						"filter": {
+							"existence": "*"
+						}
+					}
+				})
 
 				if (consultation.data === null) {
 					return {
