@@ -194,14 +194,7 @@ export default abstract class Manager<
 
 			const document = await this.serialize(rows, transformerOptions)
 
-			if (typeof document.meta === "object") {
-				document.meta = {
-					...document.meta,
-					count
-				}
-			} else {
-				document.meta = { count }
-			}
+			this.integrateCount(document, count)
 
 			return document
 		} catch (error) {
@@ -384,5 +377,16 @@ export default abstract class Manager<
 		}
 
 		return new DatabaseError()
+	}
+
+	protected integrateCount(listDocument: Serializable, count: number): void {
+		if (typeof listDocument.meta === "object") {
+			listDocument.meta = {
+				...listDocument.meta,
+				count
+			}
+		} else {
+			listDocument.meta = { count }
+		}
 	}
 }
