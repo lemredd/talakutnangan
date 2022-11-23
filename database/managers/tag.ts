@@ -52,7 +52,7 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const currentAttachedTagIDs = attachedTags.map(attachedTag => attachedTag.tagID)
+			const currentAttachedTagIDs = attachedTags.map(attachedTag => Number(attachedTag.tagID))
 			const { newIDs, deletedIDs } = segragateIDs(currentAttachedTagIDs, tagIDs)
 
 			if (newIDs.length > 0) {
