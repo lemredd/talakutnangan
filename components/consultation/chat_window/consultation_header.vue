@@ -262,7 +262,7 @@ const {
 	isDone,
 	isOngoing
 } = makeConsultationStates(props)
-const isConsultationFinishedOrCancelled = isDone || isCanceled
+const isConsultationFinishedOrCancelled = isDone.value || isCanceled.value
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue

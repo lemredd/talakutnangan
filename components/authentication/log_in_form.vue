@@ -166,7 +166,7 @@ const selectableRoles = [
 ]
 const selectedRole = ref("")
 function fillDetails() {
-	email.value = `${selectedRole.value}@example.net`
+	email.value = `test_${selectedRole.value}@example.net`
 	password.value = selectedRole.value === defaultProfessor ? defaultProfessor : "password"
 }
 </script>

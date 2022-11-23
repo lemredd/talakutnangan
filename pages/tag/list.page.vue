@@ -167,6 +167,8 @@ async function refetchTags() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchTagInfos()
 }
 

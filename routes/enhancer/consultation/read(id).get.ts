@@ -50,7 +50,13 @@ export default class extends PageMiddleware {
 				const { id } = request.params
 				const manager = new Manager(request)
 
-				const consultation = await manager.findWithID(Number(id))
+				const consultation = await manager.findWithID(Number(id), {
+					"constraints": {
+						"filter": {
+							"existence": "*"
+						}
+					}
+				})
 
 				if (consultation.data === null) {
 					return {
@@ -80,7 +86,7 @@ export default class extends PageMiddleware {
 		const consultations = await manager.list({
 			"filter": {
 				"consultationScheduleRange": "*",
-				"existence": "exists",
+				"existence": "*",
 				"user": Number(user.data.id)
 			},
 			"page": {
@@ -89,7 +95,13 @@ export default class extends PageMiddleware {
 			},
 			"sort": [ "-updatedAt" ]
 		}) as ConsultationListDocument
-		const consultation = await manager.findWithID(Number(id)) as ConsultationDocument
+		const consultation = await manager.findWithID(Number(id), {
+			"constraints": {
+				"filter": {
+					"existence": "*"
+				}
+			}
+		}) as ConsultationDocument
 
 		const consultationIDs = consultations.data.map(
 			consultationResource => Number(consultationResource.id)

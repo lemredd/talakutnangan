@@ -58,6 +58,14 @@ export default function<
 
 		if (newData.length === 0) {
 			queryState.offset.value = Math.max(queryState.offset.value - 1, 0)
+			list.value = {
+				...list.value,
+				"data": [],
+				"meta": {
+					...list.value.meta,
+					"count": 0
+				}
+			}
 		} else {
 			list.value = {
 				...list.value,

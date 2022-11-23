@@ -39,7 +39,7 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).end()
 		} else {
-			const testStudentEmail = "example_student@example.net"
+			const testStudentEmail = "test_student@example.net"
 			const testRole = "test_student"
 			const testStudentNumber = "000-0001"
 			const testDepartment = "Test Institute Department"

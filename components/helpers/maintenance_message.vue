@@ -30,7 +30,7 @@
 			}
 
 			.header-text {
-				@apply text-true-gray-700 text-xl;
+				@apply mt-2 text-xl;
 				text-align: center;
 			}
 		}

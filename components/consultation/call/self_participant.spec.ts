@@ -1,3 +1,4 @@
+import { nextTick } from "vue"
 import { shallowMount } from "@vue/test-utils"
 
 import Component from "./self_participant.vue"
@@ -35,8 +36,8 @@ describe("Component: consultation/call/self participant", () => {
 			"props": {
 				"containerId": "something",
 				"isJoined": false,
-				"mustShowVideo": false,
-				"mustTransmitAudio": false
+				"isShowingVideo": true,
+				"isTransmittingAudio": false
 			}
 		})
 
@@ -45,5 +46,33 @@ describe("Component: consultation/call/self participant", () => {
 		.toEqual(`${userProfile.data.id}_${userProfile.data.name}`)
 	})
 
-	it.todo("can load tracks")
+	it("can preview video", async() => {
+		const userProfile = {
+			"data": {
+				"id": "1",
+				"name": "User A"
+			}
+		}
+		const wrapper = shallowMount(Component, {
+			"global": {
+				"provide": {
+					"pageContext": { "pageProps": {
+						userProfile
+					} }
+				}
+			},
+			"props": {
+				"containerId": "something",
+				"isJoined": false,
+				"isShowingVideo": true,
+				"isTransmittingAudio": false
+			}
+		})
+		const castWrapper = wrapper.vm as any
+		const previewVideo = wrapper.find(".preview-video")
+		await nextTick()
+
+		expect(castWrapper.previewVideo).toHaveProperty("srcObject", "mock source")
+		expect(previewVideo.attributes("autoplay")).toBeDefined()
+	})
 })

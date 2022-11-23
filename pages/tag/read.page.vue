@@ -60,6 +60,7 @@ import type { DeserializedTagDocument } from "$/types/documents/tag"
 import Fetcher from "$@/fetchers/tag"
 import makeSwitch from "$@/helpers/make_switch"
 import makeManagementInfo from "@/tag/make_management_info"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
@@ -128,25 +129,42 @@ function updateTag() {
 		}
 	})
 	.then(() => {
+		const customSuccessMessage = "Tag has been successfully updated successfully!"
+
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Tag has been read successfully!")
+		fillSuccessMessages(receivedErrors, successMessages, customSuccessMessage)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 }
 
 async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		if (!tags.value.data.deletedAt) tags.value.data.deletedAt = new Date()
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Tag has been archived successfully.",
+			true
+		)
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
-	.then(({ body, status }) => {
-		console.log(body, status)
+	.then(() => {
+		if (tags.value.data.deletedAt) tags.value.data.deletedAt = null
+
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Tag has been restored successfully.",
+			true
+		)
 	})
+	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
