@@ -3,6 +3,7 @@ import helper from "./refetch_resource_list"
 
 describe("Helper: resource management/resource list resetter", () => {
 	it("can clear resource list data and meta count", () => {
+		const isLoaded = ref(true)
 		const resourceListData = [ 1, 2, 3 ]
 		const sampleResourceList = ref({
 			"data": resourceListData,
@@ -16,6 +17,7 @@ describe("Helper: resource management/resource list resetter", () => {
 		async function sampleFetchMethod(): Promise<void> {}
 
 		helper(
+			isLoaded,
 			sampleResourceList as Ref<any>,
 			sampleErrors,
 			sampleIDs,

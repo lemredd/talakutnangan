@@ -15,11 +15,13 @@ export default async function<
 	V extends DeserializedResource<T, U>,
 	W extends DeserializedResourceListDocument<T, U, V>
 >(
+	isLoaded: Ref<boolean>,
 	list: Ref<W>,
 	receivedErrors: Ref<string[]>,
 	selectedIDs: Ref<string[]>,
 	fetchResourceInfo: () => Promise<void>
 ) {
+	isLoaded.value = false
 	list.value = {
 		...list.value,
 		"data": [],
