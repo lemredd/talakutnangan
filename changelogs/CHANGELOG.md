@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.4.1
+
+### 🩹 Fixes
+- **tag:** Add mechanism to manipulate the existence of the tag (6e8752e6)
+
+### 🎨 Styles
+- **component:** Appear as column (e55799ca)
+- **semester:** Adjust spaces (a7fddab7)
+
+### 👓 Reformed Templates
+- **role:** Add list redirector (f4b3e9e0)
+- **page:** Add list redirector (ac4ea565)
+
+### ❤️  Contributors
+- Jarlem Red De Peralta
+- Kenneth Trecy Tobias
+
 ## v1.4.0
 
 ### 🚀 Enhancements
