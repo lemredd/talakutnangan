@@ -360,10 +360,10 @@ function updateTags() {
 }
 
 const mayUpdateTag = computed<boolean>(() => {
-	const canCreate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+	const canUpdate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		UPDATE
 	])
-	return canCreate
+	return canUpdate
 })
 
 watch(isShown, newValue => {
