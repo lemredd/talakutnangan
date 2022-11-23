@@ -108,11 +108,16 @@ const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
 const roleData = computed<RoleAttributes<"deserialized">>({
-	get(): RoleAttributes<"deserialized"> { return role.value.data },
+	get(): RoleAttributes<"deserialized"> {
+		return role.value.data
+	},
 	set(newResource: RoleAttributes<"deserialized">): void {
-		role.value.data = {
-			...role.value.data,
-			...newResource
+		role.value = {
+			...role.value,
+			"data": {
+				...role.value.data,
+				...newResource
+			}
 		}
 	}
 })
