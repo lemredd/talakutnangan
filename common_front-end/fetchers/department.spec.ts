@@ -10,6 +10,7 @@ describe("Fetcher: Department", () => {
 			"data": {
 				"attributes": {
 					"acronym": "A",
+					"deletedAt": null,
 					"fullName": "A",
 					"mayAdmit": true
 				},
@@ -44,6 +45,7 @@ describe("Fetcher: Department", () => {
 		expect(response).toHaveProperty("body", {
 			"data": {
 				"acronym": "A",
+				"deletedAt": null,
 				"fullName": "A",
 				"id": "1",
 				"mayAdmit": true,
