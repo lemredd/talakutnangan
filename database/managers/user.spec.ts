@@ -174,6 +174,17 @@ describe("Database Manager: User read operations", () => {
 		expect(users.data).toHaveLength(1)
 		expect(users).toHaveProperty("data.0.attributes.email", model.email)
 	})
+
+	it("cannot get user that can reset password", async() => {
+		const manager = new Manager()
+		const resetterRole = await new RoleFactory().insertOne()
+		await new Factory().attach(resetterRole).insertOne()
+
+		const users = await manager.retrieveResetterEmails()
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(0)
+	})
 })
 
 describe("Database Manager: User create operations", () => {
