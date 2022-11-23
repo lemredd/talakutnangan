@@ -69,12 +69,13 @@ import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import makeExistenceOperators from "@/resource_management/helpers/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import refetchList from "@/resource_management/helpers/refetch_resource_list"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -205,16 +206,14 @@ const mayEditSemester = computed<boolean>(() => {
 	return isPermitted
 })
 
-async function refetchSemester() {
-	list.value = {
-		"data": [],
-		"meta": {
-			"count": 0
-		}
-	}
-	receivedErrors.value = []
-
-	await fetchSemesterInfos()
+function refetchSemester() {
+	refetchList(
+		isLoaded,
+		list,
+		receivedErrors,
+		selectedIDs,
+		fetchSemesterInfos
+	)
 }
 
 const debouncedResetList = debounce(refetchSemester, DEBOUNCED_WAIT_DURATION)
