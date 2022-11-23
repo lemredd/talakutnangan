@@ -270,6 +270,8 @@ async function resetUsersList() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchUserInfo()
 }
 

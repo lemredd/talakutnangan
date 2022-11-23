@@ -151,6 +151,8 @@ async function refetchAuditTrail() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchAuditTrailInfos()
 }
 

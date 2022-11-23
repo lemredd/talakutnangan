@@ -214,6 +214,8 @@ async function refetchDepartment() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchDepartmentInfos()
 }
 

@@ -1,6 +1,6 @@
 <template>
 	<div :id="selfParticipantId" class="self-participant">
-		<div v-if="!mustShowVideo" class="profile-user">
+		<div v-if="!isShowingVideo" class="profile-user">
 			<ProfilePicture
 				class="profile-picture"
 				:user="userProfile"/>
@@ -9,7 +9,7 @@
 			:id="containerId"
 			class="track-container">
 			<video
-				v-if="!isJoined && mustShowVideo"
+				v-if="!isJoined && isShowingVideo"
 				ref="previewVideo"
 				class="preview-video">
 			</video>
@@ -73,14 +73,13 @@ const { userProfile } = pageProps
 type DefinedProps = {
 	containerId: string
 	isJoined: boolean
-	mustShowVideo: boolean
-	mustTransmitAudio: boolean
+	isShowingVideo: boolean
 }
 const props = defineProps<DefinedProps>()
 
 const selfParticipantId = `${userProfile.data.id}_${userProfile.data.name}`
 const previewVideo = ref<HTMLVideoElement|null>(null)
-const mustShowVideo = computed(() => props.mustShowVideo)
+const mustShowVideo = computed(() => props.isShowingVideo)
 function previewVideoTrack() {
 	if (navigator.mediaDevices) {
 		navigator.mediaDevices.getUserMedia({ "video": true })

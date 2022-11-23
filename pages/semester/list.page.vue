@@ -212,6 +212,8 @@ async function refetchSemester() {
 			"count": 0
 		}
 	}
+	receivedErrors.value = []
+
 	await fetchSemesterInfos()
 }
 

@@ -23,7 +23,7 @@
 			type="date"/>
 		<DateSelector
 			v-model="endAt"
-			class="field end date"
+			class="field end-at date"
 			label="Ends at:"
 			type="date"/>
 		<button

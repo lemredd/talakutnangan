@@ -175,6 +175,8 @@ async function updateRole() {
 async function archiveRole() {
 	await fetcher.archive([ role.value.data.id ])
 	.then(() => {
+		if (!role.value.data.deletedAt) role.value.data.deletedAt = new Date()
+
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
@@ -183,6 +185,8 @@ async function archiveRole() {
 async function restoreRole() {
 	await fetcher.restore([ role.value.data.id ])
 	.then(() => {
+		if (role.value.data.deletedAt) role.value.data.deletedAt = null
+
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))

@@ -31,7 +31,7 @@ export default class extends DevController {
 		if (request.nextMiddlewareArguments?.hasPreprocessed) {
 			response.status(this.status.OK).json(request.body)
 		} else {
-			const testUnverifiedEmail = "unverified@example.net"
+			const testUnverifiedEmail = "test_unverified@example.net"
 			const testRole = "test_unverified"
 
 			let testAdminRole = await Role.findOne({

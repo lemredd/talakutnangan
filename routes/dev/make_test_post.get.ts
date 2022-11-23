@@ -29,7 +29,7 @@ export default class extends DevController {
 	get filePath(): string { return __filename }
 
 	async handle(request: Request, response: Response): Promise<void> {
-		const testSecretaryEmail = "secretary@example.net"
+		const testSecretaryEmail = "test_secretary@example.net"
 		const testSecretaryRoleName = "test_secretary"
 		const testDepartment = "Test Institute Department"
 

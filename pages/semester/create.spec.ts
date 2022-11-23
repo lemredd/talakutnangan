@@ -38,8 +38,8 @@ describe("Page: /semester", () => {
 
 		const nameInput = wrapper.find(".name input")
 		const orderInput = wrapper.find(".order select")
-		const startAtInput = wrapper.find(".start input")
-		const endAtInput = wrapper.find(".end input")
+		const startAtInput = wrapper.find(".start-at input")
+		const endAtInput = wrapper.find(".end-at input")
 		const submitBtn = wrapper.find("button[type=submit]")
 
 		await nameInput.setValue(semester.data.name)

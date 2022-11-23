@@ -5,12 +5,14 @@ import { GENERAL_SUCCESS_MESSAGE } from "$@/constants/messages"
 export default function(
 	receivedErrors: Ref<string[]>,
 	successMessages: Ref<string[]>,
-	newMessage?: string
+	newMessage?: string,
+	mustOverride?: boolean
 ) {
 	if (receivedErrors.value.length) receivedErrors.value = []
 
 	if (newMessage) {
-		if (successMessages.value[0] === GENERAL_SUCCESS_MESSAGE) successMessages.value = []
+		const isMessageGeneric = successMessages.value[0] === GENERAL_SUCCESS_MESSAGE
+		if (isMessageGeneric || mustOverride) successMessages.value = []
 		successMessages.value.push(newMessage)
 	} else {
 		successMessages.value = []

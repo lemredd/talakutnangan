@@ -174,13 +174,21 @@ async function updateDepartment() {
 
 async function archiveDepartment() {
 	await fetcher.archive([ department.value.data.id ])
-	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.then(() => {
+		if (!department.value.data.deletedAt) department.value.data.deletedAt = new Date()
+
+		fillSuccessMessages(receivedErrors, successMessages)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
 async function restoreDepartment() {
 	await fetcher.restore([ department.value.data.id ])
-	.then(() => fillSuccessMessages(receivedErrors, successMessages))
+	.then(() => {
+		if (department.value.data.deletedAt) department.value.data.deletedAt = null
+
+		fillSuccessMessages(receivedErrors, successMessages)
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 </script>
