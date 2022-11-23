@@ -149,8 +149,12 @@ import specializePath from "$/helpers/specialize_path"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import { UPDATE } from "$/permissions/tag_combinations"
 import { post as permissionGroup } from "$/permissions/permission_list"
+import {
+	TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
+} from "$/permissions/post_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
@@ -360,10 +364,12 @@ function updateTags() {
 }
 
 const mayUpdateTag = computed<boolean>(() => {
-	const canUpdate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE
+	const mayUpdate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+		TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+		TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
 	])
-	return canUpdate
+	return mayUpdate
 })
 
 watch(isShown, newValue => {
