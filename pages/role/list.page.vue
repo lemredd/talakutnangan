@@ -246,7 +246,7 @@ function clearOffset() {
 watch([ offset ], debouncedResetList)
 
 watch(
-	[ chosenSort, chosenDepartment, slug, existence, offset ],
+	[ chosenSort, chosenDepartment, slug, existence ],
 	clearOffset
 )
 
