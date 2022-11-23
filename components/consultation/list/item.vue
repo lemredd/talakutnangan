@@ -28,7 +28,7 @@
 
 		<LastChat
 			v-if="hasPreviewMessage"
-			:last-chat="previewMessagge"/>
+			:last-chat="previewMessage"/>
 		<EmptyLastChat v-else/>
 	</div>
 </template>
@@ -126,6 +126,7 @@ const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">
 	return activities
 })
 const {
+	isCanceled,
 	isDone,
 	isOngoing,
 	willSoonStart,
@@ -138,11 +139,13 @@ const statusBadge = computed(() => {
 
 	if (isDone.value) status = "Finished"
 	if (isOngoing.value) status = "Ongoing"
-	if (willSoonStart.value || willStart.value) status = "Scheduled"
+	if (willSoonStart.value || willStart.value && !isCanceled.value) status = "Scheduled"
+	if (isCanceled.value) status = "Canceled"
 
 	return status
 })
 const statusBadgeClasses = computed(() => ({
+	"canceled": isCanceled.value,
 	"finished": isDone.value,
 	"ongoing": isOngoing.value,
 	"scheduled": willSoonStart.value || willStart.value
@@ -162,7 +165,7 @@ const previewMessageIndex = computed<number>(() => props.previewMessages.data.fi
 	message => message.consultation.data.id === props.consultation.id
 ))
 const hasPreviewMessage = computed<boolean>(() => previewMessageIndex.value > -1)
-const previewMessagge = computed<DeserializedChatMessageResource<"user">>(
+const previewMessage = computed<DeserializedChatMessageResource<"user">>(
 	() => props.previewMessages.data[previewMessageIndex.value]
 )
 
