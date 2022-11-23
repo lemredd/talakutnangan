@@ -321,20 +321,23 @@ export default abstract class Manager<
 			if (parentModelChain.length === 0) return String(modelID) === String(parentID)
 
 			const foundModel = await this.model.findByPk(modelID, {
-				"include": parentModelChain.reduceRight((previousIncludeOptions, currentModel) => {
-					const base: IncludeOptions = {
-						"model": currentModel,
-						"required": true
-					}
+				"include": parentModelChain.reduceRight(
+					(previousIncludeOptions, currentModel) => {
+						const base: IncludeOptions = {
+							"model": currentModel,
+							"required": true
+						}
 
-					if (previousIncludeOptions.length === 0) {
-						base.where = new Condition().equal("id", parentID).build()
-					} else {
-						base.include = previousIncludeOptions
-					}
+						if (previousIncludeOptions.length === 0) {
+							base.where = new Condition().equal("id", parentID).build()
+						} else {
+							base.include = previousIncludeOptions
+						}
 
-					return [ base ]
-				}, [] as IncludeOptions[])
+						return [ base ]
+					}, [] as IncludeOptions[]
+				),
+				"paranoid": false
 			})
 
 			return foundModel !== null
