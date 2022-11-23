@@ -19,18 +19,21 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.OK })
 
-		const listOfAdminEmails = [
-			"sample1@email.com",
-			"sample2@email.com",
-			"sample3@email.com"
-		]
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
 
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							listOfAdminEmails
+							"users": listOfAdminEmails
 						}
 					}
 				}
@@ -57,18 +60,21 @@ describe("Component: Log In Form", () => {
 	})
 
 	it("should show error from authentication-guarded route", () => {
-		const listOfAdminEmails = [
-			"sample1@email.com",
-			"sample2@email.com",
-			"sample3@email.com"
-		]
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
 
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							listOfAdminEmails
+							"users": listOfAdminEmails
 						}
 					}
 				}
@@ -113,11 +119,14 @@ describe("Component: Log In Form", () => {
 			}),
 			{ "status": RequestEnvironment.status.BAD_REQUEST })
 
-		const listOfAdminEmails = [
-			"sample1@email.com",
-			"sample2@email.com",
-			"sample3@email.com"
-		]
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
 
 		const wrapper = shallowMount(Component, {
 			"global": {
@@ -150,18 +159,21 @@ describe("Component: Log In Form", () => {
 	})
 
 	it("can list the first 3 admin emails", async() => {
-		const listOfAdminEmails = [
-			"sample1@email.com",
-			"sample2@email.com",
-			"sample3@email.com"
-		]
+		const listOfAdminEmails = {
+			"data": [
+				{
+					"email": "sample1@example.com",
+					"name": "sample1"
+				}
+			]
+		}
 
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
 						"pageProps": {
-							listOfAdminEmails
+							"users": listOfAdminEmails
 						}
 					}
 				},
@@ -176,7 +188,7 @@ describe("Component: Log In Form", () => {
 
 		const contacts = wrapper.findAll(".contact")
 		contacts.forEach(
-			(contact, index) => expect(contact.text()).toEqual(listOfAdminEmails[index])
+			(contact, index) => expect(contact.text()).toContain(listOfAdminEmails.data[index].email)
 		)
 	})
 })
