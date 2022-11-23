@@ -72,8 +72,6 @@ describe("UI Page: Read resource by ID", () => {
 			true,
 			// Comment Flags
 			true,
-			// Profanity Flags
-			true,
 			// User Flags
 			true,
 			// Audit Trail Flags

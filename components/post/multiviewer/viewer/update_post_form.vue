@@ -8,7 +8,6 @@
 			<ReceivedSuccessMessages
 				v-if="successMessages.length"
 				:received-success-messages="successMessages"/>
-
 			<DraftForm
 				:id="postID"
 				v-model="content"
@@ -21,6 +20,7 @@
 						:options="roleNames"/>
 				</div>
 				<SearchableChip
+					v-if="mayUpdateTag"
 					v-model:model-value="tags"
 					header="Optional tags"
 					:maximum-tags="MAX_TAGS"
@@ -127,8 +127,9 @@
 </style>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
+import { computed, ref, watch, inject } from "vue"
 
+import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedRoleResource } from "$/types/documents/role"
@@ -148,6 +149,12 @@ import specializePath from "$/helpers/specialize_path"
 import PostAttachmentFetcher from "$@/fetchers/post_attachment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
+import { post as permissionGroup } from "$/permissions/permission_list"
+import {
+	TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+	TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
+} from "$/permissions/post_combinations"
 
 import Overlay from "@/helpers/overlay.vue"
 import DraftForm from "@/post/draft_form.vue"
@@ -158,6 +165,10 @@ import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const userFetcher = new UserFetcher()
+
+const pageContext = inject("pageContext") as PageContext<"deserialized">
+const { pageProps } = pageContext
+const { userProfile } = pageProps
 
 type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 const props = defineProps<{
@@ -351,6 +362,15 @@ function updateTags() {
 	))
 	hasUpdatedTags.value = true
 }
+
+const mayUpdateTag = computed<boolean>(() => {
+	const mayUpdate = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		TAG_PERSONAL_POST_ON_OWN_DEPARTMENT,
+		TAG_SOCIAL_POST_ON_OWN_DEPARTMENT,
+		TAG_PUBLIC_POST_ON_ANY_DEPARTMENT
+	])
+	return mayUpdate
+})
 
 watch(isShown, newValue => {
 	if (newValue && !hasLoadedCompletePosterInfo.value) {

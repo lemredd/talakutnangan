@@ -4,6 +4,9 @@ import type { RawBulkDataForStudents, RawBulkDataForEmployees } from "%/types/in
 import compare from "$!/auth/compare"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
+import { RESET_PASSWORD } from "$/permissions/user_combinations"
+import { user as permissionGroup } from "$/permissions/permission_list"
+
 import Model from "%/models/user"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
@@ -156,6 +159,33 @@ describe("Database Manager: User read operations", () => {
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
+	})
+
+	it("can get user that can reset password", async() => {
+		const manager = new Manager()
+		const resetterRole = await new RoleFactory()
+		.userFlags(permissionGroup.generateMask(...RESET_PASSWORD))
+		.insertOne()
+		const model = await new Factory().attach(resetterRole).insertOne()
+
+		const users = await manager.retrieveResetterEmails()
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(1)
+		expect(users).toHaveProperty("data.0.attributes.email", model.email)
+		expect(users).toHaveProperty("meta.count", 1)
+	})
+
+	it("cannot get user that can reset password", async() => {
+		const manager = new Manager()
+		const resetterRole = await new RoleFactory().insertOne()
+		await new Factory().attach(resetterRole).insertOne()
+
+		const users = await manager.retrieveResetterEmails()
+
+		expect(users).toHaveProperty("data")
+		expect(users.data).toHaveLength(0)
+		expect(users).toHaveProperty("meta.count", 0)
 	})
 })
 
