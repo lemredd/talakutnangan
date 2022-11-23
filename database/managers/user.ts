@@ -22,8 +22,9 @@ import type {
 import Log from "$!/singletons/log"
 import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
-import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
+import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Role from "%/models/role"
@@ -310,7 +311,11 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 				...this.transaction.transactionObject
 			})
 
-			return await this.serialize(rows)
+			const document = await this.serialize(rows) as Serializable
+
+			this.integrateCount(document, count)
+
+			return document
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}

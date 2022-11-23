@@ -173,6 +173,7 @@ describe("Database Manager: User read operations", () => {
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(1)
 		expect(users).toHaveProperty("data.0.attributes.email", model.email)
+		expect(users).toHaveProperty("meta.count", 1)
 	})
 
 	it("cannot get user that can reset password", async() => {
@@ -184,6 +185,7 @@ describe("Database Manager: User read operations", () => {
 
 		expect(users).toHaveProperty("data")
 		expect(users.data).toHaveLength(0)
+		expect(users).toHaveProperty("meta.count", 0)
 	})
 })
 
