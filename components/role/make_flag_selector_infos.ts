@@ -11,7 +11,6 @@ import {
 	tag as tagPermissions,
 	post as postPermissions,
 	comment as commentPermissions,
-	profanity as profanityPermissions,
 	user as userPermissions,
 	auditTrail as auditTrailPermissions
 } from "$/permissions/permission_list"
@@ -75,7 +74,6 @@ export default function(role: Ref<RoleAttributes<"deserialized">>): FlagSelector
 			tagPermissions,
 			postPermissions,
 			commentPermissions,
-			profanityPermissions,
 			userPermissions,
 			auditTrailPermissions
 		].filter(info => !unsuspectedNames.includes(info.name))
@@ -128,7 +126,6 @@ export default function(role: Ref<RoleAttributes<"deserialized">>): FlagSelector
 		makeFlagSelectorInfo("Comment", commentPermissions, {
 			"checkExternal": checkExternalDependencies
 		}),
-		makeFlagSelectorInfo("Profanity", profanityPermissions),
 		makeFlagSelectorInfo("User", userPermissions),
 		makeFlagSelectorInfo("Audit Trail", auditTrailPermissions)
 	]
