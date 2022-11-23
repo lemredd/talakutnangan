@@ -95,6 +95,7 @@
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
+				:title="`${attachment.type} ${attachment.id}`"
 				:key="attachment.id"
 				class="preview-file">
 				<div v-if="isImage(attachment.fileType)" class="preview-img-container">
