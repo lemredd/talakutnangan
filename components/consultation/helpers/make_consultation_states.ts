@@ -19,12 +19,14 @@ export default function(
 	const isAfterScheduledStart = computed<boolean>(() => differenceFromSchedule.value < 0)
 	const hasStarted = computed<boolean>(() => props.consultation.startedAt !== null)
 	const hasFinished = computed<boolean>(() => props.consultation.finishedAt !== null)
-	const hasDeleted = computed<boolean>(() => props.consultation.deletedAt !== null)
+	const hasDeleted = computed<boolean>(() => Boolean(props.consultation.deletedAt))
 
-	const willSoonStart = computed<boolean>(() => differenceFromSchedule.value > 0)
+	const willSoonStart = computed<boolean>(
+		() => differenceFromSchedule.value > 0 && !hasDeleted.value
+	)
 	const willStart = computed<boolean>(() => {
 		const mayStart = differenceFromSchedule.value === 0 || isAfterScheduledStart.value
-		return mayStart && !hasStarted.value
+		return mayStart && !hasStarted.value && !hasDeleted.value
 	})
 	const isOngoing = computed<boolean>(() => {
 		const isInProgress = isAfterScheduledStart.value && hasStarted.value
@@ -34,11 +36,9 @@ export default function(
 		const isInProgress = isAfterScheduledStart.value && hasStarted.value
 		return isInProgress && hasFinished.value
 	})
-	const isCanceled = computed<boolean>(
-		() => !isAfterScheduledStart.value && hasDeleted.value
-	)
+	const isCanceled = computed<boolean>(() => hasDeleted.value)
 	const isAutoTerminated = computed<boolean>(() => {
-		const hasTerminated = isAfterScheduledStart.value && hasDeleted.value
+		const hasTerminated = isAfterScheduledStart.value && !hasDeleted.value
 		return hasTerminated && props.consultation.actionTaken === null
 	})
 
