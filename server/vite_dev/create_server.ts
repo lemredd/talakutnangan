@@ -32,7 +32,7 @@ export default async function(app: ExpressApp) {
 	const router = createRouter()
 	// @ts-ignore
 	router.get("*", async(request: PageRequest, response: Response, next: NextFunction): void => {
-		Log.trace("controller", `Viewing ${request.url}`)
+		Log.trace("controller", `Viewing ${request.url} by ${request.clientIp}`)
 
 		const { "error": rawError = null } = request.query
 		// ! There is a possiblity of crashing the server using the query
