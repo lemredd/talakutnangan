@@ -228,6 +228,7 @@ const receivedErrors = ref<string[]>([])
 
 const age = computed<string>(() => {
 	if (consultation.value.finishedAt) return "an old"
+	if (consultation.value.deletedAt) return "a canceled"
 	return "a new"
 })
 const actionTaken = ref("")
