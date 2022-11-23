@@ -291,6 +291,7 @@ function finishConsultation(): void {
 }
 function cancelConsultation(): void {
 	fetcher.archive([ consultationID.value ])
+	.then(() => assignPath("/consultation"))
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
 
