@@ -3,8 +3,6 @@ import type { Serializable } from "$/types/general"
 import type { DocumentProps } from "$/types/server"
 import type { UserListDocument } from "$/types/documents/user"
 
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
-
 import Policy from "!/bases/policy"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
@@ -31,27 +29,10 @@ export default class extends PageMiddleware {
 	async getPageProps(unusedRequest: Request): Promise<Serializable> {
 		const manager = new Manager()
 
-		const adminUsers = await manager.list({
-			"filter": {
-				"department": "*",
-				"existence": "exists",
-				"kind": "unreachable_employee",
-				"role": "*",
-				"slug": ""
-			},
-			"page": {
-				"limit": DEFAULT_LIST_LIMIT,
-				"offset": 0
-			},
-			"sort": [ "email" ]
-		}) as UserListDocument
-
-		const adminEmails = adminUsers.data
-		.map(user => user.attributes.email)
-		.slice(0, 3)
+		const users = await manager.retrieveResetterEmails() as UserListDocument
 
 		return {
-			adminEmails
+			users
 		}
 	}
 }
