@@ -22,7 +22,9 @@ import type {
 import Log from "$!/singletons/log"
 import deserialize from "$/object/deserialize"
 import runThroughPipeline from "$/helpers/run_through_pipeline"
+import { RESET_PASSWORD } from "$/permissions/user_combinations"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+import { user as permissionGroup } from "$/permissions/permission_list"
 
 import Role from "%/models/role"
 import Model from "%/models/user"
@@ -291,6 +293,27 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 
 	get modelChainToUser(): ModelCtor<BaseModel>[] {
 		return []
+	}
+
+	async retrieveResetterEmails(): Promise<Serializable> {
+		try {
+			const { rows, count } = await Model.findAndCountAll({
+				"include": [
+					{
+						"model": Role,
+						"required": true,
+						"where": new Condition().greaterThanOrEqual(
+							"userFlags", permissionGroup.generateMask(...RESET_PASSWORD)
+						).build()
+					}
+				],
+				...this.transaction.transactionObject
+			})
+
+			return await this.serialize(rows)
+		} catch (error) {
+			throw this.makeBaseError(error)
+		}
 	}
 
 	private async createStudents(

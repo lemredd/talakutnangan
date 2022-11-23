@@ -2,10 +2,8 @@ import type {
 	PermissionMap,
 	PermissionInfo,
 	LevelPermission,
-	OperationPermission
-} from "$/types/permission"
+	OperationPermission,
 
-import {
 	VIEW,
 	CREATE,
 	UPDATE,
