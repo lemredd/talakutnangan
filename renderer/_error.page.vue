@@ -41,9 +41,6 @@
 				[Error Code: {{ pageContext.pageProps.parsedUnitError.code }}]
 				{{ pageContext.pageProps.parsedUnitError.detail }}
 			</p>
-			<!-- <p class ="details">
-				JSON: {{ JSON.stringify(pageContext.pageProps.parsedUnitError) }}
-			</p> -->
 		</div>
 	</div>
 </template>
