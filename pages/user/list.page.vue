@@ -75,7 +75,6 @@ import DepartmentFetcher from "$@/fetchers/department"
 
 import makeManagementInfo from "@/user/make_management_info"
 import convertForSentence from "$/string/convert_for_sentence"
-import determineTitle from "@/resource_management/determine_title"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingRoles from "@/helpers/loaders/load_remaining_roles"
@@ -94,6 +93,7 @@ import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import refetchList from "@/resource_management/helpers/refetch_resource_list"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -263,20 +263,17 @@ const mayCreateUser = computed<boolean>(() => {
 	return mayImportUsers
 })
 
-async function resetUsersList() {
-	list.value = {
-		"data": [],
-		"meta": {
-			"count": 0
-		}
-	}
-	receivedErrors.value = []
-	selectedIDs.value = []
-
-	await fetchUserInfo()
+function refetchUsers() {
+	refetchList(
+		isLoaded,
+		list,
+		receivedErrors,
+		selectedIDs,
+		fetchUserInfo
+	)
 }
 
-const debouncedResetList = debounce(resetUsersList, DEBOUNCED_WAIT_DURATION)
+const debouncedResetList = debounce(refetchUsers, DEBOUNCED_WAIT_DURATION)
 
 function clearOffset() {
 	offset.value = 0

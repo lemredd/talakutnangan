@@ -69,6 +69,7 @@ import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import refetchList from "@/resource_management/helpers/refetch_resource_list"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps = "tags" | "roles"
@@ -139,7 +140,7 @@ const resourceCount = computed<number>(() => {
 })
 
 const receivedErrors = ref<string[]>([])
-async function fetchTagInfos(): Promise<number|void> {
+async function fetchTagInfos() {
 	await loadRemainingResource(list, fetcher, () => ({
 		"filter": {
 			"existence": existence.value,
@@ -159,18 +160,14 @@ async function fetchTagInfos(): Promise<number|void> {
 	isLoaded.value = true
 }
 
-async function refetchTags() {
-	isLoaded.value = false
-	list.value = {
-		"data": [],
-		"meta": {
-			"count": 0
-		}
-	}
-	receivedErrors.value = []
-	selectedIDs.value = []
-
-	await fetchTagInfos()
+function refetchTags() {
+	refetchList(
+		isLoaded,
+		list,
+		receivedErrors,
+		selectedIDs,
+		fetchTagInfos
+	)
 }
 
 const debouncedResetList = debounce(refetchTags, DEBOUNCED_WAIT_DURATION)

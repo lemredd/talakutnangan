@@ -82,6 +82,7 @@ import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
 import ResourceManager from "@/resource_management/resource_manager.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
+import refetchList from "@/resource_management/helpers/refetch_resource_list"
 import ResourceList from "@/resource_management/resource_manager/resource_list.vue"
 
 type RequiredExtraProps =
@@ -178,7 +179,7 @@ async function countUsersPerRole(IDsToCount: string[]) {
 		}
 	})
 }
-async function fetchRoleInfos(): Promise<number|void> {
+async function fetchRoleInfos(): Promise<void> {
 	isLoaded.value = false
 
 	await loadRemainingResource(list, fetcher, () => ({
@@ -225,16 +226,14 @@ const mayEditRole = computed<boolean>(() => {
 	return isPermitted
 })
 
-async function refetchRoles() {
-	list.value = {
-		"data": [],
-		"meta": {
-			"count": 0
-		}
-	}
-	receivedErrors.value = []
-
-	await fetchRoleInfos()
+function refetchRoles() {
+	refetchList(
+		isLoaded,
+		list,
+		receivedErrors,
+		selectedIDs,
+		fetchRoleInfos
+	)
 }
 
 const debouncedResetList = debounce(refetchRoles, DEBOUNCED_WAIT_DURATION)
