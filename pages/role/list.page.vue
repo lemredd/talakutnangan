@@ -75,7 +75,7 @@ import makeManagementInfo from "@/role/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import loadRemainingDepartments from "@/helpers/loaders/load_remaining_departments"
-import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import makeExistenceOperators from "@/resource_management/helpers/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"

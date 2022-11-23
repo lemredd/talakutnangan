@@ -69,7 +69,7 @@ import formatToFriendlyDate from "$@/helpers/format_to_friendly_date"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import makeExistenceOperators from "@/resource_management/helpers/make_existence_operators"
 
 import PageCounter from "@/helpers/page_counter.vue"
 import TabbedPageHeader from "@/helpers/tabbed_page_header.vue"
