@@ -49,6 +49,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -159,6 +160,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -229,6 +231,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -333,6 +336,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -409,6 +413,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -479,6 +484,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -601,6 +607,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -678,6 +685,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,
@@ -778,6 +786,7 @@ describe("Helper: Filter Link Infos", () => {
 						"department": {
 							"data": {
 								"acronym": "A",
+								"deletedAt": null,
 								"fullName": "A",
 								"id": "1",
 								"mayAdmit": true,

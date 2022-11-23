@@ -21,6 +21,7 @@ describe("Fetcher: Department", () => {
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.create({
 			"acronym": "A",
+			"deletedAt": null,
 			"fullName": "A",
 			"mayAdmit": true
 		})
@@ -33,6 +34,7 @@ describe("Fetcher: Department", () => {
 			"data": {
 				"attributes": {
 					"acronym": "A",
+					"deletedAt": null,
 					"fullName": "A",
 					"mayAdmit": true
 				},
@@ -58,6 +60,7 @@ describe("Fetcher: Department", () => {
 					{
 						"attributes": {
 							"acronym": "A",
+							"deletedAt": null,
 							"fullName": "A",
 							"mayAdmit": true
 						},
@@ -102,6 +105,7 @@ describe("Fetcher: Department", () => {
 		const fetcher = new DepartmentFetcher()
 		const response = await fetcher.update("1", {
 			"acronym": "A",
+			"deletedAt": null,
 			"fullName": "A",
 			"mayAdmit": true
 		})
@@ -116,6 +120,7 @@ describe("Fetcher: Department", () => {
 			"data": {
 				"attributes": {
 					"acronym": "A",
+					"deletedAt": null,
 					"fullName": "A",
 					"mayAdmit": true
 				},
