@@ -98,7 +98,7 @@ export default class extends PermissionGroup<CommentFlags, Permissions> {
 			[ "writeOwnScope", {
 				"flag": WRITE_OWN_SCOPE,
 				"mask": WRITE_SCOPE_MASK,
-				"permissionDependencies": [ ]
+				"permissionDependencies": [ "readDepartmentScope" ]
 			} ],
 			[ "writeDepartmentScope", {
 				"flag": WRITE_DEPARTMENT_SCOPE,
