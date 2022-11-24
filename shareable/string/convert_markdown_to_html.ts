@@ -2,8 +2,9 @@ import { Converter } from "showdown"
 
 export default function(raw: string): string {
 	const converter = new Converter({
-		"backslashEscapesHTMLTags": true
+		"backslashEscapesHTMLTags": true,
+		"completeHTMLDocument": false
 	})
-	converter.setFlavor("allOn")
+	converter.setFlavor("github")
 	return converter.makeHtml(raw)
 }
