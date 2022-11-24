@@ -59,7 +59,9 @@ export default async function(app: ExpressApp) {
 			const pageContextInit = {
 				"documentProps": request.documentProps,
 				"pageProps": {
-					...request.pageProps ?? {},
+					...request.pageProps ?? {
+						"userProfile": request.isAuthenticated() ? request.user as Serializable : null
+					},
 					"isInMaintenanceMode": RequestEnvironment.isInMaintenanceMode,
 					parsedUnitError
 				},
