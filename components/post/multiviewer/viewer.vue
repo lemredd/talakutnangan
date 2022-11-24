@@ -204,6 +204,8 @@
 	@import "@styles/variables.scss";
 
 	.post-content {
+		@apply hyphens-auto;
+
 		word-break: normal;
 	}
 
