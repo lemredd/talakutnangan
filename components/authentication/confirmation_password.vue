@@ -1,5 +1,5 @@
 <template>
-	<Overlay :is-shown="mustConfirm">
+	<Overlay :is-shown="mustConfirm" @close="cancel">
 		<template #header>
 			<h1>Enter your current password to confirm the update</h1>
 		</template>
