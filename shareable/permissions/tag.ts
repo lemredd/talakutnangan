@@ -28,18 +28,22 @@ export default class extends PermissionGroup<TagFlags, Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
 			[ "view", {
 				"flag": VIEW,
+				"mask": VIEW,
 				"permissionDependencies": []
 			} ],
 			[ "create", {
 				"flag": CREATE,
+				"mask": CREATE,
 				"permissionDependencies": [ "view" ]
 			} ],
 			[ "update", {
 				"flag": UPDATE,
+				"mask": UPDATE,
 				"permissionDependencies": [ "view" ]
 			} ],
 			[ "archiveAndRestore", {
 				"flag": ARCHIVE_AND_RESTORE,
+				"mask": ARCHIVE_AND_RESTORE,
 				"permissionDependencies": [ "view" ]
 			} ]
 		])

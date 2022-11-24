@@ -26,7 +26,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 									"roles": {
 										"data": [
 											{
-												"commentFlags": comment.generateMask(
+												"commentFlags": comment.generateFlags(
 													...UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 												),
 												"id": "1"
@@ -88,7 +88,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 									"roles": {
 										"data": [
 											{
-												"commentFlags": comment.generateMask(
+												"commentFlags": comment.generateFlags(
 													...UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT,
 													...ARCHIVE_AND_RESTORE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 												),
@@ -151,7 +151,7 @@ describe("Component: comment/multiviewer/viewer/menu", () => {
 									"roles": {
 										"data": [
 											{
-												"commentFlags": comment.generateMask(),
+												"commentFlags": comment.generateFlags(),
 												"id": "1"
 											}
 										]

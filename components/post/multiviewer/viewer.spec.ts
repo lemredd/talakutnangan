@@ -58,7 +58,7 @@ describe("Component: post/viewer", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": new PermissionGroup().generateMask(
+												"postFlags": new PermissionGroup().generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}
@@ -164,7 +164,7 @@ describe("Component: post/viewer", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": new PermissionGroup().generateMask(
+												"postFlags": new PermissionGroup().generateFlags(
 													...ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}

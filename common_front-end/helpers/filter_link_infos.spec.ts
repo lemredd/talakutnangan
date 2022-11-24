@@ -583,14 +583,17 @@ describe("Helper: Filter Link Infos", () => {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
 				[ "a", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "b", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": []
 				} ],
 				[ "c", {
 					"flag": 0x4,
+					"mask": 0x4,
 					"permissionDependencies": []
 				} ]
 			])
@@ -635,7 +638,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a")
+									"userFlags": permissionGroup.generateFlags("a")
 								}
 							]
 						},
@@ -713,7 +716,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a")
+									"userFlags": permissionGroup.generateFlags("a")
 								}
 							]
 						},
@@ -814,7 +817,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a", "b")
+									"userFlags": permissionGroup.generateFlags("a", "b")
 								}
 							]
 						},

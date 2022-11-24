@@ -16,7 +16,7 @@ describe("GET /api/user", () => {
 
 	it("can be accessed by permitted user and get single user", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+		.userFlags(permissionGroup.generateFlags(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { "user": admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const student = await new UserFactory().beStudent().insertOne()
@@ -35,7 +35,7 @@ describe("GET /api/user", () => {
 
 	it("can be accessed by permitted user and get no user if empty", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+		.userFlags(permissionGroup.generateFlags(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const student = await new UserFactory().beStudent().insertOne()

@@ -12,7 +12,7 @@ describe("Middleware: Permission-Based Policy", () => {
 	const permissions = new UserPermissions()
 
 	it("can allow users with permission", async() => {
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "view" ]
@@ -34,7 +34,7 @@ describe("Middleware: Permission-Based Policy", () => {
 
 	it("can execute extra checks", async() => {
 		const extraCheck = jest.fn()
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "view" ]
@@ -59,7 +59,7 @@ describe("Middleware: Permission-Based Policy", () => {
 	})
 
 	it("can allow users with permission on different combination", async() => {
-		const role = await new RoleFactory().userFlags(permissions.generateMask(
+		const role = await new RoleFactory().userFlags(permissions.generateFlags(
 			"view",
 			"update",
 			"writeOwnScope"
@@ -85,7 +85,7 @@ describe("Middleware: Permission-Based Policy", () => {
 	})
 
 	it("cannot allow users without permission", async() => {
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const user = await new UserFactory().attach(role).serializedOne()
 		const pageGuard = new PermissionBasedPolicy(permissions, [
 			[ "create" ]

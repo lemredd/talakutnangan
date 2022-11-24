@@ -21,7 +21,7 @@ describe("POST /api/post_attachment", () => {
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const employeeRole = await new RoleFactory()
-		.postFlags(permissionGroup.generateMask(...CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT))
+		.postFlags(permissionGroup.generateFlags(...CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			employeeRole,

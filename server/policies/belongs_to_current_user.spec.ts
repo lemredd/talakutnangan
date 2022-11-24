@@ -14,7 +14,7 @@ describe("Policy: Belongs to current user", () => {
 
 	it("can allow user", async() => {
 		const userFactory = new UserFactory()
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const user = await userFactory.attach(role).serializedOne(true)
 		const pageGuard = new BelongsToCurrentUserPolicy(UserManager)
 		requester.customizeRequest({
@@ -37,9 +37,9 @@ describe("Policy: Belongs to current user", () => {
 
 	it("can allow different user if permitted", async() => {
 		const userFactory = new UserFactory()
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const adminRole = await new RoleFactory()
-		.userFlags(permissions.generateMask("readDepartmentScope"))
+		.userFlags(permissions.generateFlags("readDepartmentScope"))
 		.insertOne()
 		const user = await userFactory.attach(role).serializedOne(true)
 		const otherUser = await userFactory.attach(adminRole).serializedOne(true)
@@ -71,7 +71,7 @@ describe("Policy: Belongs to current user", () => {
 
 	it("cannot allow different user without required permission", async() => {
 		const userFactory = new UserFactory()
-		const role = await new RoleFactory().userFlags(permissions.generateMask("view")).insertOne()
+		const role = await new RoleFactory().userFlags(permissions.generateFlags("view")).insertOne()
 		const user = await userFactory.attach(role).serializedOne(true)
 		const otherUser = await userFactory.serializedOne(true)
 		const pageGuard = new BelongsToCurrentUserPolicy(UserManager, {

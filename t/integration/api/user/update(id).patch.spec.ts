@@ -25,7 +25,7 @@ describe("PATCH /api/user/:id", () => {
 
 	it("can be accessed by student and update own e-mail", async() => {
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 
 		const { "user": student, cookie } = await App.makeAuthenticatedCookie(studentRole)
@@ -89,7 +89,7 @@ describe("PATCH /api/user/:id", () => {
 
 	it("can be accessed by student and retain email verification after update", async() => {
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 
 		const { "user": student, cookie } = await App.makeAuthenticatedCookie(

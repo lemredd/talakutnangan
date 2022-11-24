@@ -3,9 +3,10 @@ import serveStaticFiles from "sirv"
 import { renderPage } from "vite-plugin-ssr"
 import { Router as createRouter, Express as ExpressApp } from "express"
 
-import { PageRequest } from "!/types/hybrid"
+import type { PageRequest } from "!/types/hybrid"
+import type { Serializable } from "$/types/general"
 import { Environment, UnitError } from "$/types/server"
-import { Response, NextFunction } from "!/types/dependent"
+import type { Response, NextFunction } from "!/types/dependent"
 
 import Log from "$!/singletons/log"
 import getRoot from "$!/helpers/get_root"
@@ -58,7 +59,9 @@ export default async function(app: ExpressApp) {
 			const pageContextInit = {
 				"documentProps": request.documentProps,
 				"pageProps": {
-					...request.pageProps ?? {},
+					...request.pageProps ?? {
+						"userProfile": request.isAuthenticated() ? request.user as Serializable : null
+					},
 					"isInMaintenanceMode": RequestEnvironment.isInMaintenanceMode,
 					parsedUnitError
 				},

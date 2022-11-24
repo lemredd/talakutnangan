@@ -16,7 +16,7 @@ describe("GET /api/signature/:id", () => {
 	it("can read signature", async() => {
 		const signature = await new SignatureFactory().insertOne()
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.userFlags(permissionGroup.generateFlags(...READ_OWN))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,

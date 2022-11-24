@@ -6,17 +6,18 @@ import BasePermissionGroup from "./base"
 describe("Back-end: Base Permission Group", () => {
 	type GroupNameA = { "groupA": number }
 	type AvailablePermissionsA = "a" | "b"
-
 	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsA> {
 		get name(): string { return "groupA" }
 		get permissions(): PermissionMap<AvailablePermissionsA> {
 			return new Map<AvailablePermissionsA, PermissionInfo<AvailablePermissionsA>>([
 				[ "a", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "b", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": []
 				} ]
 			])
@@ -49,10 +50,12 @@ describe("Back-end: Base Permission Group", () => {
 			return new Map<AvailablePermissionsB, PermissionInfo<AvailablePermissionsB>>([
 				[ "c", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "d", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "c" ]
 				} ]
 			])
@@ -85,7 +88,7 @@ describe("Back-end: Base Permission Group", () => {
 	it("can generate mask of simple permission", () => {
 		const permissionGroup = new GroupB()
 
-		const mask = permissionGroup.generateMask("c")
+		const mask = permissionGroup.generateFlags("c")
 
 		expect(mask).toBe(0x1)
 	})
@@ -93,7 +96,7 @@ describe("Back-end: Base Permission Group", () => {
 	it("can generate mask of dependent permission", () => {
 		const permissionGroup = new GroupB()
 
-		const mask = permissionGroup.generateMask("d")
+		const mask = permissionGroup.generateFlags("d")
 
 		expect(mask).toBe(0x3)
 	})
@@ -101,7 +104,7 @@ describe("Back-end: Base Permission Group", () => {
 	it("can generate super mask", () => {
 		const permissionGroup = new GroupB()
 
-		const mask = permissionGroup.generateSuperMask()
+		const mask = permissionGroup.generateSuperFlags()
 
 		expect(mask).toBe(0x3)
 	})
@@ -115,14 +118,17 @@ describe("Back-end: Base Permission Group", () => {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
 				[ "e", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "f", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": []
 				} ],
 				[ "g", {
 					"flag": 0x4,
+					"mask": 0x4,
 					"permissionDependencies": []
 				} ]
 			])
@@ -140,7 +146,7 @@ describe("Back-end: Base Permission Group", () => {
 	it("can generate mask of multiple independent permission", () => {
 		const permissionGroup = new GroupC()
 
-		const mask = permissionGroup.generateMask("e", "f", "g")
+		const mask = permissionGroup.generateFlags("e", "f", "g")
 
 		expect(mask).toBe(0x7)
 	})
@@ -149,7 +155,7 @@ describe("Back-end: Base Permission Group", () => {
 		const permissionGroup = new GroupC()
 		const roles = [
 			{
-				"groupC": permissionGroup.generateMask("e", "f"),
+				"groupC": permissionGroup.generateFlags("e", "f"),
 				"name": "A"
 			}
 		]
@@ -166,11 +172,11 @@ describe("Back-end: Base Permission Group", () => {
 		const permissionGroup = new GroupC()
 		const roles = [
 			{
-				"groupC": permissionGroup.generateMask("e", "f"),
+				"groupC": permissionGroup.generateFlags("e", "f"),
 				"name": "A"
 			},
 			{
-				"groupC": permissionGroup.generateMask("f", "g"),
+				"groupC": permissionGroup.generateFlags("f", "g"),
 				"name": "A"
 			}
 		]
@@ -188,11 +194,11 @@ describe("Back-end: Base Permission Group", () => {
 		const permissionGroup = new GroupC()
 		const roles = [
 			{
-				"groupC": permissionGroup.generateMask("e", "f"),
+				"groupC": permissionGroup.generateFlags("e", "f"),
 				"name": "A"
 			},
 			{
-				"groupC": permissionGroup.generateMask("f", "g"),
+				"groupC": permissionGroup.generateFlags("f", "g"),
 				"name": "A"
 			}
 		]
@@ -207,7 +213,7 @@ describe("Back-end: Base Permission Group", () => {
 
 	it("can generate permitted names", () => {
 		const permissionGroup = new GroupC()
-		const flags = permissionGroup.generateMask("e", "f")
+		const flags = permissionGroup.generateFlags("e", "f")
 
 		const permissionNames = permissionGroup.deserialize(flags)
 
@@ -229,6 +235,7 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "i", {
@@ -243,6 +250,7 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "h" ]
 				} ]
 			])
@@ -264,8 +272,8 @@ describe("Back-end: Base Permission Group", () => {
 	it("can allow with external dependencies", () => {
 		const permissionGroup = new GroupD()
 		const role = {
-			"groupC": new GroupC().generateMask("e"),
-			"groupD": permissionGroup.generateMask("h"),
+			"groupC": new GroupC().generateFlags("e"),
+			"groupD": permissionGroup.generateFlags("h"),
 			"name": "A"
 		}
 
@@ -278,8 +286,8 @@ describe("Back-end: Base Permission Group", () => {
 		const permissionGroup = new GroupD()
 		const role = {
 			"groupB": 0,
-			"groupC": new GroupC().generateMask("f"),
-			"groupD": permissionGroup.generateMask("i"),
+			"groupC": new GroupC().generateFlags("f"),
+			"groupD": permissionGroup.generateFlags("i"),
 			"name": "A"
 		}
 
@@ -353,10 +361,12 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "k", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "j" ]
 				} ],
 				[ "l", {
@@ -367,10 +377,12 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x4,
+					"mask": 0x4,
 					"permissionDependencies": []
 				} ],
 				[ "m", {
 					"flag": 0x8,
+					"mask": 0x8,
 					"permissionDependencies": [ "k" ]
 				} ]
 			])

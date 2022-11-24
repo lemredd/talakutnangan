@@ -89,7 +89,7 @@ describe("Page: settings/account", () => {
 					"semesterFlags": 0,
 					"tagFlags": 0,
 					"type": "role",
-					"userFlags": permissionGroup.generateMask(...UPDATE_OWN_DATA)
+					"userFlags": permissionGroup.generateFlags(...UPDATE_OWN_DATA)
 				}
 			]
 		}

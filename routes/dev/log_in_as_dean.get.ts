@@ -57,22 +57,22 @@ export default class extends DevController {
 			if (testDeanRole === null) {
 				testDeanRole = await new RoleFactory()
 				.name(() => testRole)
-				.departmentFlags(department.generateMask(
+				.departmentFlags(department.generateFlags(
 					"view"
 				))
-				.roleFlags(role.generateMask(
+				.roleFlags(role.generateFlags(
 					"view"
 				))
-				.semesterFlags(semester.generateMask(
+				.semesterFlags(semester.generateFlags(
 					"view"
 				))
-				.tagFlags(tag.generateMask(
+				.tagFlags(tag.generateFlags(
 					"view",
 					"create",
 					"update",
 					"archiveAndRestore"
 				))
-				.postFlags(post.generateMask(
+				.postFlags(post.generateFlags(
 					"view",
 					"create",
 					"update",
@@ -81,7 +81,7 @@ export default class extends DevController {
 					"writeDepartmentScope",
 					"tag"
 				))
-				.commentFlags(comment.generateMask(
+				.commentFlags(comment.generateFlags(
 					"view",
 					"create",
 					"update",
@@ -90,11 +90,11 @@ export default class extends DevController {
 					"writeDepartmentScope",
 					"vote"
 				))
-				.profanityFlags(profanity.generateMask(
+				.profanityFlags(profanity.generateFlags(
 					"view",
 					"readOverallScope"
 				))
-				.userFlags(user.generateMask(
+				.userFlags(user.generateFlags(
 					"view",
 					"create",
 					"update",

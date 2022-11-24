@@ -21,7 +21,7 @@ describe("PATCH /api/user/reset_password/:id", () => {
 
 	it("can be accessed by permitted user and reset other user", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...RESET_PASSWORD))
+		.userFlags(permissionGroup.generateFlags(...RESET_PASSWORD))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const student = await new UserFactory().insertOne()

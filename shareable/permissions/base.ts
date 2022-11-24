@@ -33,8 +33,9 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * @param permissionNames Name of the permission(s) to check if they are allowed in the role.
 	 */
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
+		const flags = this.generateFlags(...permissionNames)
 		const mask = this.generateMask(...permissionNames)
-		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
+		const mayAllowedInternally = this.doesMatch(role[this.name], mask, flags)
 		const mayAllowedExternally = this.identifyExternalDependencies(permissionNames)
 		.reduce((previousGroupApproval, currentExternalInfo) => {
 			const approval = previousGroupApproval && currentExternalInfo.group.mayAllow(
@@ -48,9 +49,33 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	}
 
 	/**
+	 * Generates flags of the permission(s).
+	 *
+	 * The flags includes the flags of permission dependencies.
+	 *
+	 * @param names Name of the permission to generate its flags
+	 */
+	generateFlags(...names: U[]): number {
+		const { permissions } = this
+		return names.reduce((combinedMask, name) => {
+			const info: PermissionInfo<U> = permissions.get(name)
+				|| {
+					"flag": 0,
+					"mask": 0,
+					"permissionDependencies": []
+				}
+			return combinedMask
+				| info.permissionDependencies.reduce(
+					(dependentMask, dependentName) => dependentMask | this.generateFlags(dependentName),
+					info.flag
+				)
+		}, 0)
+	}
+
+	/**
 	 * Generates mask of the permission(s).
 	 *
-	 * The mask includes the flags of permission dependencies.
+	 * The mask includes the mask of permission dependencies.
 	 *
 	 * @param names Name of the permission to generate its mask
 	 */
@@ -60,12 +85,13 @@ export default abstract class<T extends GeneralObject<number>, U> {
 			const info: PermissionInfo<U> = permissions.get(name)
 				|| {
 					"flag": 0,
+					"mask": 0,
 					"permissionDependencies": []
 				}
 			return combinedMask
 				| info.permissionDependencies.reduce(
 					(dependentMask, dependentName) => dependentMask | this.generateMask(dependentName),
-					info.flag
+					info.mask
 				)
 		}, 0)
 	}
@@ -73,7 +99,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	/**
 	 * Generates mask where all permissions are enabled.
 	 */
-	generateSuperMask(): number {
+	generateSuperFlags(): number {
 		return Array.from(this.permissions.values()).reduce(
 			(previousMask, permissionInfo) => previousMask | permissionInfo.flag,
 			0
@@ -274,7 +300,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		const { permissions } = this
 		const names: U[] = []
 		for (const [ key, value ] of permissions.entries()) {
-			if (this.doesMatch(flags, value.flag)) {
+			if (this.doesMatch(flags, value.mask, value.flag)) {
 				names.push(key)
 			}
 		}
@@ -310,7 +336,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 		)
 	}
 
-	private doesMatch(flags: number, targetFlag: number): boolean {
-		return (flags & targetFlag) === targetFlag
+	private doesMatch(flags: number, targetMask: number, targetFlag: number): boolean {
+		return (flags & targetMask) === targetFlag
 	}
 }

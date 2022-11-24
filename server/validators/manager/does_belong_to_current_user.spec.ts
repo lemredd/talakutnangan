@@ -25,7 +25,7 @@ describe("Validator: does belong to user", () => {
 		const START_TIME = 1
 		const END_TIME = 300
 		const role = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 		const userFactory = new UserFactory()
 		const user = await userFactory.attach(role).insertOne()
@@ -64,7 +64,7 @@ describe("Validator: does belong to user", () => {
 		const START_TIME = 2
 		const END_TIME = 300
 		const role = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
 		.insertOne()
 		const userFactory = new UserFactory()
 		const admin = await userFactory.attach(role).insertOne()
@@ -104,7 +104,7 @@ describe("Validator: does belong to user", () => {
 		const START_TIME = 2
 		const END_TIME = 300
 		const role = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_ANYONE_ON_OWN_DEPARTMENT))
 		.insertOne()
 		const userFactory = new UserFactory()
 		const admin = await userFactory.attach(role).insertOne()
@@ -140,7 +140,7 @@ describe("Validator: does belong to user", () => {
 		const START_TIME = 3
 		const END_TIME = 300
 		const role = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 		const userFactory = new UserFactory()
 		const otherUser = await userFactory.attach(role).insertOne()

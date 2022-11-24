@@ -20,7 +20,7 @@ describe("POST /api/user/import", () => {
 
 	it("can upload valid student details", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.userFlags(permissionGroup.generateFlags(...IMPORT_USERS))
 		.insertOne()
 		const sampleRole = await new RoleFactory().insertOne()
 		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
@@ -87,7 +87,7 @@ describe("POST /api/user/import", () => {
 
 	it("can upload valid reachable employee details", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.userFlags(permissionGroup.generateFlags(...IMPORT_USERS))
 		.insertOne()
 		const sampleRole = await new RoleFactory().insertOne()
 		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
@@ -147,7 +147,7 @@ describe("POST /api/user/import", () => {
 
 	it("cannot upload by text field", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.userFlags(permissionGroup.generateFlags(...IMPORT_USERS))
 		.insertOne()
 		const role = await new RoleFactory().insertOne()
 		await new DepartmentFactory().fullName(() => "I B C E").insertOne()
@@ -173,7 +173,7 @@ describe("POST /api/user/import", () => {
 
 	it("cannot upload invalid student details", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...IMPORT_USERS))
+		.userFlags(permissionGroup.generateFlags(...IMPORT_USERS))
 		.insertOne()
 		const sampleRole = await new RoleFactory().insertOne()
 		await new DepartmentFactory().fullName(() => "I B C E").insertOne()

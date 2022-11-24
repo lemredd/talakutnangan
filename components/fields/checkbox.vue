@@ -5,7 +5,6 @@
 			class="checkbox"
 			type="checkbox"
 			:class="inputClasses"
-			:checked="modelValue.includes(value)"
 			:value="value"
 			:disabled="disabled"/>
 		<label v-if="label" class="input-header">
@@ -23,13 +22,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-const {
-	label,
-	modelValue,
-	value,
-	disabled,
-	inputClasses
-} = defineProps<{
+const props = defineProps<{
 	label?: string
 	modelValue: string[]
 	value: string
@@ -41,7 +34,7 @@ const {
 const emit = defineEmits<{(e: "update:modelValue", newModelValue: string[]): void}>()
 
 const proxiedValue = computed<string[]>({
-	"get": () => modelValue,
+	"get": () => props.modelValue,
 	set(newValues: string[]) { emit("update:modelValue", newValues) }
 })
 </script>

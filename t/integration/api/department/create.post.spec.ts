@@ -16,7 +16,7 @@ describe("POST /api/department", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...CREATE))
+		.departmentFlags(permissionGroup.generateFlags(...CREATE))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await new DepartmentFactory().makeOne()
@@ -45,7 +45,7 @@ describe("POST /api/department", () => {
 
 	it("cannot accept invalid info", async() => {
 		const adminRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...CREATE))
+		.departmentFlags(permissionGroup.generateFlags(...CREATE))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await new DepartmentFactory().makeOne()

@@ -15,7 +15,7 @@ describe("PATCH /api/role/:id", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.roleFlags(permissionGroup.generateMask(...UPDATE))
+		.roleFlags(permissionGroup.generateFlags(...UPDATE))
 		.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const role = await new RoleFactory().insertOne()

@@ -111,15 +111,12 @@ const userProfile = pageProps.userProfile as DeserializedUserProfile|null
 
 const isUserAGuest = computed(() => userProfile === null)
 
-
 const {
 	"state": mustShowSettings,
 	"toggle": toggleSettings
 } = makeSwitch(false)
 
-
 function toggleSettingsDedicatedly() {
 	toggleSettings()
 }
-
 </script>

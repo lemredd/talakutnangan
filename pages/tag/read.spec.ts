@@ -71,7 +71,7 @@ describe("Page: tag/read", () => {
 										"data": [
 											{
 												"name": "A",
-												"tagFlags": permissionGroup.generateMask(...UPDATE)
+												"tagFlags": permissionGroup.generateFlags(...UPDATE)
 											}
 										]
 									}

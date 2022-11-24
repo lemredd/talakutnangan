@@ -10,30 +10,31 @@ import { role as permissionGroup } from "$/permissions/permission_list"
 import Route from "!%/api/role/restore.patch"
 
 describe("PATCH /api/role/restore/:id", () => {
-	beforeAll(async () => {
+	beforeAll(async() => {
 		await App.create(new Route())
 	})
 
-	it("can be accessed by authenticated user", async () => {
+	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-			.roleFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE))
-			.insertOne()
-		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
-		const role = await (new RoleFactory()).insertOne()
+		.roleFlags(permissionGroup.generateFlags(...ARCHIVE_AND_RESTORE))
+		.insertOne()
+		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
+		const role = await new RoleFactory().insertOne()
 		await role.destroy()
 
 		const response = await App.request
-			.patch("/api/role")
-			.send({
-				data: [
-					{ type: "role", id: String(role.id) }
-				]
-			})
-			.set("Cookie", cookie)
-			.type(JSON_API_MEDIA_TYPE)
-			.accept(JSON_API_MEDIA_TYPE)
+		.patch("/api/role")
+		.send({
+			"data": [
+				{ "type": "role",
+					"id": String(role.id) }
+			]
+		})
+		.set("Cookie", cookie)
+		.type(JSON_API_MEDIA_TYPE)
+		.accept(JSON_API_MEDIA_TYPE)
 
 		expect(response.statusCode).toBe(RequestEnvironment.status.NO_CONTENT)
-		expect((await Role.findOne({ where: { id: role.id } }))!.deletedAt).toBeNull()
+		expect((await Role.findOne({ "where": { "id": role.id } }))!.deletedAt).toBeNull()
 	})
 })

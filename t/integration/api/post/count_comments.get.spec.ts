@@ -24,8 +24,8 @@ describe("GET /api/post/count_comments", () => {
 
 	it("can be accessed by permitted user and get user count", async() => {
 		const adminRole = await new RoleFactory()
-		.postFlags(postPermissionGroup.generateMask(...READ_ANY_POST))
-		.commentFlags(permissionGroup.generateMask(...READ_ANYONE_ON_ALL_DEPARTMENTS))
+		.postFlags(postPermissionGroup.generateFlags(...READ_ANY_POST))
+		.commentFlags(permissionGroup.generateFlags(...READ_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const model = await new Factory().insertOne()

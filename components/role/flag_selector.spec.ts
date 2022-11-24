@@ -18,7 +18,7 @@ describe("Component: role/flag_selector", () => {
 		await dependentCheckbox.setValue([ "create" ])
 
 		const internalUpdates = wrapper.emitted("update:modelValue")
-		const expectedFlagValue = post.generateMask("create", "view")
+		const expectedFlagValue = post.generateFlags("create", "view")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		expect(internalUpdates).not.toHaveProperty("1")
 	})
@@ -55,7 +55,7 @@ describe("Component: role/flag_selector", () => {
 		await readAccessLevelFlags.setValue("readDepartmentScope")
 
 		const internalUpdates = wrapper.emitted("update:modelValue")
-		const expectedFlagValue = post.generateMask("readDepartmentScope")
+		const expectedFlagValue = post.generateFlags("readDepartmentScope")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		expect(internalUpdates).not.toHaveProperty("1")
 	})
@@ -73,7 +73,7 @@ describe("Component: role/flag_selector", () => {
 		await dependentCheckbox.setValue([ "view" ])
 
 		const internalUpdates = wrapper.emitted("update:modelValue")
-		const expectedFlagValue = comment.generateMask("view")
+		const expectedFlagValue = comment.generateFlags("view")
 		expect(internalUpdates).toHaveProperty("0.0", expectedFlagValue)
 		const externalUpdates = wrapper.emitted("checkExternalDependencyFlags")
 		expect(externalUpdates).toHaveProperty("0.0.0.group", post)
@@ -86,7 +86,7 @@ describe("Component: role/flag_selector", () => {
 			"props": {
 				"basePermissionGroup": post,
 				"header": "Post",
-				"modelValue": post.generateMask("create", "view")
+				"modelValue": post.generateFlags("create", "view")
 			}
 		})
 
@@ -105,7 +105,7 @@ describe("Component: role/flag_selector", () => {
 				"basePermissionGroup": post,
 				"dependentPermissionGroups": [ comment ],
 				"header": "Comment",
-				"modelValue": post.generateMask("view")
+				"modelValue": post.generateFlags("view")
 			}
 		})
 

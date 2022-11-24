@@ -7,12 +7,16 @@ import {
 	VIEW,
 	CREATE,
 	UPDATE,
-	WRITE_OWN_SCOPE,
 	ARCHIVE_AND_RESTORE,
+
+	WRITE_OWN_SCOPE,
 	WRITE_OVERALL_SCOPE,
 	READ_OVERALL_SCOPE,
 	READ_DEPARTMENT_SCOPE,
-	WRITE_DEPARTMENT_SCOPE
+	WRITE_DEPARTMENT_SCOPE,
+
+	READ_SCOPE_MASK,
+	WRITE_SCOPE_MASK
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
@@ -37,43 +41,53 @@ export default class extends PermissionGroup<PostFlags, Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
 			[ "view", {
 				"flag": VIEW,
+				"mask": VIEW,
 				"permissionDependencies": []
 			} ],
 			[ "create", {
 				"flag": CREATE,
+				"mask": CREATE,
 				"permissionDependencies": [ "view" ]
 			} ],
 			[ "update", {
 				"flag": UPDATE,
+				"mask": UPDATE,
 				"permissionDependencies": [ "view" ]
 			} ],
 			[ "archiveAndRestore", {
 				"flag": ARCHIVE_AND_RESTORE,
+				"mask": ARCHIVE_AND_RESTORE,
 				"permissionDependencies": [ "view" ]
 			} ],
 
 			[ "readDepartmentScope", {
 				"flag": READ_DEPARTMENT_SCOPE,
+				"mask": READ_SCOPE_MASK,
 				"permissionDependencies": [ ]
 			} ],
 			[ "readOverallScope", {
 				"flag": READ_OVERALL_SCOPE,
+				"mask": READ_SCOPE_MASK,
 				"permissionDependencies": [ ]
 			} ],
 			[ "writeOwnScope", {
 				"flag": WRITE_OWN_SCOPE,
-				"permissionDependencies": [ ]
+				"mask": WRITE_SCOPE_MASK,
+				"permissionDependencies": [ "readDepartmentScope" ]
 			} ],
 			[ "writeDepartmentScope", {
 				"flag": WRITE_DEPARTMENT_SCOPE,
+				"mask": WRITE_SCOPE_MASK,
 				"permissionDependencies": [ "readDepartmentScope" ]
 			} ],
 			[ "writeOverallScope", {
 				"flag": WRITE_OVERALL_SCOPE,
+				"mask": WRITE_SCOPE_MASK,
 				"permissionDependencies": [ "readOverallScope" ]
 			} ],
 			[ "tag", {
 				"flag": 0x0100,
+				"mask": 0x0100,
 				"permissionDependencies": [ "view" ]
 			} ]
 		])

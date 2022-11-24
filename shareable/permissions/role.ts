@@ -1,10 +1,8 @@
-import type {
+import {
 	PermissionMap,
 	PermissionInfo,
-	OperationPermission
-} from "$/types/permission"
+	OperationPermission,
 
-import {
 	VIEW,
 	CREATE,
 	UPDATE,
@@ -28,14 +26,26 @@ export default class extends PermissionGroup<RoleFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view", { "flag": VIEW,
-				"permissionDependencies": [] } ],
-			[ "create", { "flag": CREATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "update", { "flag": UPDATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
-				"permissionDependencies": [ "view" ] } ]
+			[ "view", {
+				"flag": VIEW,
+				"mask": VIEW,
+				"permissionDependencies": []
+			} ],
+			[ "create", {
+				"flag": CREATE,
+				"mask": CREATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "update", {
+				"flag": UPDATE,
+				"mask": UPDATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "archiveAndRestore", {
+				"flag": ARCHIVE_AND_RESTORE,
+				"mask": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ]
+			} ]
 		])
 	}
 }
