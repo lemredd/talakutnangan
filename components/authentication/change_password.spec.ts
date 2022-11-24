@@ -1,16 +1,20 @@
-import { nextTick } from "vue"
+import { nextTick, ref } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
 import { BODY_CLASSES } from "$@/constants/provided_keys"
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
+
 import specializePath from "$/helpers/specialize_path"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./change_password.vue"
 
-describe.skip("Component: authentication/change_password", () => {
+describe("Component: authentication/change_password", () => {
 	it("can prompt for new user password as necessary", async() => {
+		jest.useFakeTimers()
 		const CURRENT_PASSWORD = "Hello"
 		const NEW_PASSWORD = "World"
 		const CONFIRM_NEW_PASSWORD = "!"
@@ -19,7 +23,7 @@ describe.skip("Component: authentication/change_password", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
-					[BODY_CLASSES]: [],
+					[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {
@@ -39,6 +43,7 @@ describe.skip("Component: authentication/change_password", () => {
 			}
 		})
 
+		jest.advanceTimersByTime(MILLISECOND_IN_A_SECOND)
 		await nextTick()
 		const overlay = wrapper.find(".overlay")
 		const overlayInputs = overlay.findAllComponents({ "name": "SensitiveTextField" })
