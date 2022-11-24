@@ -90,18 +90,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", "depart
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const department = ref<DeserializedDepartmentDocument<"read">>(
-	pageProps.department as DeserializedDepartmentDocument<"read">
-)
-
-const capitalAcronym = computed({
-	"get": () => department.value.data.acronym,
-	set(newValue: string): void {
-		department.value.data.acronym = newValue.toUpperCase()
-	}
-})
-
-const departments = ref<DeserializedDepartmentDocument>(
+const department = ref<DeserializedDepartmentDocument>(
 	{
 		...pageProps.department,
 		"data": {
@@ -109,19 +98,20 @@ const departments = ref<DeserializedDepartmentDocument>(
 		}
 	} as DeserializedDepartmentDocument
 )
-
+const capitalAcronym = computed({
+	"get": () => department.value.data.acronym,
+	set(newValue: string): void {
+		department.value.data.acronym = newValue.toUpperCase()
+	}
+})
 const managementInfo = computed<DepartmentManagementInfo>(
-	() => makeManagementInfo(userProfile, departments.value.data)
+	() => makeManagementInfo(userProfile, department.value.data)
 )
 
 const mayUpdateDepartment = computed<boolean>(() => managementInfo.value.mayUpdateDepartment)
-
-const mayArchiveDepartment = computed<boolean>(
-	() => managementInfo.value.mayArchiveDepartment
+const mayArchiveDepartment = computed<boolean>(() => managementInfo.value.mayArchiveDepartment
 )
-const mayRestoreDepartment = computed<boolean>(
-	() => managementInfo.value.mayRestoreDepartment
-)
+const mayRestoreDepartment = computed<boolean>(() => managementInfo.value.mayRestoreDepartment)
 
 const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
 const mayNotChangeAdmission = computed<boolean>(() => !mayUpdateDepartment.value)
@@ -154,6 +144,7 @@ async function updateDepartment() {
 	hasSubmittedDepartment.value = false
 	await fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
+		"deletedAt": null,
 		"fullName": department.value.data.fullName,
 		"mayAdmit": department.value.data.mayAdmit
 	}, {
