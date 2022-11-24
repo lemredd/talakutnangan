@@ -99,7 +99,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	/**
 	 * Generates mask where all permissions are enabled.
 	 */
-	generateSuperMask(): number {
+	generateSuperFlags(): number {
 		return Array.from(this.permissions.values()).reduce(
 			(previousMask, permissionInfo) => previousMask | permissionInfo.flag,
 			0

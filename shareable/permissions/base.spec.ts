@@ -101,7 +101,7 @@ describe("Back-end: Base Permission Group", () => {
 	it("can generate super mask", () => {
 		const permissionGroup = new GroupB()
 
-		const mask = permissionGroup.generateSuperMask()
+		const mask = permissionGroup.generateSuperFlags()
 
 		expect(mask).toBe(0x3)
 	})

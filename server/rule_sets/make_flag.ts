@@ -10,7 +10,7 @@ export default function(flagName: string, basePermission: BasePermission<any, an
 		[flagName]: {
 			"constraints": {
 				"range": {
-					"maximum": basePermission.generateSuperMask(),
+					"maximum": basePermission.generateSuperFlags(),
 					"minimum": 0
 				}
 			},

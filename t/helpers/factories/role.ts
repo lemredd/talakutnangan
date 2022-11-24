@@ -122,14 +122,14 @@ export default class RoleFactory extends BaseFactory<
 
 	superRole(): RoleFactory {
 		return this
-		.tagFlags(tag.generateSuperMask())
-		.roleFlags(role.generateSuperMask())
-		.userFlags(user.generateSuperMask())
-		.postFlags(post.generateSuperMask())
-		.commentFlags(comment.generateSuperMask())
-		.semesterFlags(semester.generateSuperMask())
-		.profanityFlags(profanity.generateSuperMask())
-		.departmentFlags(department.generateSuperMask())
-		.auditTrailFlags(auditTrail.generateSuperMask())
+		.tagFlags(tag.generateSuperFlags())
+		.roleFlags(role.generateSuperFlags())
+		.userFlags(user.generateSuperFlags())
+		.postFlags(post.generateSuperFlags())
+		.commentFlags(comment.generateSuperFlags())
+		.semesterFlags(semester.generateSuperFlags())
+		.profanityFlags(profanity.generateSuperFlags())
+		.departmentFlags(department.generateSuperFlags())
+		.auditTrailFlags(auditTrail.generateSuperFlags())
 	}
 }
