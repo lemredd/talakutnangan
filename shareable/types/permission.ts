@@ -15,6 +15,7 @@ export interface ExternalPermissionDependencyInfo<T extends GeneralObject<number
  */
 export interface PermissionInfo<T> {
 	flag: number,
+	mask: number,
 	permissionDependencies: T[],
 	externalPermissionDependencies?: ExternalPermissionDependencyInfo<any, any>[]
 }
