@@ -108,7 +108,7 @@ const newPassword = ref<string>("")
 const confirmNewPassword = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
-
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 function clearPasswords(): void {
 	[
 		currentPassword,
@@ -117,14 +117,12 @@ function clearPasswords(): void {
 	].forEach(password => {
 		password.value = ""
 	})
-}
 
-const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
+	bodyClasses.value.scroll(true)
+}
 function open() {
-	setTimeout(() => {
-		openDialog()
-		if (!isUndefined(window)) bodyClasses.value.scroll(false)
-	}, MILLISECOND_IN_A_SECOND)
+	openDialog()
+	if (!isUndefined(window)) bodyClasses.value.scroll(false)
 }
 
 const receivedErrors = ref<string[]>([])
@@ -144,7 +142,7 @@ function savePassword() {
 	).then(() => {
 		const TIMEOUT = 3000
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, TIMEOUT)
+		setTimeout(cancel, TIMEOUT)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
