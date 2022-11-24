@@ -2,6 +2,7 @@
 <template>
 	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<button
+		v-if="consultation.data.finishedAt"
 		class="print-btn material-icons fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white"
 		@click="printPage">
 		print
@@ -270,7 +271,7 @@ const chatMessages = ref<DeserializedChatMessageListDocument<"user">>(
 )
 
 function printPage() {
-	if (!isUndefined(window)) {
+	if (!isUndefined(window) && consultation.value.data.finishedAt) {
 		window.print()
 	}
 }

@@ -37,6 +37,7 @@
 
 					<li>
 						<a
+							v-if="!isCanceled"
 							class="underline"
 							:href="linkToPrintableForm">
 							View printable form (PDF)
