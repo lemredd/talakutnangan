@@ -157,8 +157,8 @@ async function updateDepartment() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been read successfully!")
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasSubmittedDepartment.value = true
