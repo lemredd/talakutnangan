@@ -328,7 +328,11 @@ async function updateDepartment() {
 			successMessages,
 			"Department updated successfully.")
 	})
-	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors,
+		receivedErrors,
+		successMessages)
+	)
 
 	hasSubmittedDepartment.value = true
 }
