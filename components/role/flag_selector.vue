@@ -198,7 +198,6 @@ function toggleAccessLevel(
 		newPermissions.push(newValue)
 	}
 
-	console.log(newPermissions)
 	rawFlags.value = newPermissions
 }
 
