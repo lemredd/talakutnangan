@@ -4,6 +4,6 @@ export default function(raw: string): string {
 	const converter = new Converter({
 		"backslashEscapesHTMLTags": true
 	})
-	converter.setFlavor("github")
+	converter.setFlavor("allOn")
 	return converter.makeHtml(raw)
 }
