@@ -44,7 +44,8 @@ export default class extends PageMiddleware {
 		const tag = await manager.findWithID(Number(id), {
 			"constraints": {
 				"filter": {
-					"existence": "*"
+					"existence": "*",
+					"mustHavePost": false
 				}
 			}
 		})
