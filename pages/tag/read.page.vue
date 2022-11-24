@@ -64,6 +64,7 @@ import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -90,12 +91,8 @@ const tags = ref<DeserializedTagDocument>(
 const managementInfo = computed<TagManagementInfo>(
 	() => makeManagementInfo(userProfile, tags.value.data)
 )
-
-const mayArchiveTag = computed<boolean>(
-	() => managementInfo.value.mayArchiveTag)
-
-const mayRestoreTag = computed<boolean>(
-	() => managementInfo.value.mayRestoreTag)
+const mayArchiveTag = computed<boolean>(() => managementInfo.value.mayArchiveTag)
+const mayRestoreTag = computed<boolean>(() => managementInfo.value.mayRestoreTag)
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
