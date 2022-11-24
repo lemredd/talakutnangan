@@ -31,6 +31,8 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
+import RequestEnvironment from "$/singletons/request_environment"
+
 import Overlay from "@/helpers/overlay.vue"
 import SensitiveTextField from "@/fields/sensitive_text.vue"
 
@@ -48,7 +50,7 @@ const emit = defineEmits<CustomEvents>()
 
 const value = computed<string>({
 	get(): string {
-		return props.modelValue
+		return RequestEnvironment.isNotOnProduction ? "password" : props.modelValue
 	},
 	set(newValue: string): void {
 		emit("update:modelValue", newValue)
