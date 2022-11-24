@@ -358,6 +358,45 @@ describe("Controller: POST /api/post", () => {
 		requester.expectSuccess()
 	})
 
+	it("can accept post with initial blockquote", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "|hello|world|")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
 	it("can accept post with initial link", async() => {
 		const controller = new Controller()
 		const { validations } = controller
