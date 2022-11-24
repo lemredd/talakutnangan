@@ -60,7 +60,6 @@ import type { ExternalPermissionDependencyInfo } from "$/types/permission"
 import makeUnique from "$/array/make_unique"
 import subtractArrays from "$/array/subtract"
 import BasePermissionGroup from "$/permissions/base"
-import sanitizeArray from "$@/helpers/sanitize_array"
 import convertToTitle from "$/string/convert_to_title"
 import convertForSentence from "$/string/convert_for_sentence"
 
@@ -193,17 +192,13 @@ function toggleAccessLevel(
 	const previousValue = permissionToRemove
 	const newValue = permissionToAdd
 
-	if (previousValue !== rawEmptyValue) {
-		if (newPermissions.includes(previousValue)) {
-			delete newPermissions[newPermissions.indexOf(previousValue)]
-			newPermissions = sanitizeArray(newPermissions)
-		}
-	}
+	newPermissions = newPermissions.filter(permission => permission !== previousValue)
 
 	if (newValue !== rawEmptyValue) {
 		newPermissions.push(newValue)
 	}
 
+	console.log(newPermissions)
 	rawFlags.value = newPermissions
 }
 
