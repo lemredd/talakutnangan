@@ -24,7 +24,7 @@ export default function(role: Ref<RoleAttributes<"deserialized">>): FlagSelector
 				permissionDependencies
 			} = dependency
 
-			const flagsToAdd = group.generateMask(...permissionDependencies)
+			const flagsToAdd = group.generateFlags(...permissionDependencies)
 
 			const newFlags = role.value[group.name] | flagsToAdd
 			role.value[group.name] = newFlags
@@ -52,7 +52,7 @@ export default function(role: Ref<RoleAttributes<"deserialized">>): FlagSelector
 				...permissionDependencies,
 				...internalDependents
 			])
-			const flagsToRemove = group.generateMask(...allDependents)
+			const flagsToRemove = group.generateFlags(...allDependents)
 
 			// eslint-disable-next-line no-bitwise
 			const filteredFlags = role.value[group.name] & ~flagsToRemove

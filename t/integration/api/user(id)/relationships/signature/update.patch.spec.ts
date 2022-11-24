@@ -22,7 +22,7 @@ describe("PATCH /api/user/:id/relationships/signature", () => {
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(
 			studentRole,

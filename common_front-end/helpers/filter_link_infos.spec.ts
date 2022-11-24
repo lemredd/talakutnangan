@@ -635,7 +635,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a")
+									"userFlags": permissionGroup.generateFlags("a")
 								}
 							]
 						},
@@ -713,7 +713,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a")
+									"userFlags": permissionGroup.generateFlags("a")
 								}
 							]
 						},
@@ -814,7 +814,7 @@ describe("Helper: Filter Link Infos", () => {
 									"semesterFlags": 0,
 									"tagFlags": 0,
 									"type": "role",
-									"userFlags": permissionGroup.generateMask("a", "b")
+									"userFlags": permissionGroup.generateFlags("a", "b")
 								}
 							]
 						},

@@ -20,7 +20,7 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const studentRole = await new RoleFactory().insertOne()
 		const student = await new UserFactory().attach(studentRole).insertOne()
 		const adminRole = await new RoleFactory().userFlags(
-			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+			permissionGroup.generateFlags(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
 		const admin = await new UserFactory()
 		.beReachableEmployee()
@@ -49,7 +49,7 @@ describe("Controller: PATCH /api/user/:id/relationships/role", () => {
 		const { policy } = controller
 		const policyFunction = policy.intermediate.bind(policy)
 		const adminRole = await new RoleFactory().userFlags(
-			permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
+			permissionGroup.generateFlags(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS)
 		).insertOne()
 		const admin = await new UserFactory()
 		.beReachableEmployee()

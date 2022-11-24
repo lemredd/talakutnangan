@@ -17,7 +17,7 @@ describe("PATCH /api/user/:id/update_password", () => {
 
 	it("can update password", async() => {
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 
 		const { "user": model, cookie } = await App.makeAuthenticatedCookie(studentRole)
@@ -46,7 +46,7 @@ describe("PATCH /api/user/:id/update_password", () => {
 
 	it("can update password even if current password is default", async() => {
 		const employeeRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 
 		const defaultPassword = "admin1234"

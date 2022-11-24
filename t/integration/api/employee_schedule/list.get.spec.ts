@@ -17,7 +17,7 @@ describe("GET /api/employee_schedule", () => {
 
 	it("can be accessed by permitted user and multiple roles", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.userFlags(permissionGroup.generateFlags(...READ_OWN))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			adminRole,

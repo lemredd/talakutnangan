@@ -15,7 +15,7 @@ describe("GET /api/role/count_users", () => {
 
 	it("can be accessed by permitted user and get user count", async() => {
 		const adminRole = await new RoleFactory()
-		.roleFlags(permissionGroup.generateMask(...READ))
+		.roleFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 

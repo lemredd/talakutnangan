@@ -27,7 +27,7 @@ describe("Helper: Make flag selector infos", () => {
 			}
 		])
 
-		expect(role.value[targetFlags]).toBe(post.generateMask(...targetPermissions))
+		expect(role.value[targetFlags]).toBe(post.generateFlags(...targetPermissions))
 	})
 
 	it("should uncheck internal dependent flags", () => {
@@ -35,7 +35,7 @@ describe("Helper: Make flag selector infos", () => {
 		const sourcePermissions: Permissions[] = [ "view" ]
 		const targetFlags = comment.name
 		const role = ref({
-			[targetFlags]: comment.generateMask("view")
+			[targetFlags]: comment.generateFlags("view")
 		} as RoleAttributes<"deserialized">)
 		const infos = helper(role)
 		const targetInfo = infos.find(

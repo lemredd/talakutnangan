@@ -25,32 +25,32 @@ async function main() {
 	const roles = [
 		{
 			"name": "Admin",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore",
 				"merge"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -59,7 +59,7 @@ async function main() {
 				"writeOverallScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -68,7 +68,7 @@ async function main() {
 				"writeOverallScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -76,7 +76,7 @@ async function main() {
 				"readOverallScope",
 				"writeOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -85,26 +85,26 @@ async function main() {
 				"writeOverallScope",
 				"resetPassword"
 			),
-			"auditTrailFlags": auditTrail.generateMask("view")
+			"auditTrailFlags": auditTrail.generateFlags("view")
 		},
 		{
 			"name": "Dean",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -113,7 +113,7 @@ async function main() {
 				"writeDepartmentScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -122,11 +122,11 @@ async function main() {
 				"writeDepartmentScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -134,23 +134,23 @@ async function main() {
 				"readDepartmentScope",
 				"writeDepartmentScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 		{
 			"name": "FoSH",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -159,7 +159,7 @@ async function main() {
 				"writeDepartmentScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -168,11 +168,11 @@ async function main() {
 				"writeDepartmentScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -180,23 +180,23 @@ async function main() {
 				"readDepartmentScope",
 				"writeDepartmentScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 		{
 			"name": "Secretary",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -206,7 +206,7 @@ async function main() {
 				"tag"
 
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -215,37 +215,37 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
 				"readDepartmentScope",
 				"writeDepartmentScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 		{
 			"name": "Service Head",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view",
 				"create",
 				"update",
 				"archiveAndRestore"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -254,7 +254,7 @@ async function main() {
 				"writeDepartmentScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -263,11 +263,11 @@ async function main() {
 				"writeDepartmentScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -275,24 +275,24 @@ async function main() {
 				"readDepartmentScope",
 				"writeDepartmentScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 
 		{
 			"name": "Service Employee",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -301,7 +301,7 @@ async function main() {
 				"writeOwnScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -310,34 +310,34 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
 				"readOwnScope",
 				"writeOwnScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 		{
 			"name": "Professor",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -346,7 +346,7 @@ async function main() {
 				"writeOwnScope",
 				"tag"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -355,38 +355,38 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
 				"readOwnScope",
 				"writeOwnScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		},
 		{
 			"name": "Student",
-			"departmentFlags": department.generateMask(
+			"departmentFlags": department.generateFlags(
 				"view"
 			),
-			"roleFlags": role.generateMask(
+			"roleFlags": role.generateFlags(
 				"view"
 			),
-			"semesterFlags": semester.generateMask(
+			"semesterFlags": semester.generateFlags(
 				"view"
 			),
-			"tagFlags": tag.generateMask(
+			"tagFlags": tag.generateFlags(
 				"view"
 			),
-			"postFlags": post.generateMask(
+			"postFlags": post.generateFlags(
 				"view",
 				"readDepartmentScope"
 			),
-			"commentFlags": comment.generateMask(
+			"commentFlags": comment.generateFlags(
 				"view",
 				"create",
 				"update",
@@ -395,33 +395,33 @@ async function main() {
 				"writeOwnScope",
 				"vote"
 			),
-			"profanityFlags": profanity.generateMask(
+			"profanityFlags": profanity.generateFlags(
 				"view",
 				"readOverallScope"
 			),
-			"userFlags": user.generateMask(
+			"userFlags": user.generateFlags(
 				"view",
 				"create",
 				"update",
 				"readOwnScope",
 				"writeOwnScope"
 			),
-			"auditTrailFlags": auditTrail.generateMask()
+			"auditTrailFlags": auditTrail.generateFlags()
 		}
 
 		/*
 		 * Add other roles here using this object
 		 * {
 		 *    name: "admin",
-		 *    departmentFlags: department.generateMask(),
-		 *    roleFlags: role.generateMask(),
-		 *    semesterFlags: semester.generateMask(),
-		 *    tagFlags: tag.generateMask(),
-		 *    postFlags: post.generateMask(),
-		 *    commentFlags: comment.generateMask(),
-		 *    profanityFlags: profanity.generateMask(),
-		 *    userFlags: user.generateMask(),
-		 *    auditTrailFlags: auditTrail.generateMask("view")
+		 *    departmentFlags: department.generateFlags(),
+		 *    roleFlags: role.generateFlags(),
+		 *    semesterFlags: semester.generateFlags(),
+		 *    tagFlags: tag.generateFlags(),
+		 *    postFlags: post.generateFlags(),
+		 *    commentFlags: comment.generateFlags(),
+		 *    profanityFlags: profanity.generateFlags(),
+		 *    userFlags: user.generateFlags(),
+		 *    auditTrailFlags: auditTrail.generateFlags("view")
 		 * }
 		 */
 	]

@@ -17,7 +17,7 @@ describe("DELETE /api/department", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE))
+		.departmentFlags(permissionGroup.generateFlags(...ARCHIVE_AND_RESTORE))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await new DepartmentFactory().insertOne()

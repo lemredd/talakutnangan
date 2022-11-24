@@ -164,7 +164,7 @@ describe("Database Manager: User read operations", () => {
 	it("can get user that can reset password", async() => {
 		const manager = new Manager()
 		const resetterRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...RESET_PASSWORD))
+		.userFlags(permissionGroup.generateFlags(...RESET_PASSWORD))
 		.insertOne()
 		const model = await new Factory().attach(resetterRole).insertOne()
 

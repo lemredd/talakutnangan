@@ -15,7 +15,7 @@ describe("GET /api/role", () => {
 
 	it("can be accessed by permitted user and multiple roles", async() => {
 		const adminRole = await new RoleFactory()
-		.roleFlags(permissionGroup.generateMask(...READ))
+		.roleFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const roles = await new RoleFactory().insertMany(3)

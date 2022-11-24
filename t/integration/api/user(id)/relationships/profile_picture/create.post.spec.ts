@@ -22,7 +22,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const employeeRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
 			employeeRole,
@@ -52,7 +52,7 @@ describe("POST /api/user/:id/relationships/profile_picture", () => {
 		URLMaker.initialize("http", "localhost", PORT, "/")
 
 		const employeeRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_OWN_DATA))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_OWN_DATA))
 		.insertOne()
 		const { "user": employee, cookie } = await App.makeAuthenticatedCookie(
 			employeeRole,

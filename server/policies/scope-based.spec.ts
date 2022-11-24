@@ -18,7 +18,7 @@ describe("Middleware: Scope-Based Policy", () => {
 
 	it("can allow users with narrow scope", async() => {
 		const role = await new RoleFactory()
-		.userFlags(permissions.generateMask("update", "writeOwnScope"))
+		.userFlags(permissions.generateFlags("update", "writeOwnScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).insertOne()
 		const pageGuard = new Middleware(
@@ -53,7 +53,7 @@ describe("Middleware: Scope-Based Policy", () => {
 	it("can allow users with social scope to invoke for others", async() => {
 		const department = await new DepartmentFactory().insertOne()
 		const role = await new RoleFactory()
-		.userFlags(permissions.generateMask("update", "writeDepartmentScope"))
+		.userFlags(permissions.generateFlags("update", "writeDepartmentScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).in(department).insertOne()
 		const pageGuard = new Middleware(
@@ -86,7 +86,7 @@ describe("Middleware: Scope-Based Policy", () => {
 
 	it("cannot allow users with narrow scope to invoke for others", async() => {
 		const role = await new RoleFactory()
-		.userFlags(permissions.generateMask("update", "writeOwnScope"))
+		.userFlags(permissions.generateFlags("update", "writeOwnScope"))
 		.insertOne()
 		const user = await new UserFactory().attach(role).insertOne()
 		const middleware = new Middleware(

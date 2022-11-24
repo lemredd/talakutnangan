@@ -304,7 +304,7 @@ export default class UserManager extends BaseManager<Model, RawUser, UserQueryPa
 						"model": Role,
 						"required": true,
 						"where": new Condition().greaterThanOrEqual(
-							"userFlags", permissionGroup.generateMask(...RESET_PASSWORD)
+							"userFlags", permissionGroup.generateFlags(...RESET_PASSWORD)
 						).build()
 					}
 				],

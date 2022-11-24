@@ -84,7 +84,7 @@ describe("Component: post/multiviewer", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}
@@ -224,7 +224,7 @@ describe("Component: post/multiviewer", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}

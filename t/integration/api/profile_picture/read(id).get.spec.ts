@@ -16,7 +16,7 @@ describe("GET /api/profile_picture/:id", () => {
 	it("can read profile picture", async() => {
 		const profilePicture = await new ProfilePictureFactory().insertOne()
 		const studentRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...READ_OWN))
+		.userFlags(permissionGroup.generateFlags(...READ_OWN))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(
 			studentRole,

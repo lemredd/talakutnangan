@@ -83,7 +83,7 @@ describe("Page: semester/read", () => {
 										"data": [
 											{
 												"name": "A",
-												"semesterFlags": permissionGroup.generateMask(...UPDATE)
+												"semesterFlags": permissionGroup.generateFlags(...UPDATE)
 											}
 										]
 									}

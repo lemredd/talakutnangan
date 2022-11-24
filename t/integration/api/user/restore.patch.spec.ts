@@ -17,7 +17,7 @@ describe("PATCH /api/user", () => {
 
 	it("can be accessed by authenticated user", async () => {
 		const adminRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT))
+			.userFlags(permissionGroup.generateFlags(...ARCHIVE_AND_RESTORE_ANYONE_ON_ALL_DEPARTMENT))
 			.insertOne()
 		const { user: admin, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const user = await (new UserFactory()).insertOne()

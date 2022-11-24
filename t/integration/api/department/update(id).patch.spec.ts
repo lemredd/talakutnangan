@@ -16,7 +16,7 @@ describe("PATCH /api/department/:id", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...UPDATE))
+		.departmentFlags(permissionGroup.generateFlags(...UPDATE))
 		.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const department = await new DepartmentFactory().insertOne()

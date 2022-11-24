@@ -15,7 +15,7 @@ describe("GET /t/policy/permission-based", () => {
 
 	it("can be accessed by permitted user", async () => {
 		const normalRole = await new RoleFactory()
-			.userFlags(permissionGroup.generateMask(...READ_OWN))
+			.userFlags(permissionGroup.generateFlags(...READ_OWN))
 			.insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(normalRole)
 

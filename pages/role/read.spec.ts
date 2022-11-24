@@ -21,14 +21,14 @@ import Page from "./read.page.vue"
 describe("UI Page: Read resource by ID", () => {
 	it("render properly", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view"))
-		.postFlags(post.generateMask("view"))
-		.commentFlags(comment.generateMask("view"))
-		.profanityFlags(profanity.generateMask("view"))
-		.userFlags(user.generateMask("view"))
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view"))
+		.postFlags(post.generateFlags("view"))
+		.commentFlags(comment.generateFlags("view"))
+		.profanityFlags(profanity.generateFlags("view"))
+		.userFlags(user.generateFlags("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
 
@@ -81,11 +81,11 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("should uncheck dependent permissions", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-		.postFlags(post.generateMask(
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -94,7 +94,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"tag"
 		))
-		.commentFlags(comment.generateMask(
+		.commentFlags(comment.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -103,8 +103,8 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
-		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-		.userFlags(user.generateMask(
+		.profanityFlags(profanity.generateFlags("view", "readOverallScope"))
+		.userFlags(user.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -127,7 +127,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...UPDATE)
+												"roleFlags": role.generateFlags(...UPDATE)
 											}
 										]
 									}
@@ -156,14 +156,14 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("should uncheck externally dependent permissions", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view"))
-		.postFlags(post.generateMask("view"))
-		.commentFlags(comment.generateMask("view", "create"))
-		.profanityFlags(profanity.generateMask("view"))
-		.userFlags(user.generateMask("view"))
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view"))
+		.postFlags(post.generateFlags("view"))
+		.commentFlags(comment.generateFlags("view", "create"))
+		.profanityFlags(profanity.generateFlags("view"))
+		.userFlags(user.generateFlags("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
 
@@ -179,7 +179,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...UPDATE)
+												"roleFlags": role.generateFlags(...UPDATE)
 											}
 										]
 									}
@@ -208,14 +208,14 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("should check external dependency permissions", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view"))
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view"))
 		.postFlags(0)
 		.commentFlags(0)
-		.profanityFlags(profanity.generateMask("view"))
-		.userFlags(user.generateMask("view"))
+		.profanityFlags(profanity.generateFlags("view"))
+		.userFlags(user.generateFlags("view"))
 		.auditTrailFlags(0)
 		.deserializedOne()
 
@@ -231,7 +231,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...UPDATE)
+												"roleFlags": role.generateFlags(...UPDATE)
 											}
 										]
 									}
@@ -259,11 +259,11 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("can edit role name", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-		.postFlags(post.generateMask(
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -272,7 +272,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"tag"
 		))
-		.commentFlags(comment.generateMask(
+		.commentFlags(comment.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -281,8 +281,8 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
-		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-		.userFlags(user.generateMask(
+		.profanityFlags(profanity.generateFlags("view", "readOverallScope"))
+		.userFlags(user.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -306,7 +306,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...UPDATE)
+												"roleFlags": role.generateFlags(...UPDATE)
 											}
 										]
 									}
@@ -331,11 +331,11 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("should be archivable", async() => {
 		const sampleResource = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-		.postFlags(post.generateMask(
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -344,7 +344,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"tag"
 		))
-		.commentFlags(comment.generateMask(
+		.commentFlags(comment.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -353,8 +353,8 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
-		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-		.userFlags(user.generateMask(
+		.profanityFlags(profanity.generateFlags("view", "readOverallScope"))
+		.userFlags(user.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -379,7 +379,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...ARCHIVE_AND_RESTORE)
+												"roleFlags": role.generateFlags(...ARCHIVE_AND_RESTORE)
 											}
 										]
 									}
@@ -402,11 +402,11 @@ describe("UI Page: Read resource by ID", () => {
 
 	it("should be restorable", async() => {
 		const sampleModel = await new Factory()
-		.departmentFlags(department.generateMask("view"))
-		.roleFlags(role.generateMask("view"))
-		.semesterFlags(semester.generateMask("view"))
-		.tagFlags(tag.generateMask("view", "create", "update", "archiveAndRestore"))
-		.postFlags(post.generateMask(
+		.departmentFlags(department.generateFlags("view"))
+		.roleFlags(role.generateFlags("view"))
+		.semesterFlags(semester.generateFlags("view"))
+		.tagFlags(tag.generateFlags("view", "create", "update", "archiveAndRestore"))
+		.postFlags(post.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -415,7 +415,7 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"tag"
 		))
-		.commentFlags(comment.generateMask(
+		.commentFlags(comment.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -424,8 +424,8 @@ describe("UI Page: Read resource by ID", () => {
 			"writeDepartmentScope",
 			"vote"
 		))
-		.profanityFlags(profanity.generateMask("view", "readOverallScope"))
-		.userFlags(user.generateMask(
+		.profanityFlags(profanity.generateFlags("view", "readOverallScope"))
+		.userFlags(user.generateFlags(
 			"view",
 			"create",
 			"update",
@@ -454,7 +454,7 @@ describe("UI Page: Read resource by ID", () => {
 										"data": [
 											{
 												"name": "A",
-												"roleFlags": role.generateMask(...ARCHIVE_AND_RESTORE)
+												"roleFlags": role.generateFlags(...ARCHIVE_AND_RESTORE)
 											}
 										]
 									}

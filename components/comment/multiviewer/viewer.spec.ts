@@ -47,7 +47,7 @@ describe("Component: comment/multiviewer/viewer", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 												)
 											}

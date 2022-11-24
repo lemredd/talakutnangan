@@ -18,7 +18,7 @@ describe("GET /api/audit_trail", () => {
 
 	it("can be accessed by permitted user and get audit trails", async() => {
 		const anyRole = await new RoleFactory()
-		.auditTrailFlags(permissionGroup.generateMask(...READ))
+		.auditTrailFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const auditTrails = (await new AuditTrailFactory().insertMany(3)).sort(
 			(a, b) => {
@@ -55,7 +55,7 @@ describe("GET /api/audit_trail", () => {
 
 	it("can be accessed by permitted user but get audit_trails in descending order", async() => {
 		const anyRole = await new RoleFactory()
-		.auditTrailFlags(permissionGroup.generateMask(...READ))
+		.auditTrailFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const auditTrails = await new AuditTrailFactory().insertMany(3)
 		const { cookie } = await App.makeAuthenticatedCookie(anyRole)

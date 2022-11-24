@@ -17,7 +17,7 @@ describe("GET /api/deparment", () => {
 
 	it("can be accessed by permitted user and get departments", async() => {
 		const anyRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...READ))
+		.departmentFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const departments = (await new DepartmentFactory().insertMany(3))
 		// eslint-disable-next-line no-nested-ternary, id-length, no-extra-parens
@@ -43,7 +43,7 @@ describe("GET /api/deparment", () => {
 
 	it("can be accessed by permitted user but get departments in descending order", async() => {
 		const anyRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...READ))
+		.departmentFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const departments = (await new DepartmentFactory().insertMany(3))
 		// eslint-disable-next-line id-length
@@ -69,7 +69,7 @@ describe("GET /api/deparment", () => {
 
 	it("can be accessed by permitted user but get archived departments", async() => {
 		const anyRole = await new RoleFactory()
-		.departmentFlags(permissionGroup.generateMask(...READ))
+		.departmentFlags(permissionGroup.generateFlags(...READ))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(anyRole)
 		const departments = (await new DepartmentFactory().insertMany(3))

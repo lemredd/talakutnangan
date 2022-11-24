@@ -33,7 +33,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 * @param permissionNames Name of the permission(s) to check if they are allowed in the role.
 	 */
 	mayAllow(role: T, ...permissionNames: U[]): boolean {
-		const mask = this.generateMask(...permissionNames)
+		const mask = this.generateFlags(...permissionNames)
 		const mayAllowedInternally = this.doesMatch(role[this.name], mask)
 		const mayAllowedExternally = this.identifyExternalDependencies(permissionNames)
 		.reduce((previousGroupApproval, currentExternalInfo) => {
@@ -54,7 +54,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 	 *
 	 * @param names Name of the permission to generate its mask
 	 */
-	generateMask(...names: U[]): number {
+	generateFlags(...names: U[]): number {
 		const { permissions } = this
 		return names.reduce((combinedMask, name) => {
 			const info: PermissionInfo<U> = permissions.get(name)
@@ -65,7 +65,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 				}
 			return combinedMask
 				| info.permissionDependencies.reduce(
-					(dependentMask, dependentName) => dependentMask | this.generateMask(dependentName),
+					(dependentMask, dependentName) => dependentMask | this.generateFlags(dependentName),
 					info.flag
 				)
 		}, 0)

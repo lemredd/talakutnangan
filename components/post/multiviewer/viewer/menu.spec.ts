@@ -30,7 +30,7 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}
@@ -101,7 +101,7 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
 											}
@@ -154,7 +154,7 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 													...ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
 												)
@@ -225,7 +225,7 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 										"data": [
 											{
 												"id": "1",
-												"postFlags": permissionGroup.generateMask(
+												"postFlags": permissionGroup.generateFlags(
 													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 													...ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
 												)

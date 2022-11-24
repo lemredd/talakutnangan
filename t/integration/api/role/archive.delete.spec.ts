@@ -17,7 +17,7 @@ describe("DELETE /api/role", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const adminRole = await new Factory()
-		.roleFlags(permissionGroup.generateMask(...ARCHIVE_AND_RESTORE))
+		.roleFlags(permissionGroup.generateFlags(...ARCHIVE_AND_RESTORE))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const model = await new Factory().insertOne()

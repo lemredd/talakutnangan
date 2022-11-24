@@ -78,7 +78,7 @@ describe("Page: department/read", () => {
 									"roles": {
 										"data": [
 											{
-												"departmentFlags": permissionGroup.generateMask(...UPDATE),
+												"departmentFlags": permissionGroup.generateFlags(...UPDATE),
 												"name": "A"
 											}
 										]

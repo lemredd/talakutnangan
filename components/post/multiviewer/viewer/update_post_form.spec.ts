@@ -23,12 +23,12 @@ describe.skip("Component: post/multiview/viewer/update_post_form", () => {
 		const roleResourceA = {
 			"id": "1",
 			"name": "A",
-			"postFlags": permissionGroup.generateMask(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
+			"postFlags": permissionGroup.generateFlags(...CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT)
 		}
 		const roleResourceB = {
 			"id": "2",
 			"name": "B",
-			"postFlags": permissionGroup.generateMask(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
+			"postFlags": permissionGroup.generateFlags(...CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT)
 		}
 		const userID = "5"
 		fetchMock.mockResponseOnce(

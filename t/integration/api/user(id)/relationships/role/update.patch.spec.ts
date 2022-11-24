@@ -21,7 +21,7 @@ describe("PATCH /api/user/:id/relationships/role", () => {
 
 	it("can update attached roles", async() => {
 		const adminRole = await new RoleFactory()
-		.userFlags(permissionGroup.generateMask(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
+		.userFlags(permissionGroup.generateFlags(...UPDATE_ANYONE_ON_ALL_DEPARTMENTS))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const roles = await new RoleFactory().insertMany(3)

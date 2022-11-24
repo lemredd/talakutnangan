@@ -23,7 +23,7 @@ describe("PATCH /api/post/:id/relationships/tag", () => {
 
 	it("can update attached tags", async() => {
 		const adminRole = await new RoleFactory()
-		.postFlags(permissionGroup.generateMask(...TAG_PUBLIC_POST_ON_ANY_DEPARTMENT))
+		.postFlags(permissionGroup.generateFlags(...TAG_PUBLIC_POST_ON_ANY_DEPARTMENT))
 		.insertOne()
 		const { cookie } = await App.makeAuthenticatedCookie(adminRole)
 		const tags = await new TagFactory().insertMany(3)

@@ -22,10 +22,10 @@ describe("POST /api/comment", () => {
 
 	it("can be accessed by authenticated user", async() => {
 		const normalRole = await new RoleFactory()
-		.commentFlags(commentPermissionGroup.generateMask(
+		.commentFlags(commentPermissionGroup.generateFlags(
 			...CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 		))
-		.postFlags(postPermissionGroup.generateMask(
+		.postFlags(postPermissionGroup.generateFlags(
 			...commentPermissionGroup.identifyExternalDependencies(
 				CREATE_PERSONAL_COMMENT_ON_OWN_DEPARTMENT
 			).filter(info => info.group.name === postPermissionGroup.name)

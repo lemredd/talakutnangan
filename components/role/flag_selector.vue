@@ -139,7 +139,7 @@ const rawFlags = computed<string[]>({
 			emit("uncheckExternallyDependentFlags", externalDependents)
 		}
 
-		emit("update:modelValue", basePermissionGroup.generateMask(...resolvedPermissions))
+		emit("update:modelValue", basePermissionGroup.generateFlags(...resolvedPermissions))
 	}
 })
 
