@@ -7,6 +7,7 @@ import type { DeserializedDepartmentDocument } from "$/types/documents/departmen
 import { post as permissionGroup } from "$/permissions/permission_list"
 import {
 	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
+	UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
 } from "$/permissions/post_combinations"
@@ -70,7 +71,6 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 				} as DeserializedPostResource<"poster"|"department">
 			}
 		})
-
 		const toggler = wrapper.find(".container > .material-icons:nth-child(1)")
 		await toggler.trigger("click")
 		const updateButton = wrapper.find(".dropdown-container button:nth-child(1)")
@@ -202,12 +202,12 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 		expect(events).toHaveProperty("0")
 	})
 
-	it("may request for archiving other's post", async() => {
+	it.only("may request for archiving other's post", async() => {
 		const userID = "1"
 		const postID = "2"
 		const otherUserID = "3"
 		const departmentID = "4"
-		const wrapper = shallowMount<any>(Component, {
+		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
 					"pageContext": {
@@ -226,7 +226,7 @@ describe("Component: post/multiviewer/viewer/menu", () => {
 											{
 												"id": "1",
 												"postFlags": permissionGroup.generateFlags(
-													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
+													...UPDATE_SOCIAL_POST_ON_OWN_DEPARTMENT,
 													...ARCHIVE_AND_RESTORE_SOCIAL_POST_ON_OWN_DEPARTMENT
 												)
 											}
