@@ -144,7 +144,7 @@ const rawFlags = computed<string[]>({
 	}
 })
 
-const rawEmptyValue = ""
+const rawEmptyValue = "-"
 const rawEmptyOption: OptionInfo = {
 	"label": "None",
 	"value": rawEmptyValue
