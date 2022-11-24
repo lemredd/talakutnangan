@@ -64,7 +64,7 @@ import makeManagementInfo from "@/tag/make_management_info"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import resourceTabInfos from "@/resource_management/resource_tab_infos"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
-import makeExistenceOperators from "@/resource_management/make_existence_operators"
+import makeExistenceOperators from "@/resource_management/helpers/make_existence_operators"
 
 import { CREATE } from "$/permissions/tag_combinations"
 import { tag as permissionGroup } from "$/permissions/permission_list"
