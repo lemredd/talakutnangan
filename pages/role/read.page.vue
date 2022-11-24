@@ -88,7 +88,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const roles = ref<DeserializedRoleDocument>(
+const role = ref<DeserializedRoleDocument>(
 	{
 		...pageProps.role,
 		"data": {
@@ -97,13 +97,6 @@ const roles = ref<DeserializedRoleDocument>(
 	} as DeserializedRoleDocument
 )
 
-const managementInfo = computed<RoleManagementInfo>(
-	() => makeManagementInfo(userProfile, roles.value.data)
-)
-
-const role = ref<DeserializedRoleDocument<"read">>(
-	pageProps.role as DeserializedRoleDocument<"read">
-)
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
@@ -121,17 +114,13 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 		}
 	}
 })
-const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
-const password = ref<string>("")
-const flagSelectors = makeFlagSelectorInfos(roleData)
 
+const managementInfo = computed<RoleManagementInfo>(
+	() => makeManagementInfo(userProfile, role.value.data)
+)
 const mayUpdateRole = computed<boolean>(() => managementInfo.value.mayUpdateRole)
-
-const mayArchiveOrRestoreRole = computed<boolean>(
-	() => managementInfo.value.mayArchiveRole || managementInfo.value.mayRestoreRole)
-
-const mayArchiveRole = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreRole.value)
-const mayRestoreRole = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreRole.value)
+const mayArchiveRole = computed<boolean>(() => managementInfo.value.mayArchiveRole)
+const mayRestoreRole = computed<boolean>(() => managementInfo.value.mayRestoreRole)
 
 const {
 	"state": isBeingConfirmed,
@@ -140,11 +129,13 @@ const {
 } = makeSwitch(false)
 
 const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
+const flagSelectors = makeFlagSelectorInfos(roleData)
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const hasSubmittedRole = ref<boolean>(true)
 
 const fetcher: Fetcher = new Fetcher()
+const password = ref<string>("")
 async function updateRole() {
 	hasSubmittedRole.value = false
 	await fetcher.update(role.value.data.id, {

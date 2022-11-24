@@ -76,10 +76,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", "tag">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const tag = ref<DeserializedTagDocument<"read">>(
-	pageProps.tag as DeserializedTagDocument<"read">
-)
-const tags = ref<DeserializedTagDocument>(
+const tag = ref<DeserializedTagDocument>(
 	{
 		...pageProps.tag,
 		"data": {
@@ -89,7 +86,7 @@ const tags = ref<DeserializedTagDocument>(
 )
 
 const managementInfo = computed<TagManagementInfo>(
-	() => makeManagementInfo(userProfile, tags.value.data)
+	() => makeManagementInfo(userProfile, tag.value.data)
 )
 const mayArchiveTag = computed<boolean>(() => managementInfo.value.mayArchiveTag)
 const mayRestoreTag = computed<boolean>(() => managementInfo.value.mayRestoreTag)
@@ -138,7 +135,7 @@ function updateTag() {
 async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
 	.then(() => {
-		if (!tags.value.data.deletedAt) tags.value.data.deletedAt = new Date()
+		if (!tag.value.data.deletedAt) tag.value.data.deletedAt = new Date()
 
 		fillSuccessMessages(
 			receivedErrors,
@@ -153,7 +150,7 @@ async function archiveTag() {
 async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
 	.then(() => {
-		if (tags.value.data.deletedAt) tags.value.data.deletedAt = null
+		if (tag.value.data.deletedAt) tag.value.data.deletedAt = null
 
 		fillSuccessMessages(
 			receivedErrors,
