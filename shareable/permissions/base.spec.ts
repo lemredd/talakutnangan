@@ -6,17 +6,18 @@ import BasePermissionGroup from "./base"
 describe("Back-end: Base Permission Group", () => {
 	type GroupNameA = { "groupA": number }
 	type AvailablePermissionsA = "a" | "b"
-
 	class GroupA extends BasePermissionGroup<GroupNameA, AvailablePermissionsA> {
 		get name(): string { return "groupA" }
 		get permissions(): PermissionMap<AvailablePermissionsA> {
 			return new Map<AvailablePermissionsA, PermissionInfo<AvailablePermissionsA>>([
 				[ "a", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "b", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": []
 				} ]
 			])
@@ -49,10 +50,12 @@ describe("Back-end: Base Permission Group", () => {
 			return new Map<AvailablePermissionsB, PermissionInfo<AvailablePermissionsB>>([
 				[ "c", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "d", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "c" ]
 				} ]
 			])
@@ -115,14 +118,17 @@ describe("Back-end: Base Permission Group", () => {
 			return new Map<AvailablePermissionsC, PermissionInfo<AvailablePermissionsC>>([
 				[ "e", {
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "f", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": []
 				} ],
 				[ "g", {
 					"flag": 0x4,
+					"mask": 0x4,
 					"permissionDependencies": []
 				} ]
 			])
@@ -229,6 +235,7 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "i", {
@@ -243,6 +250,7 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "h" ]
 				} ]
 			])
@@ -353,10 +361,12 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x1,
+					"mask": 0x1,
 					"permissionDependencies": []
 				} ],
 				[ "k", {
 					"flag": 0x2,
+					"mask": 0x2,
 					"permissionDependencies": [ "j" ]
 				} ],
 				[ "l", {
@@ -367,10 +377,12 @@ describe("Back-end: Base Permission Group", () => {
 						}
 					],
 					"flag": 0x4,
+					"mask": 0x4,
 					"permissionDependencies": []
 				} ],
 				[ "m", {
 					"flag": 0x8,
+					"mask": 0x8,
 					"permissionDependencies": [ "k" ]
 				} ]
 			])
