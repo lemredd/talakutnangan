@@ -26,27 +26,27 @@
 			@check-external-dependency-flags="flagSelector.checkExternal"
 			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
-		<div class="controls flex justify-between">
-			<Suspensible :is-loaded="hasSubmittedRole">
+		<Suspensible :is-loaded="hasSubmittedRole">
+			<div class="controls">
 				<button type="submit" class="update-user-btn btn btn-primary">
 					submit
 				</button>
-			</Suspensible>
-			<button
-				v-if="mayRestoreRole"
-				type="button"
-				class="restore-btn btn btn-primary"
-				@click="restoreRole">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveRole"
-				type="button"
-				class="archive-btn btn btn-primary"
-				@click="archiveRole">
-				Archive
-			</button>
-		</div>
+				<button
+					v-if="mayRestoreRole"
+					type="button"
+					class="restore-btn btn btn-primary"
+					@click="restoreRole">
+					Restore
+				</button>
+				<button
+					v-if="mayArchiveRole"
+					type="button"
+					class="archive-btn btn btn-primary"
+					@click="archiveRole">
+					Archive
+				</button>
+			</div>
+		</Suspensible>
 		<ConfirmationPassword
 			v-model="password"
 			:must-confirm="isBeingConfirmed"
@@ -56,8 +56,12 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-@import "@styles/status_messages.scss";
+	@import "@styles/btn.scss";
+	@import "@styles/status_messages.scss";
+
+	.controls {
+		@apply flex justify-between;
+	}
 </style>
 
 <script setup lang="ts">
@@ -169,6 +173,8 @@ async function updateRole() {
 }
 
 async function archiveRole() {
+	hasSubmittedRole.value = false
+
 	await fetcher.archive([ role.value.data.id ])
 	.then(() => {
 		if (!role.value.data.deletedAt) role.value.data.deletedAt = new Date()
@@ -176,9 +182,13 @@ async function archiveRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedRole.value = true
 }
 
 async function restoreRole() {
+	hasSubmittedRole.value = false
+
 	await fetcher.restore([ role.value.data.id ])
 	.then(() => {
 		if (role.value.data.deletedAt) role.value.data.deletedAt = null
@@ -186,5 +196,7 @@ async function restoreRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedRole.value = true
 }
 </script>

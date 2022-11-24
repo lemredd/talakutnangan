@@ -24,27 +24,28 @@
 			class="may-admit"
 			label="May admit students"
 			:disabled="mayNotChangeAdmission"/>
-		<div class="controls">
-			<Suspensible :is-loaded="hasSubmittedDepartment">
+		<Suspensible :is-loaded="hasSubmittedDepartment">
+			<div class="controls">
 				<button type="submit" class="update-department-btn btn btn-primary">
 					update department
 				</button>
-			</Suspensible>
-			<button
-				v-if="mayRestoreDepartment"
-				type="button"
-				class="btn btn-primary"
-				@click="restoreDepartment">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveDepartment"
-				type="button"
-				class="btn btn-primary"
-				@click="archiveDepartment">
-				Archive
-			</button>
-		</div>
+				<button
+					v-if="mayRestoreDepartment"
+					type="button"
+					class="btn btn-primary"
+					@click="restoreDepartment">
+					Restore
+				</button>
+				<button
+					v-if="mayArchiveDepartment"
+					type="button"
+					class="btn btn-primary"
+					@click="archiveDepartment">
+					Archive
+				</button>
+			</div>
+		</Suspensible>
+
 
 		<ConfirmationPassword
 			v-model="password"
@@ -173,6 +174,8 @@ async function updateDepartment() {
 }
 
 async function archiveDepartment() {
+	hasSubmittedDepartment.value = false
+
 	await fetcher.archive([ department.value.data.id ])
 	.then(() => {
 		if (!department.value.data.deletedAt) department.value.data.deletedAt = new Date()
@@ -180,9 +183,13 @@ async function archiveDepartment() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedDepartment.value = true
 }
 
 async function restoreDepartment() {
+	hasSubmittedDepartment.value = false
+
 	await fetcher.restore([ department.value.data.id ])
 	.then(() => {
 		if (department.value.data.deletedAt) department.value.data.deletedAt = null
@@ -190,5 +197,7 @@ async function restoreDepartment() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedDepartment.value = true
 }
 </script>
