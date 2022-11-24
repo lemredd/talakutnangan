@@ -1,17 +1,18 @@
-import type {
+import {
 	PermissionMap,
 	PermissionInfo,
 	LevelPermission,
-	OperationPermission
-} from "$/types/permission"
+	OperationPermission,
 
-import {
 	VIEW,
 	CREATE,
 	UPDATE,
 	ARCHIVE_AND_RESTORE,
 	WRITE_OVERALL_SCOPE,
-	READ_OVERALL_SCOPE
+	READ_OVERALL_SCOPE,
+
+	READ_SCOPE_MASK,
+	WRITE_SCOPE_MASK
 } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
@@ -33,19 +34,35 @@ export default class extends PermissionGroup<ProfanityFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view", { "flag": VIEW,
-				"permissionDependencies": [] } ],
-			[ "create", { "flag": CREATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "update", { "flag": UPDATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
-				"permissionDependencies": [ "view" ] } ],
+			[ "view", {
+				"flag": VIEW,
+				"mask": VIEW,
+				"permissionDependencies": []
+			} ],
+			[ "create", {
+				"flag": CREATE,
+				"mask": CREATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "update", {
+				"flag": UPDATE,
+				"mask": UPDATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "archiveAndRestore", {
+				"flag": ARCHIVE_AND_RESTORE,
+				"mask": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ]
+			} ],
 
-			[ "readOverallScope", { "flag": READ_OVERALL_SCOPE,
-				"permissionDependencies": [ ] } ],
+			[ "readOverallScope", {
+				"flag": READ_OVERALL_SCOPE,
+				"mask": READ_SCOPE_MASK,
+				"permissionDependencies": [ ]
+			} ],
 			[ "writeOverallScope", {
 				"flag": WRITE_OVERALL_SCOPE,
+				"mask": WRITE_SCOPE_MASK,
 				"permissionDependencies": [ "readOverallScope" ]
 			} ]
 		])

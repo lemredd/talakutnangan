@@ -1,5 +1,4 @@
-import type { PermissionMap, PermissionInfo, OperationPermission } from "$/types/permission"
-import { VIEW } from "$/types/permission"
+import { PermissionMap, PermissionInfo, OperationPermission, VIEW } from "$/types/permission"
 
 import PermissionGroup from "$/permissions/base"
 
@@ -18,8 +17,11 @@ export default class extends PermissionGroup<AuditTrailFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view", { "flag": VIEW,
-				"permissionDependencies": [] } ]
+			[ "view", {
+				"flag": VIEW,
+				"mask": VIEW,
+				"permissionDependencies": []
+			} ]
 		])
 	}
 }

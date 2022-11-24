@@ -2,9 +2,10 @@ import {
 	VIEW,
 	CREATE,
 	UPDATE,
+	ARCHIVE_AND_RESTORE,
+
 	PermissionMap,
 	PermissionInfo,
-	ARCHIVE_AND_RESTORE,
 	OperationPermission
 } from "$/types/permission"
 
@@ -12,7 +13,8 @@ import PermissionGroup from "$/permissions/base"
 
 const departmentColumnName = "departmentFlags"
 
-type DepartmentFlags = { [departmentColumnName]: number }
+type DepartmentFlags = {
+	[departmentColumnName]: number }
 export type Permissions =
 	| OperationPermission
 	| "merge"
@@ -27,16 +29,29 @@ export default class extends PermissionGroup<DepartmentFlags, Permissions> {
 
 	get permissions(): PermissionMap<Permissions> {
 		return new Map<Permissions, PermissionInfo<Permissions>>([
-			[ "view", { "flag": VIEW,
-				"permissionDependencies": [] } ],
-			[ "create", { "flag": CREATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "update", { "flag": UPDATE,
-				"permissionDependencies": [ "view" ] } ],
-			[ "archiveAndRestore", { "flag": ARCHIVE_AND_RESTORE,
-				"permissionDependencies": [ "view" ] } ],
+			[ "view", {
+				"flag": VIEW,
+				"mask": VIEW,
+				"permissionDependencies": []
+			} ],
+			[ "create", {
+				"flag": CREATE,
+				"mask": CREATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "update", {
+				"flag": UPDATE,
+				"mask": UPDATE,
+				"permissionDependencies": [ "view" ]
+			} ],
+			[ "archiveAndRestore", {
+				"flag": ARCHIVE_AND_RESTORE,
+				"mask": ARCHIVE_AND_RESTORE,
+				"permissionDependencies": [ "view" ]
+			} ],
 			[ "merge", {
 				"flag": 0x100,
+				"mask": 0x100,
 				"permissionDependencies": [
 					"archiveAndRestore", "create"
 				]

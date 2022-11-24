@@ -60,6 +60,7 @@ export default abstract class<T extends GeneralObject<number>, U> {
 			const info: PermissionInfo<U> = permissions.get(name)
 				|| {
 					"flag": 0,
+					"mask": 0,
 					"permissionDependencies": []
 				}
 			return combinedMask
