@@ -17,23 +17,32 @@
 					<form class="verification">
 						<SensitiveTextField
 							v-model="currentPassword"
+							class="field"
 							label="Current password"
 							placeholder="enter your current password"/>
 						<SensitiveTextField
 							v-model="newPassword"
+							class="field"
 							label="New password"
 							placeholder="enter your new password"/>
 						<SensitiveTextField
 							v-model="confirmNewPassword"
+							class="field"
 							label="Confirm new password"
 							placeholder="confirm your new password"/>
 					</form>
 				</template>
 				<template #footer>
-					<button type="button" @click="cancel">
+					<button
+						type="button"
+						class="btn"
+						@click="cancel">
 						Cancel
 					</button>
-					<button type="button" @click="savePassword">
+					<button
+						type="button"
+						class="btn btn-primary"
+						@click="savePassword">
 						Save password
 					</button>
 				</template>
@@ -43,18 +52,24 @@
 </template>
 
 <style scoped lang="scss">
-.verification {
-	@apply flex flex-col text-black;
-	@apply dark:text-light-500;
+	@import "@styles/btn.scss";
 
-	label {
-		padding: .5em 1em;
+	.verification {
+		@apply flex flex-col text-black;
+		@apply dark:text-light-500;
 
-		input {
-			padding: .25em .5em;
+		.field {
+			@apply mb-4;
+		}
+
+		label {
+			padding: .5em 1em;
+
+			input {
+				padding: .25em .5em;
+			}
 		}
 	}
-}
 </style>
 
 <script setup lang="ts">
