@@ -1,5 +1,5 @@
 <template>
-	<ListRedirector resource-type="semester"/>
+	<ListRedirector resource-type="department"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
