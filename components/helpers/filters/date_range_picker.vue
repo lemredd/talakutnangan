@@ -11,6 +11,7 @@
 			</span>
 			<DateSelector
 				v-model="rawRangeBegin"
+				:max="maxRange"
 				class="field date"/>
 		</label>
 		<label v-if="mustUseCustomRange">
@@ -19,6 +20,7 @@
 			</span>
 			<DateSelector
 				v-model="rawRangeEnd"
+				:min="minRange"
 				class="field date"/>
 		</label>
 	</div>
@@ -70,6 +72,7 @@ import type {
 
 import DateSelector from "@/fields/date_selector.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import convertDateToRangeCompatibleDate from "@/helpers/convert_date_to_range_compatible_date"
 
 const props = defineProps<{
 	rangeBegin: Date,
@@ -102,12 +105,14 @@ const rawRangeBegin = computed<Date>({
 		emit("update:rangeBegin", newDate)
 	}
 })
+const minRange = computed(() => convertDateToRangeCompatibleDate(rawRangeBegin.value))
 const rawRangeEnd = computed<Date>({
 	get(): Date { return props.rangeEnd },
 	set(newDate: Date): void {
 		emit("update:rangeEnd", newDate)
 	}
 })
+const maxRange = computed(() => convertDateToRangeCompatibleDate(rawRangeEnd.value))
 
 watch(chosenSemester, newValue => {
 	const resource = props.semesters.data
