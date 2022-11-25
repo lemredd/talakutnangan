@@ -54,21 +54,21 @@
 							{{ filename }}
 						</small>
 					</div>
-					<div
-						v-if="isAcceptingFile"
-						class="preview-file-container">
-						<span class="material-icons mr-2">
-							attachment
-						</span>
-						<small class="preview-file-title">
-							{{ filename }}
-						</small>
-						<span
-							class="remove-file-btn material-icons cursor-pointer"
-							@click="removeFile">
-							close
-						</span>
-					</div>
+				</div>
+				<div
+					v-if="isAcceptingFile"
+					class="preview-file-container">
+					<span class="material-icons mr-2">
+						attachment
+					</span>
+					<small class="preview-file-title">
+						{{ filename }}
+					</small>
+					<span
+						class="remove-file-btn material-icons cursor-pointer"
+						@click="removeFile">
+						close
+					</span>
 				</div>
 			</div>
 		</template>
