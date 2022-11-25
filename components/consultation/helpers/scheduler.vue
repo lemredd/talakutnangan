@@ -59,8 +59,8 @@ import convertMinutesToTimeObject from "%/helpers/convert_minutes_to_time_object
 import getTimePart from "@/helpers/schedule_picker/get_time_part"
 import jumpNextMonth from "@/helpers/schedule_picker/jump_next_month"
 import generateTimeRange from "@/helpers/schedule_picker/generate_time_range"
+import castToCompatibleDate from "@/helpers/convert_date_to_range_compatible_date"
 import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_to_time_string"
-import castToCompatibleDate from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
 
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
