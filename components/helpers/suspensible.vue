@@ -12,6 +12,9 @@
 	</div>
 </template>
 
+<style scoped>
+</style>
+
 <script setup lang="ts">
 import progressBar from "@/helpers/progress_bar.vue"
 

@@ -56,35 +56,31 @@
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	.user-controls {
-		@apply border-t p-3 flex items-center;
-
-		.will-not-start{
-			@apply text-sm opacity-50;
-		}
-
-		.left-controls {
-			@apply flex;
-		}
+		@apply border-t p-3 flex;
 
 		.suspense-container {
 			width: 100%;
 
 			.loaded-container {
 				@apply flex;
+			}
+		}
+	}
 
-				.message-box {
-					@apply flex-1 mx-2 border-0;
-					height: max-content;
-					input {
-						@apply bg-transparent border-b px-2;
-						width: 100%;
+	.will-not-start{
+		@apply text-sm opacity-50;
+	}
 
-						&:focus {
-							@apply border-b-gray-500;
-							outline: none;
-						}
-					}
-				}
+	.message-box {
+		@apply flex-1 mx-2 border-0;
+		height: max-content;
+		input {
+			@apply bg-transparent border-b px-2;
+			width: 100%;
+
+			&:focus {
+				@apply border-b-gray-500;
+				outline: none;
 			}
 		}
 	}
