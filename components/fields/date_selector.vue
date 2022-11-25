@@ -8,6 +8,7 @@
 			v-model="rawDate"
 			class="date"
 			:min="min"
+			:max="max"
 			type="date"/>
 	</div>
 </template>
