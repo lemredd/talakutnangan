@@ -34,56 +34,44 @@
 				class="image-upload"
 				@close="hideImageUpload"/>
 		</div>
-		<Suspensible :is-loaded="hasSubmittedMessage" class="suspense-container">
-			<div class="loaded-container">
-				<div v-if="isOngoing" class="message-box">
-					<input
-						v-model="textInput"
-						type="text"
-						placeholder="Enter your message here..."
-						@keyup.enter.exact="send"/>
-				</div>
-				<div v-if="isOngoing" class="right-controls">
-					<button class="send-btn material-icons" @click="send">
-						send
-					</button>
-				</div>
-			</div>
-		</suspensible>
+		<div v-if="isOngoing" class="message-box">
+			<input
+				v-model="textInput"
+				type="text"
+				placeholder="Enter your message here..."
+				@keyup.enter.exact="send"/>
+		</div>
+		<div v-if="isOngoing" class="right-controls">
+			<button class="send-btn material-icons" @click="send">
+				send
+			</button>
+		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-	@import "@styles/btn.scss";
-	.user-controls {
-		@apply border-t p-3 flex;
+@import "@styles/btn.scss";
+.user-controls {
+	@apply border-t p-3 flex;
+}
 
-		.suspense-container {
-			width: 100%;
-
-			.loaded-container {
-				@apply flex;
-			}
-		}
-	}
-
-	.will-not-start{
+.will-not-start{
 		@apply text-sm opacity-50;
-	}
+}
 
-	.message-box {
-		@apply flex-1 mx-2 border-0;
-		height: max-content;
-		input {
-			@apply bg-transparent border-b px-2;
-			width: 100%;
+.message-box {
+	@apply flex-1 mx-2 border-0;
+	height: max-content;
+	input {
+		@apply bg-transparent border-b px-2;
+		width: 100%;
 
-			&:focus {
-				@apply border-b-gray-500;
-				outline: none;
-			}
+		&:focus {
+			@apply border-b-gray-500;
+			outline: none;
 		}
 	}
+}
 </style>
 
 <script setup lang="ts">
@@ -101,7 +89,6 @@ import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
 import Fetcher from "$@/fetchers/chat_message"
 import makeSwitch from "$@/helpers/make_switch"
-import Suspensible from "@/helpers/suspensible.vue"
 import ChatMessageActivityFetcher from "$@/fetchers/chat_message_activity"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
@@ -158,12 +145,10 @@ const mayStartConsultation = computed<boolean>(() => {
 const fetcher: Fetcher = new Fetcher()
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
-const hasSubmittedMessage = ref(true)
-async function send() {
-	hasSubmittedMessage.value = false
+function send(): void {
 	if (textInput.value === "") return
 
-	await fetcher.create({
+	fetcher.create({
 		"data": {
 			"value": textInput.value
 		},
@@ -188,7 +173,5 @@ async function send() {
 			seenMessageAt
 		})
 	})
-
-	hasSubmittedMessage.value = true
 }
 </script>
