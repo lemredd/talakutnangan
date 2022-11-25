@@ -80,7 +80,7 @@
 				Back
 			</button>
 			<button
-				:disabled="!hasExtracted || isFileSizeGreaterThanLimit"
+				:disabled="isSendBtnDisabled"
 				class="send-btn btn btn-primary"
 				type="button"
 				@click="sendFile">
@@ -178,16 +178,25 @@ function emitClose() {
 	emit("close")
 }
 
-function sendFile() {
+const isSending = ref(false)
+const isSendBtnDisabled = computed(
+	() => !hasExtracted.value
+	|| isFileSizeGreaterThanLimit.value
+	|| isSending.value
+)
+async function sendFile() {
+	isSending.value = true
+
 	const fetcher = new Fetcher()
 	const formData = new FormData(fileUploadForm.value as HTMLFormElement)
 
-	fetcher.createWithFile(formData)
+	await fetcher.createWithFile(formData)
 	.then(() => {
 		emitClose()
 	})
-
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
+
+	isSending.value = false
 }
 
 function extractFile(event: Event) {
