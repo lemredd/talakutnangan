@@ -49,12 +49,13 @@ describe("Page: department/read", () => {
 		expect(mayAdmit).toEqual(department.data.mayAdmit)
 	})
 
-	it("can update department information", async() => {
+	it.only("can update department information", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const department = {
 			"data": {
 				"acronym": "STD",
+				"deletedAt": null,
 				"fullName": "Sample Test Department",
 				"id": "0",
 				"mayAdmit": false
@@ -63,6 +64,7 @@ describe("Page: department/read", () => {
 		const updatedDepartment = {
 			"data": {
 				"acronym": "TSD",
+				"deletedAt": null,
 				"fullName": "Test Sample Department",
 				"mayAdmit": true
 			}
@@ -107,6 +109,6 @@ describe("Page: department/read", () => {
 		const [ [ request ] ] = castFetch.mock.calls
 		expect(request).toHaveProperty("method", "PATCH")
 		expect(request).toHaveProperty("url", `/api/department/${department.data.id}`)
-		expect(JSON.stringify(await request.json())).toContain(JSON.stringify(updatedDepartment.data))
+		expect(await request.json()).toHaveProperty("data.attributes", updatedDepartment.data)
 	})
 })
