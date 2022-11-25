@@ -45,7 +45,7 @@
 				:user="chatMessage.user"/>
 		</div>
 		<div
-			v-if="!isMessageKindStatus(chatMessage)"
+			v-if="!isMessageKindStatus(chatMessage) && !nextMessage"
 			class="seen-list">
 			<span
 				v-for="activity in chatMessageActivityResources"
