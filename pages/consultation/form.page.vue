@@ -1,159 +1,139 @@
 <!-- eslint-disable max-len -->
 <template>
 	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
-	<button
-		v-if="consultation.data.finishedAt"
-		class="print-btn material-icons fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white"
-		@click="printPage">
-		print
-	</button>
+	<div class="first-page">
+		<button
+			class="print-btn material-icons"
+			@click="printPage">
+			print
+		</button>
 
-	<section class="header">
-		<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
-	</section>
+		<section class="header">
+			<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
+		</section>
 
-	<section class="details">
-		<h2>
-			Consultant Name:
-		</h2>
-		<h6 id="consultant" class="consultant">
-			{{ consultant.data.name }}
-		</h6>
+		<section class="details">
+			<h2>
+				Consultant Name:
+			</h2>
+			<h6 id="consultant" class="consultant">
+				{{ consultant.data.name }}
+			</h6>
 
-		<h2>
-			Consultant Role:
-		</h2>
-		<h6 id="consultant-role" class="consultant-role">
-			{{ consultantRole.data.name }}
-		</h6>
+			<h2>
+				Consultant Role:
+			</h2>
+			<h6 id="consultant-role" class="consultant-role">
+				{{ consultantRole.data.name }}
+			</h6>
 
-		<h2>
-			Consulter/s:
-		</h2>
-		<ul id="consulters" class="consulters">
+			<h2>
+				Consulter/s:
+			</h2>
+			<ul id="consulters" class="consulters">
+				<li
+					v-for="consulter in consulters"
+					:key="consulter.id"
+					class="consulter">
+					{{ consulter.user?.data.name }}
+				</li>
+			</ul>
+
+			<h2>
+				Reason:
+			</h2>
+			<h6 id="reason" class="reason">
+				{{ reason }}
+			</h6>
+			<h6 id="actionTaken" class="actionTaken">
+				{{ actionTaken }}
+			</h6>
+
+			<div class="schedules">
+				<div class="col">
+					<h2>
+						Scheduled Start:
+					</h2>
+					<h6 id="scheduled-start" class="scheduled-start">
+						{{ scheduledStartAt }}
+					</h6>
+				</div>
+
+				<div class="col">
+					<h2>
+						Started At:
+					</h2>
+					<h6 id="actual-start" class="actual-start">
+						{{ startedAt }}
+					</h6>
+				</div>
+
+				<div class="col">
+					<h2>
+						Finished At:
+					</h2>
+					<h6 id="actual-finish" class="actual-finish">
+						{{ finishedAt }}
+					</h6>
+				</div>
+			</div>
+		</section>
+
+		<section
+			v-if="consultation.data.finishedAt"
+			class="signatures mt-15">
+			<h1>Signatures</h1>
+			<div class="consultant-signature">
+				<h2>Consultant</h2>
+				<img :src="consultant.data.signature?.data.fileContents"/>
+				<small>{{ consultant.data.name }}</small>
+			</div>
+			<div
+				class="consulter-signature mt-5">
+				<h2>Consulter/s</h2>
+				<div
+					v-for="consulter in consulters"
+					:key="consulter.id">
+					<img :src="consulter.user?.data.signature?.data.fileContents"/>
+					<small>{{ consulter.user?.data.name }}</small>
+				</div>
+			</div>
+		</section>
+
+		<section v-else class="signatures not-finished">
+			<span class="status-messages warning">
+				Signatures will show here once the consultation has been finished.
+			</span>
+		</section>
+	</div>
+
+	<div class="second-page">
+		<ul class="chat-messages">
+			<h1>Chat Messages</h1>
 			<li
-				v-for="consulter in consulters"
-				:key="consulter.id"
-				class="consulter">
-				{{ consulter.user?.data.name }}
+				v-for="chatMessage in chatMessages.data"
+				:key="chatMessage.id">
+				<span class="date-and-owner-details">
+					[
+					{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
+					]
+					({{ chatMessage.user.data.name }})
+				</span>
+				<span v-if="isMessageKindStatus(chatMessage)" class="status-message">
+					{{ chatMessage.data.value }}
+				</span>
+				<span v-if="isMessageKindText(chatMessage)" class="text-message">
+					: {{ chatMessage.data.value }}
+				</span>
+				<span v-if="isMessageKindFile(chatMessage)" class="file-message">
+					sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
+				</span>
 			</li>
 		</ul>
-
-		<h2>
-			Reason:
-		</h2>
-		<h6 id="reason" class="reason">
-			{{ reason }}
-		</h6>
-		<h6 id="actionTaken" class="actionTaken">
-			{{ actionTaken }}
-		</h6>
-
-		<div class="schedules">
-			<div class="col">
-				<h2>
-					Scheduled Start:
-				</h2>
-				<h6 id="scheduled-start" class="scheduled-start">
-					{{ scheduledStartAt }}
-				</h6>
-			</div>
-
-			<div class="col">
-				<h2>
-					Started At:
-				</h2>
-				<h6 id="actual-start" class="actual-start">
-					{{ startedAt }}
-				</h6>
-			</div>
-
-			<div class="col">
-				<h2>
-					Finished At:
-				</h2>
-				<h6 id="actual-finish" class="actual-finish">
-					{{ finishedAt }}
-				</h6>
-			</div>
-		</div>
-	</section>
-	<section
-		v-if="consultation.data.finishedAt"
-		class="signatures mt-15">
-		<h1>Signatures</h1>
-		<div class="consultant-signature">
-			<h2>Consultant</h2>
-			<img :src="consultant.data.signature?.data.fileContents"/>
-			<small>{{ consultant.data.name }}</small>
-		</div>
-		<div
-			class="consulter-signature mt-5">
-			<h2>Consulter/s</h2>
-			<div
-				v-for="consulter in consulters"
-				:key="consulter.id">
-				<img :src="consulter.user?.data.signature?.data.fileContents"/>
-				<small>{{ consulter.user?.data.name }}</small>
-			</div>
-		</div>
-	</section>
-
-	<section v-else class="signatures not-finished">
-		<span class="status-messages warning">
-			Signatures will show here once the consultation has been finished.
-		</span>
-	</section>
-
-	<ul class="chat-messages mt-15">
-		<h1>Chat Messages</h1>
-		<li
-			v-for="chatMessage in chatMessages.data"
-			:key="chatMessage.id">
-			<span class="date-and-owner-details">
-				[
-				{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
-				]
-				({{ chatMessage.user.data.name }})
-			</span>
-			<span v-if="isMessageKindStatus(chatMessage)" class="status-message">
-				{{ chatMessage.data.value }}
-			</span>
-			<span v-if="isMessageKindText(chatMessage)" class="text-message">
-				: {{ chatMessage.data.value }}
-			</span>
-			<span v-if="isMessageKindFile(chatMessage)" class="file-message">
-				sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
-			</span>
-		</li>
-	</ul>
+	</div>
 </template>
 
-<style lang="scss">
-	@media print {
-		.print-btn {
-			display: none;
-		}
-		h1 {
-			@apply text-2xl;
-		}
-
-		h2 {
-			@apply text-lg;
-		}
-
-		h6 {
-			border-bottom: 1px solid black;
-			@apply border-b mb-5;
-		}
-
-		.signatures {
-			clear: both;
-			break-after: always;
-		}
-		.file-message a { text-decoration: underline; }
-	}
-
+<style>
 	body, #app {
 		min-height: 100vh;
 	}
@@ -170,6 +150,10 @@
 		margin: 0;
 	}
 
+	.print-btn {
+		@apply  fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white;
+	}
+
 	h1 {
 		@apply text-2xl;
 	}
@@ -181,6 +165,13 @@
 	h6 {
 		@apply border-b mb-5;
 	}
+
+	.chat-messages ul {
+		@apply mt-15;
+	}
+	.second-page {
+			@apply mt-10 mb-10;
+		}
 	.signatures {
 		@apply mt-12;
 
@@ -191,6 +182,33 @@
 	}
 
 	.file-message a { text-decoration: underline; }
+	@media print {
+		.print-btn {
+        display :  none;
+		}
+		h1 {
+			@apply text-2xl;
+		}
+
+		h2 {
+			@apply text-lg;
+		}
+
+		h6 {
+			border-bottom: 1px solid black;
+			@apply border-b mb-5;
+		}
+
+		.signatures {
+			break-after: page;
+		}
+
+		.second-page {
+			@apply mt-10 mb-10;
+		}
+
+		.file-message a { text-decoration: underline; }
+	}
 </style>
 
 <script setup lang="ts">
