@@ -75,6 +75,7 @@ describe("Component: authentication/change_password", () => {
 			"global": {
 				"provide": {
 					"pageContext": {
+						[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 						"pageProps": {
 							"userProfile": {
 								"data": {
