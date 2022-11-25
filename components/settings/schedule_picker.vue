@@ -244,7 +244,11 @@ function updateTime() {
 		fillSuccessMessages(receivedErrors, successMessages)
 		stopEditing()
 	})
-	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors,
+		receivedErrors,
+		successMessages
+	))
 }
 
 function saveNewSchedule() {
@@ -270,7 +274,11 @@ function saveNewSchedule() {
 		fillSuccessMessages(receivedErrors, successMessages)
 		discard()
 	})
-	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+	.catch(responseWithErrors => extractAllErrorDetails(
+		responseWithErrors,
+		receivedErrors,
+		successMessages
+	))
 }
 
 function deleteSchedule() {
