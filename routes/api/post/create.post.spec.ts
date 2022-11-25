@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import ErrorBag from "$!/errors/error_bag"
 import PostFactory from "~/factories/post"
 import MockRequester from "~/setups/mock_requester"
@@ -15,6 +16,435 @@ describe("Controller: POST /api/post", () => {
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const post = await new PostFactory().makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial heading", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "# heading")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial italic", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "*hello*")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial bold", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "**hello**")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial strikethrough", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "~~hello~~")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial hyphen for list items", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "- [ ] hello")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial block of code", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "```\nhello\n```")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial inline code", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "`hello`")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial longhand table", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "|hello|world|")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial blockquote", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "|hello|world|")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial link", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "[some link](https://www.talakutnangan.live)")
+		.makeOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"attachedRoleID": post.attachedRoleID,
+						"content": post.content
+					},
+					"relationships": {
+						"poster": {
+							"data": {
+								"id": String(post.poster?.id),
+								"type": "user"
+							}
+						},
+						"posterRole": {
+							"data": {
+								"id": String(post.posterRole?.id),
+								"type": "role"
+							}
+						}
+					},
+					"type": "post"
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can accept post with initial image link", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const post = await new PostFactory()
+		.content(() => "![some link](https://www.talakutnangan.live)")
+		.makeOne()
 		requester.customizeRequest({
 			"body": {
 				"data": {
