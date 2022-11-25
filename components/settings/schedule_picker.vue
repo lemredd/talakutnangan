@@ -273,6 +273,7 @@ function saveNewSchedule() {
 		emit("pushNewSchedule", data)
 		fillSuccessMessages(receivedErrors, successMessages)
 		discard()
+		toggleEditing()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(
 		responseWithErrors,
