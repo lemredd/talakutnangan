@@ -178,7 +178,6 @@ const props = defineProps<{
 
 interface CustomEvents {
 	(event: "close"): void,
-	(event: "submit"): void,
 	(
 		event: "update:modelValue",
 		content: DeserializedPostResource<AssociatedPostResource>
@@ -338,10 +337,10 @@ function updatePost(): void {
 }
 
 const hasUpdatedTags = ref<boolean>(true)
-function updateTags() {
+async function updateTags() {
 	const tagIDs = tags.value.map(tag => tag.id)
 	hasUpdatedTags.value = false
-	fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
+	await fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
 	.then(() => {
 		fillSuccessMessages(
 			receivedErrors,
