@@ -222,56 +222,10 @@ const roleNames = computed<OptionInfo[]>(() => {
 
 	return []
 })
-const roleID = computed<string>({
-	get(): string {
-		return props.modelValue.posterRole.data.id
-	},
-	set(newValue: string): void {
-		let currentRole = props.modelValue.posterRole.data
-
-		if (hasMultipleRoles.value) {
-			const completePosterInfo = props.modelValue.poster as DeserializedUserDocument<"roles">
-
-			currentRole = completePosterInfo.data.roles.data.find(
-				data => data.id === newValue
-			) as DeserializedRoleResource<"read">
-		}
-
-		emit("update:modelValue", {
-			...props.modelValue,
-			"posterRole": {
-				"data": currentRole
-			}
-		})
-	}
-})
-
+const roleID = ref<string>(props.modelValue.posterRole.data.id)
 const postID = computed<string>(() => props.modelValue.id)
-const tags = computed<DeserializedTagResource[]>({
-	get(): DeserializedTagResource[] {
-		return props.modelValue.tags.data
-	},
-	set(newValue: DeserializedTagResource[]): void {
-		emit("update:modelValue", {
-			...props.modelValue,
-			"tags": {
-				...props.modelValue.tags,
-				"data": newValue
-			}
-		})
-	}
-})
-const content = computed<string>({
-	get(): string {
-		return props.modelValue.content
-	},
-	set(newValue: string): void {
-		emit("update:modelValue", {
-			...props.modelValue,
-			"content": newValue
-		})
-	}
-})
+const tags = ref<DeserializedTagResource[]>([ ...props.modelValue.tags.data ])
+const content = ref<string>(props.modelValue.content)
 
 const fetcher = new Fetcher()
 const postAttachmentFetcher = new PostAttachmentFetcher()
@@ -291,6 +245,30 @@ const isFileSizeGreaterThanLimit = computed(() => {
 	return castedFileSize > MAXIMUM_FILE_SIZE
 })
 
+function updatePostState() {
+	const completePosterInfo = props.modelValue.poster as DeserializedUserDocument<"roles">
+
+	const currentRole = completePosterInfo.data.roles.data.find(
+		data => data.id === roleID.value
+	) as DeserializedRoleResource<"read">
+
+	emit("update:modelValue", {
+		...props.modelValue,
+		"content": content.value,
+		"posterRole": {
+			"data": {
+				...props.modelValue.posterRole.data,
+				...currentRole
+			}
+		},
+		"tags": {
+			"data": [
+				...tags.value
+			]
+		}
+	})
+}
+
 function removeFile(id: string) {
 	postAttachmentFetcher.archive(
 		[ id ]
@@ -299,6 +277,7 @@ function removeFile(id: string) {
 		postAttachments.value = postAttachments.value.filter(
 			postAttachment => postAttachment.id !== id
 		)
+		updatePostState()
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
@@ -316,6 +295,7 @@ function sendFile(form: HTMLFormElement) {
 			...postAttachments.value,
 			body.data
 		]
+		updatePostState()
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 }
@@ -347,6 +327,7 @@ function updatePost(): void {
 	}, {
 	})
 	.then(() => {
+		updatePostState()
 		assignPath(
 			specializePath(READ_POST, {
 				"id": Number(postID.value)
@@ -361,11 +342,15 @@ function updateTags() {
 	const tagIDs = tags.value.map(tag => tag.id)
 	hasUpdatedTags.value = false
 	fetcher.updateAttachedTags(props.modelValue.id, tagIDs)
-	.then(() => fillSuccessMessages(
-		receivedErrors,
-		successMessages,
-		"Successfully update tags."
-	))
+	.then(() => {
+		fillSuccessMessages(
+			receivedErrors,
+			successMessages,
+			"Successfully update tags."
+		)
+
+		updatePostState()
+	})
 	.catch(responseWithErrors => extractAllErrorDetails(
 		responseWithErrors,
 		receivedErrors,
