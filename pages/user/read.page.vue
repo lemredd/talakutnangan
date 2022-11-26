@@ -35,7 +35,7 @@
 			<NonSensitiveTextField
 				:model-value="studentNumber"
 				status="disabled"
-				label="Kind"
+				label="Student Number"
 				type="text"/>
 		</div>
 		<Suspensible :is-loaded="hasSubmittedUser">
@@ -92,7 +92,7 @@
 			<button
 				type="submit"
 				class="update-department-btn btn btn-primary"
-				@click="updateRoles">
+				@click="updateDepartment">
 				update department
 			</button>
 		</Suspensible>
