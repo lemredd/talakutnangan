@@ -260,12 +260,11 @@ function updatePostState() {
 				...currentRole
 			}
 		},
-		"tags": {
-			"data": [
-				...tags.value
-			]
-		}
-	})
+		"tags": tags.value.length > 0
+			// eslint-disable-next-line no-undefined
+			? undefined
+			: { "data": [ ...tags.value ] }
+	} as unknown as DeserializedPostResource<AssociatedPostResource>)
 }
 
 function removeFile(id: string) {
