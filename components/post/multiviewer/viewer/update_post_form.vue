@@ -223,7 +223,7 @@ const roleNames = computed<OptionInfo[]>(() => {
 })
 const roleID = ref<string>(props.modelValue.posterRole.data.id)
 const postID = computed<string>(() => props.modelValue.id)
-const tags = ref<DeserializedTagResource[]>([ ...props.modelValue.tags.data ])
+const tags = ref<DeserializedTagResource[]>([ ...props.modelValue.tags?.data ?? [] ])
 const content = ref<string>(props.modelValue.content)
 
 const fetcher = new Fetcher()
@@ -260,7 +260,7 @@ function updatePostState() {
 				...currentRole
 			}
 		},
-		"tags": tags.value.length > 0
+		"tags": tags.value.length === 0
 			// eslint-disable-next-line no-undefined
 			? undefined
 			: { "data": [ ...tags.value ] }
