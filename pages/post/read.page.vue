@@ -26,7 +26,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 	article {
 		@apply flex flex-col flex-nowrap justify-center;
 

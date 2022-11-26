@@ -344,12 +344,12 @@ const formattedContent = computed<string>(() => {
 })
 
 const hasExistingAttachments = computed<boolean>(() => {
-	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
+	const hasAttachments = !isUndefined(post.value.postAttachments)
 	return hasAttachments
 })
 const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 	if (hasExistingAttachments.value) {
-		const attachments = props.modelValue
+		const attachments = post.value
 		.postAttachments as DeserializedPostAttachmentListDocument
 
 		return attachments.data
@@ -359,12 +359,12 @@ const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 })
 
 const hasExistingTags = computed<boolean>(() => {
-	const hasTags = !isUndefined(props.modelValue.tags)
+	const hasTags = !isUndefined(post.value.tags)
 	return hasTags
 })
 const tags = computed<DeserializedTagResource[]>(() => {
 	if (hasExistingTags.value) {
-		const tagList = props.modelValue.tags as DeserializedTagListDocument
+		const tagList = post.value.tags as DeserializedTagListDocument
 
 		return tagList.data
 	}
