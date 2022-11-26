@@ -26,7 +26,10 @@
 			class="end-at field date"/>
 		<Suspensible :is-loaded="hasSubmittedSemester">
 			<div class="controls">
-				<button type="submit" class="update-user-btn btn btn-primary">
+				<button
+					v-if="mayArchiveSemester"
+					type="submit"
+					class="update-user-btn btn btn-primary">
 					update semester
 				</button>
 				<button

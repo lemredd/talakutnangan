@@ -28,7 +28,10 @@
 
 		<Suspensible :is-loaded="hasSubmittedRole">
 			<div class="controls">
-				<button type="submit" class="update-user-btn btn btn-primary">
+				<button
+					v-if="mayArchiveRole"
+					type="submit"
+					class="update-user-btn btn btn-primary">
 					submit
 				</button>
 				<button

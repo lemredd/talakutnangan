@@ -26,7 +26,10 @@
 			:disabled="mayNotChangeAdmission"/>
 		<Suspensible :is-loaded="hasSubmittedDepartment">
 			<div class="controls">
-				<button type="submit" class="update-department-btn btn btn-primary">
+				<button
+					v-if="mayArchiveDepartment"
+					type="submit"
+					class="update-department-btn btn btn-primary">
 					update department
 				</button>
 				<button

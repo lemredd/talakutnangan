@@ -13,7 +13,10 @@
 			type="text"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
-				<button type="submit" class="update-tag-btn btn btn-primary">
+				<button
+					v-if="mayArchiveTag"
+					type="submit"
+					class="update-tag-btn btn btn-primary">
 					update tag
 				</button>
 			</Suspensible>
