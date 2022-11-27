@@ -39,18 +39,22 @@ export default class SemesterFactory extends BaseFactory<
 
 	#semesterOrder = () => "first"
 	#startAtGenerator: () => Date = () => new Date()
-	#endAtGenerator: () => Date = () => new Date()
+	#endAtGenerator: (startDate: Date) => Date
+		= (startDate: Date) => new Date(startDate.getTime() + 3)
 
 	get model(): ModelCtor<Semester> { return Semester }
 
 	get transformer(): SemesterTransformer { return new SemesterTransformer() }
 
 	async generate(): GeneratedData<Semester> {
+		const startAt = this.#startAtGenerator()
+		const endAt = this.#endAtGenerator(startAt)
+
 		return {
-			"endAt": this.#endAtGenerator(),
+			endAt,
 			"name": await this.nameGenerator(),
 			"semesterOrder": this.#semesterOrder(),
-			"startAt": this.#startAtGenerator()
+			startAt
 		}
 	}
 
@@ -69,7 +73,7 @@ export default class SemesterFactory extends BaseFactory<
 		return this
 	}
 
-	endAt(generator: () => Date): SemesterFactory {
+	endAt(generator: (startDate: Date) => Date): SemesterFactory {
 		this.#endAtGenerator = generator
 		return this
 	}
