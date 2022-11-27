@@ -25,9 +25,11 @@
 					id="choose-file-btn"
 					type="file"
 					name="meta[importedCSV]"
-					accept="text/csv"/>
+					accept="text/csv"
+					@change="updateSelectedName"/>
 				CHOOSE FILE
 			</label>
+			<span v-if="hasSelected" class="ml-2">{{ CSVFilename }}</span>
 		</div>
 		<div>
 			<input
@@ -171,6 +173,17 @@ function importData(event: Event) {
 		)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+}
+
+const CSVFilename = ref<string>("")
+const hasSelected = computed<boolean>(() => CSVFilename.value !== "")
+
+function updateSelectedName(event: Event): void {
+	const target = event.target as HTMLInputElement
+	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
+
+	CSVFilename.value = rawFilename
 }
 
 function isStudentResource(resource: DeserializedUserResource)
