@@ -181,10 +181,24 @@
 			@apply text-lg;
 		}
 
-		.schedules {
-			page-break-after: always;
-			-moz-page-break-after: always;
-			break-after: page;
+		.form-page {
+			.header {
+				@apply order-1;
+			}
+			.details {
+				@apply order-2;
+			}
+			.chat-messages {
+				@apply order-4;
+			}
+
+			.signatures {
+				@apply order-3;
+
+				page-break-after: always;
+				-moz-page-break-after: always;
+				break-after: page;
+			}
 		}
 
 		h6 {
