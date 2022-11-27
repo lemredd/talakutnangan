@@ -64,7 +64,7 @@ describe("Database: Segregate IDs existentially", () => {
 	it("can determine deleted and restored IDs", () => {
 		const currentIDs = [ 1, 2 ]
 		const previousIDs = [ 4 ]
-		const modifiedIDs = [ 1 ]
+		const modifiedIDs = [ 1, 4 ]
 
 		const segregatedIDs = segregateIDsExistentially(currentIDs, previousIDs, modifiedIDs)
 
