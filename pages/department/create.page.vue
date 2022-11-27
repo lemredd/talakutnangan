@@ -84,7 +84,8 @@ function createDepartment() {
 	fetcher.create({
 		"acronym": acronym.value,
 		"fullName": fullName.value,
-		"mayAdmit": mayAdmit.value
+		"mayAdmit": mayAdmit.value,
+		"deletedAt": null
 	})
 	.then(() => {
 		fullName.value = ""

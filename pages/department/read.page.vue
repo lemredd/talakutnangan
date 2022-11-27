@@ -154,7 +154,8 @@ async function updateDepartment() {
 	await fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
 		"fullName": department.value.data.fullName,
-		"mayAdmit": department.value.data.mayAdmit
+		"mayAdmit": department.value.data.mayAdmit,
+		"deletedAt": null
 	}, {
 		"extraUpdateDocumentProps": {
 			"meta": {
