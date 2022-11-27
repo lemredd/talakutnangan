@@ -39,10 +39,12 @@ export default function<T>(
 			},
 			{
 				"model": Role,
+				"paranoid": false,
 				"required": true
 			}
 		],
 		"model": AttachedRole,
+		"paranoid": false,
 		"required": true
 	})
 	castInclude.push({
