@@ -76,6 +76,12 @@ async function submit() {
 		content.value = ""
 		emit("createComment", {
 			...body.data,
+			"meta": {
+				"commentVoteID": null,
+				"currentUserVoteStatus": "abstain",
+				"downvoteCount": 0,
+				"upvoteCount": 0
+			},
 			"post": {
 				"data": postToInsertComment.value
 			},
