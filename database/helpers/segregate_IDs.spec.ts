@@ -1,6 +1,6 @@
 import segregateIDs from "./segregate_IDs"
 
-describe("Database: Condition Builder", () => {
+describe("Database: Segregate IDs", () => {
 	it("can determine new IDs", () => {
 		const originalIDs = [ 1, 2 ]
 		const modifiedIDs = [ 1, 2, 3 ]
