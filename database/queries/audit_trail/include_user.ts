@@ -1,8 +1,9 @@
-import type { FindOptions } from "%/types/dependent"
+import type { FindOptions, IncludeOptions } from "%/types/dependent"
 
 import Log from "$!/singletons/log"
 
 import User from "%/models/user"
+import isUndefined from "$/type_guards/is_undefined"
 import ProfilePicture from "%/models/profile_picture"
 
 /**
@@ -10,15 +11,16 @@ import ProfilePicture from "%/models/profile_picture"
  */
 export default function<T>(
 	currentState: FindOptions<T>,
-	_constraints: { [key: string]: any }
+	unusedConstraints: { [key: string]: any }
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	if (newState.include === undefined) {
+	if (isUndefined(newState.include)) {
 		newState.include = []
 	}
 
-	(newState.include as any[])!.push({
+	const castInclude = newState.include as IncludeOptions[]
+	castInclude.push({
 		"include": [
 			{
 				"model": ProfilePicture,
@@ -26,6 +28,7 @@ export default function<T>(
 			}
 		],
 		"model": User,
+		"paranoid": false,
 		"required": false
 	})
 
