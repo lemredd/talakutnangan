@@ -13,7 +13,7 @@
 					v-model="value"
 					:value="option.value"
 					type="radio"/>
-				<span>{{ convertToTitle(option.label ?? option.value) }}</span>
+				<span>{{ option.label ?? option.value }}</span>
 			</label>
 		</div>
 	</div>
