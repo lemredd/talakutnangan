@@ -94,6 +94,7 @@ export default class extends BaseManager<
 	async reattach(userID: number, roleIDs: number[]): Promise<void> {
 		try {
 			const attachedRoles = await AttachedRole.findAll({
+				"paranoid": false,
 				"where": new Condition().equal("userID", userID).build(),
 				...this.transaction.transactionObject
 			})
@@ -119,7 +120,6 @@ export default class extends BaseManager<
 					new Condition().isIncludedIn("roleID", deletedIDs)
 				)
 				await AttachedRole.destroy({
-					"force": true,
 					"where": deleteCondition.build(),
 					...this.transaction.transactionObject
 				})
