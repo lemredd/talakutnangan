@@ -13,7 +13,7 @@ import RoleTransformer from "%/transformers/role"
 import Condition from "%/helpers/condition"
 import trimRight from "$/string/trim_right"
 import makeUnique from "$/array/make_unique"
-import segragateIDs from "%/helpers/segragate_IDs"
+import segregateIDs from "%/helpers/segregate_IDs"
 
 import siftBySlug from "%/queries/role/sift_by_slug"
 import siftByDepartment from "%/queries/role/sift_by_department"
@@ -100,7 +100,7 @@ export default class extends BaseManager<
 			})
 
 			const currentAttachedRoleIDs = attachedRoles.map(attachedRole => attachedRole.roleID)
-			const { newIDs, deletedIDs } = segragateIDs(currentAttachedRoleIDs, roleIDs)
+			const { newIDs, deletedIDs } = segregateIDs(currentAttachedRoleIDs, roleIDs)
 
 			if (newIDs.length > 0) {
 				await AttachedRole.bulkCreate(

@@ -1,4 +1,4 @@
-import segregateIDs from "./segragate_IDs"
+import segregateIDs from "./segregate_IDs"
 
 describe("Database: Condition Builder", () => {
 	it("can determine new IDs", () => {
