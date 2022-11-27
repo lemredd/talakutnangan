@@ -13,6 +13,7 @@ import type { Serializable } from "$/types/general"
 export interface CommonRawBulkData extends Serializable {
 	name: string,
 	email: string,
+	emailVerifiedAt: Date,
 	department: string,
 	password: string,
 	prefersDark: false
