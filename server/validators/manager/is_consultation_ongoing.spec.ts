@@ -45,4 +45,24 @@ describe("Validator: is consultation ongoing", () => {
 			expect(error).toHaveProperty("messageMaker")
 		}
 	})
+
+	it("should throw an error if consultation is finished", async() => {
+		const model = await new Factory()
+		.startedAt(() => new Date())
+		.finishedAt(() => new Date())
+		.insertOne()
+		const value = Promise.resolve(makeInitialState(model.id))
+		const constraints = {
+			"field": "hello",
+			"request": {} as AuthenticatedRequest,
+			"source": {}
+		} as unknown as ValidationConstraints<AuthenticatedRequest>
+
+		try {
+			await validator(value, constraints)
+		} catch (error) {
+			expect(error).toHaveProperty("field", "hello")
+			expect(error).toHaveProperty("messageMaker")
+		}
+	})
 })
