@@ -13,7 +13,7 @@ import RoleTransformer from "%/transformers/role"
 import Condition from "%/helpers/condition"
 import trimRight from "$/string/trim_right"
 import makeUnique from "$/array/make_unique"
-import segregateIDs from "%/helpers/segregate_IDs"
+import segregateIDsExistentially from "%/helpers/segregate_IDs_existentially"
 
 import siftBySlug from "%/queries/role/sift_by_slug"
 import siftByDepartment from "%/queries/role/sift_by_department"
@@ -99,10 +99,21 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const currentAttachedRoleIDs = attachedRoles.map(
+			const currentAttachedRoleIDs = attachedRoles.filter(
+				attachedRole => !attachedRole.deletedAt
+			).map(
 				attachedRole => Number(attachedRole.roleID)
 			)
-			const { newIDs, deletedIDs } = segregateIDs(currentAttachedRoleIDs, roleIDs)
+			const previousAttachedRoleIDs = attachedRoles.filter(
+				attachedRole => Boolean(attachedRole.deletedAt)
+			).map(
+				attachedRole => Number(attachedRole.roleID)
+			)
+			const { newIDs, restoredIDs, deletedIDs } = segregateIDsExistentially(
+				currentAttachedRoleIDs,
+				previousAttachedRoleIDs,
+				roleIDs
+			)
 
 			if (newIDs.length > 0) {
 				await AttachedRole.bulkCreate(
@@ -123,6 +134,17 @@ export default class extends BaseManager<
 				)
 				await AttachedRole.destroy({
 					"where": deleteCondition.build(),
+					...this.transaction.transactionObject
+				})
+			}
+
+			if (restoredIDs.length > 0) {
+				const restoreCondition = new Condition().and(
+					new Condition().equal("userID", userID),
+					new Condition().isIncludedIn("roleID", restoredIDs)
+				)
+				await AttachedRole.restore({
+					"where": restoreCondition.build(),
 					...this.transaction.transactionObject
 				})
 			}
