@@ -4,12 +4,16 @@ import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import Controller from "!/bases/controller-likes/controller"
 import NoContentResponseInfo from "!/response_infos/no_content"
-import CommonMiddlewareList from "!/middlewares/common_middleware_list"
+import AuthenticationBasedPolicy from "!/policies/authentication-based"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
 
-	get policy(): Policy { return CommonMiddlewareList.knownOnlyPolicy }
+	get policy(): Policy {
+		return new AuthenticationBasedPolicy(true, {
+			"requireChangedPassword": false
+		})
+	}
 
 	get bodyParser(): null { return null }
 

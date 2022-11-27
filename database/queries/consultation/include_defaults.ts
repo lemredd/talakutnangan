@@ -37,14 +37,17 @@ export default function<T>(
 					}
 				],
 				"model": User,
+				"paranoid": false,
 				"required": true
 			},
 			{
 				"model": Role,
+				"paranoid": false,
 				"required": true
 			}
 		],
 		"model": AttachedRole,
+		"paranoid": false,
 		"required": true
 	})
 

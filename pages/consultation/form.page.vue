@@ -1,13 +1,13 @@
 <!-- eslint-disable max-len -->
 <template>
 	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
-	<div class="first-page">
-		<button
-			class="print-btn material-icons"
-			@click="printPage">
-			print
-		</button>
+	<button
+		class="print-btn material-icons fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white"
+		@click="printPage">
+		print
+	</button>
 
+	<article class="form-page">
 		<section class="header">
 			<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
 		</section>
@@ -78,6 +78,28 @@
 				</div>
 			</div>
 		</section>
+		<ul class="chat-messages mt-15">
+			<h1>Chat Messages</h1>
+			<li
+				v-for="chatMessage in chatMessages.data"
+				:key="chatMessage.id">
+				<span class="date-and-owner-details">
+					[
+					{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
+					]
+					({{ chatMessage.user.data.name }})
+				</span>
+				<span v-if="isMessageKindStatus(chatMessage)" class="status-message">
+					{{ chatMessage.data.value }}
+				</span>
+				<span v-if="isMessageKindText(chatMessage)" class="text-message">
+					: {{ chatMessage.data.value }}
+				</span>
+				<span v-if="isMessageKindFile(chatMessage)" class="file-message">
+					sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
+				</span>
+			</li>
+		</ul>
 
 		<section
 			v-if="consultation.data.finishedAt"
@@ -105,32 +127,7 @@
 				Signatures will show here once the consultation has been finished.
 			</span>
 		</section>
-	</div>
-
-	<div class="second-page">
-		<ul class="chat-messages">
-			<h1>Chat Messages</h1>
-			<li
-				v-for="chatMessage in chatMessages.data"
-				:key="chatMessage.id">
-				<span class="date-and-owner-details">
-					[
-					{{ formatToCompleteFriendlyTime(chatMessage.createdAt) }}
-					]
-					({{ chatMessage.user.data.name }})
-				</span>
-				<span v-if="isMessageKindStatus(chatMessage)" class="status-message">
-					{{ chatMessage.data.value }}
-				</span>
-				<span v-if="isMessageKindText(chatMessage)" class="text-message">
-					: {{ chatMessage.data.value }}
-				</span>
-				<span v-if="isMessageKindFile(chatMessage)" class="file-message">
-					sent an <a :href="chatMessage.attachedChatFile.data.fileContents">attachment</a>
-				</span>
-			</li>
-		</ul>
-	</div>
+	</article>
 </template>
 
 <style>
@@ -150,8 +147,8 @@
 		margin: 0;
 	}
 
-	.print-btn {
-		@apply  fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white;
+	.form-page {
+		@apply flex flex-col;
 	}
 
 	h1 {
@@ -165,13 +162,6 @@
 	h6 {
 		@apply border-b mb-5;
 	}
-
-	.chat-messages ul {
-		@apply mt-15;
-	}
-	.second-page {
-			@apply mt-10 mb-10;
-		}
 	.signatures {
 		@apply mt-12;
 
@@ -183,9 +173,6 @@
 
 	.file-message a { text-decoration: underline; }
 	@media print {
-		.print-btn {
-        display :  none;
-		}
 		h1 {
 			@apply text-2xl;
 		}
@@ -194,17 +181,33 @@
 			@apply text-lg;
 		}
 
+		.form-page {
+			.header {
+				@apply order-1;
+			}
+			.details {
+				@apply order-2;
+			}
+			.chat-messages {
+				@apply order-4;
+			}
+
+			.signatures {
+				@apply order-3;
+
+				page-break-after: always;
+				-moz-page-break-after: always;
+				break-after: page;
+			}
+		}
+
 		h6 {
 			border-bottom: 1px solid black;
 			@apply border-b mb-5;
 		}
 
 		.signatures {
-			break-after: page;
-		}
-
-		.second-page {
-			@apply mt-10 mb-10;
+			@apply order-1;
 		}
 
 		.file-message a { text-decoration: underline; }
