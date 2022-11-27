@@ -14,7 +14,7 @@ export default function(
 	const isDeleted = Boolean(role.deletedAt)
 	const roles = userProfile.data.roles.data
 
-	const mayUpdateRole = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+	const mayUpdateRole = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ]) && !isDeleted
 
 	const mayArchiveRole = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
