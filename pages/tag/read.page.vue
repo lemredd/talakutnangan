@@ -5,7 +5,7 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="openConfirmation">
+	<form @submit.prevent="updateTag">
 		<TextualField
 			v-model="tag.data.name"
 			label="Tag name"
@@ -32,12 +32,6 @@
 				Archive
 			</button>
 		</div>
-
-		<ConfirmationPassword
-			v-model="password"
-			:must-confirm="isBeingConfirmed"
-			@cancel="closeConfirmation"
-			@confirm="updateTag"/>
 	</form>
 </template>
 
@@ -58,7 +52,6 @@ import type { TagManagementInfo } from "$@/types/independent"
 import type { DeserializedTagDocument } from "$/types/documents/tag"
 
 import Fetcher from "$@/fetchers/tag"
-import makeSwitch from "$@/helpers/make_switch"
 import makeManagementInfo from "@/tag/make_management_info"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
@@ -68,7 +61,6 @@ import TextualField from "@/fields/non-sensitive_text.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "tag">
@@ -108,12 +100,6 @@ const successMessages = ref<string[]>([])
 
 const fetcher = new Fetcher()
 
-const {
-	"state": isBeingConfirmed,
-	"on": openConfirmation,
-	"off": closeConfirmation
-} = makeSwitch(false)
-
 const hasSubmittedTag = ref<boolean>(true)
 
 function updateTag() {
@@ -130,9 +116,6 @@ function updateTag() {
 	})
 	.then(() => {
 		const customSuccessMessage = "Tag has been successfully updated successfully!"
-
-		closeConfirmation()
-		password.value = ""
 		fillSuccessMessages(receivedErrors, successMessages, customSuccessMessage)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
