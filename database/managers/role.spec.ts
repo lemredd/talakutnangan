@@ -1,5 +1,7 @@
 import Factory from "~/factories/role"
 import UserFactory from "~/factories/user"
+import AttachedRoleFactory from "~/factories/attached_role"
+
 import Condition from "%/helpers/condition"
 import DatabaseError from "$!/errors/database"
 import AttachedRole from "%/models/attached_role"
@@ -175,22 +177,30 @@ describe("Database Manager: Role read operations", () => {
 
 describe("Database Manager: Role update operations", () => {
 	it("can reattach roles", async() => {
-		const roles = await new Factory().insertMany(4)
+		const roles = await new Factory().insertMany(5)
 		const manager = new Manager()
 		const user = await new UserFactory().attach(roles[0]).attach(roles[1]).insertOne()
+		const previousAttachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.role(() => Promise.resolve(roles[4]))
+		.insertOne()
+		await previousAttachedRole.destroy()
 
 		await manager.reattach(user.id, [
 			roles[1].id,
 			roles[2].id,
-			roles[3].id
+			roles[3].id,
+			roles[4].id
 		])
 
 		const attachedRoles = await AttachedRole.findAll({
 			"where": new Condition().equal("userID", user.id).build()
 		})
-		expect(attachedRoles).toHaveLength(3)
+		expect(attachedRoles).toHaveLength(4)
 		expect(attachedRoles).toHaveProperty("0.roleID", roles[1].id)
 		expect(attachedRoles).toHaveProperty("1.roleID", roles[2].id)
 		expect(attachedRoles).toHaveProperty("2.roleID", roles[3].id)
+		expect(attachedRoles).toHaveProperty("3.roleID", roles[4].id)
+		expect(attachedRoles).toHaveProperty("3.id", previousAttachedRole.id)
 	})
 })
