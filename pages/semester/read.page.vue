@@ -24,27 +24,30 @@
 			v-model="semester.data.endAt"
 			label="Ends at: "
 			class="end-at field date"/>
-		<div class="controls">
-			<Suspensible :is-loaded="hasSubmittedSemester">
-				<button type="submit" class="update-user-btn btn btn-primary">
+		<Suspensible :is-loaded="hasSubmittedSemester">
+			<div class="controls">
+				<button
+					v-if="mayArchiveSemester"
+					type="submit"
+					class="update-user-btn btn btn-primary">
 					update semester
 				</button>
-			</Suspensible>
-			<button
-				v-if="mayRestoreSemester && mayUpdateSemester"
-				type="button"
-				class="btn btn-primary"
-				@click="restoreSemester">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveSemester"
-				type="button"
-				class="btn btn-primary"
-				@click="archiveSemester">
-				Archive
-			</button>
-		</div>
+				<button
+					v-if="mayRestoreSemester && mayUpdateSemester"
+					type="button"
+					class="btn btn-primary"
+					@click="restoreSemester">
+					Restore
+				</button>
+				<button
+					v-if="mayArchiveSemester"
+					type="button"
+					class="btn btn-primary"
+					@click="archiveSemester">
+					Archive
+				</button>
+			</div>
+		</Suspensible>
 
 		<ConfirmationPassword
 			v-model="password"
@@ -174,6 +177,8 @@ async function updateSemester() {
 }
 
 async function archiveSemester() {
+	hasSubmittedSemester.value = false
+
 	await fetcher.archive([ semester.value.data.id ])
 	.then(() => {
 		if (!semester.value.data.deletedAt) semester.value.data.deletedAt = new Date()
@@ -181,9 +186,13 @@ async function archiveSemester() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedSemester.value = true
 }
 
 async function restoreSemester() {
+	hasSubmittedSemester.value = false
+
 	await fetcher.restore([ semester.value.data.id ])
 	.then(() => {
 		if (semester.value.data.deletedAt) semester.value.data.deletedAt = null
@@ -191,5 +200,7 @@ async function restoreSemester() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedSemester.value = true
 }
 </script>

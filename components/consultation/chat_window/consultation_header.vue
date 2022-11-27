@@ -31,6 +31,7 @@
 				@switch-tab="switchTab"/>
 
 			<ExtraControls
+				v-if="!isCanceled"
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"

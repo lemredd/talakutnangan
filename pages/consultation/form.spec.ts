@@ -396,6 +396,7 @@ describe("Page: Consultation/form", () => {
 									"data": {
 										consultant,
 										consultantRole,
+										"finishedAt": new Date("2022-10-04 10:01"),
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00")
 									}

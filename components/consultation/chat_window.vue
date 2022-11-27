@@ -37,6 +37,7 @@
 
 					<li>
 						<a
+							v-if="!isCanceled"
 							class="underline"
 							:href="linkToPrintableForm">
 							View printable form (PDF)
@@ -47,6 +48,7 @@
 
 			<Suspensible :is-loaded="hasLoadedChatMessages">
 				<button
+					v-if="mayLoadPreviousMessages"
 					class="load-previous-messages-btn btn btn-secondary"
 					@click="loadPreviousMessages">
 					Load Previous messages
@@ -179,6 +181,9 @@ watch(chatMessageActivities, () => {
 	"flush": "post"
 })
 
+const mayLoadPreviousMessages = computed(
+	() => props.chatMessages.data.length !== props.chatMessages.meta?.count
+)
 function loadPreviousMessages() {
 	emit("loadPreviousMessages")
 }

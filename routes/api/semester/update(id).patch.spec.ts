@@ -19,10 +19,10 @@ describe("Controller: PATCH /api/semester/:id", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"endAt": String(newModel.endAt),
+						"endAt": newModel.endAt.toJSON(),
 						"name": String(newModel.name),
 						"semesterOrder": newModel.semesterOrder,
-						"startAt": String(newModel.startAt)
+						"startAt": newModel.startAt.toJSON()
 					},
 					"id": String(model.id),
 					"type": "semester"

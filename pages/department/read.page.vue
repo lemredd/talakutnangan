@@ -1,5 +1,5 @@
 <template>
-	<ListRedirector resource-type="semester"/>
+	<ListRedirector resource-type="department"/>
 
 	<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 	<ReceivedSuccessMessages
@@ -24,27 +24,31 @@
 			class="may-admit"
 			label="May admit students"
 			:disabled="mayNotChangeAdmission"/>
-		<div class="controls">
-			<Suspensible :is-loaded="hasSubmittedDepartment">
-				<button type="submit" class="update-department-btn btn btn-primary">
+		<Suspensible :is-loaded="hasSubmittedDepartment">
+			<div class="controls">
+				<button
+					v-if="mayArchiveDepartment"
+					type="submit"
+					class="update-department-btn btn btn-primary">
 					update department
 				</button>
-			</Suspensible>
-			<button
-				v-if="mayRestoreDepartment"
-				type="button"
-				class="btn btn-primary"
-				@click="restoreDepartment">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveDepartment"
-				type="button"
-				class="btn btn-primary"
-				@click="archiveDepartment">
-				Archive
-			</button>
-		</div>
+				<button
+					v-if="mayRestoreDepartment"
+					type="button"
+					class="btn btn-primary"
+					@click="restoreDepartment">
+					Restore
+				</button>
+				<button
+					v-if="mayArchiveDepartment"
+					type="button"
+					class="btn btn-primary"
+					@click="archiveDepartment">
+					Archive
+				</button>
+			</div>
+		</Suspensible>
+
 
 		<ConfirmationPassword
 			v-model="password"
@@ -89,18 +93,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", "depart
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const department = ref<DeserializedDepartmentDocument<"read">>(
-	pageProps.department as DeserializedDepartmentDocument<"read">
-)
-
-const capitalAcronym = computed({
-	"get": () => department.value.data.acronym,
-	set(newValue: string): void {
-		department.value.data.acronym = newValue.toUpperCase()
-	}
-})
-
-const departments = ref<DeserializedDepartmentDocument>(
+const department = ref<DeserializedDepartmentDocument>(
 	{
 		...pageProps.department,
 		"data": {
@@ -108,19 +101,20 @@ const departments = ref<DeserializedDepartmentDocument>(
 		}
 	} as DeserializedDepartmentDocument
 )
-
+const capitalAcronym = computed({
+	"get": () => department.value.data.acronym,
+	set(newValue: string): void {
+		department.value.data.acronym = newValue.toUpperCase()
+	}
+})
 const managementInfo = computed<DepartmentManagementInfo>(
-	() => makeManagementInfo(userProfile, departments.value.data)
+	() => makeManagementInfo(userProfile, department.value.data)
 )
 
 const mayUpdateDepartment = computed<boolean>(() => managementInfo.value.mayUpdateDepartment)
-
-const mayArchiveDepartment = computed<boolean>(
-	() => managementInfo.value.mayArchiveDepartment
+const mayArchiveDepartment = computed<boolean>(() => managementInfo.value.mayArchiveDepartment
 )
-const mayRestoreDepartment = computed<boolean>(
-	() => managementInfo.value.mayRestoreDepartment
-)
+const mayRestoreDepartment = computed<boolean>(() => managementInfo.value.mayRestoreDepartment)
 
 const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
 const mayNotChangeAdmission = computed<boolean>(() => !mayUpdateDepartment.value)
@@ -153,6 +147,7 @@ async function updateDepartment() {
 	hasSubmittedDepartment.value = false
 	await fetcher.update(department.value.data.id, {
 		"acronym": department.value.data.acronym,
+		"deletedAt": null,
 		"fullName": department.value.data.fullName,
 		"mayAdmit": department.value.data.mayAdmit
 	}, {
@@ -165,14 +160,16 @@ async function updateDepartment() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		if (receivedErrors.value.length) receivedErrors.value = []
-		successMessages.value.push("Department has been read successfully!")
+
+		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
 	hasSubmittedDepartment.value = true
 }
 
 async function archiveDepartment() {
+	hasSubmittedDepartment.value = false
+
 	await fetcher.archive([ department.value.data.id ])
 	.then(() => {
 		if (!department.value.data.deletedAt) department.value.data.deletedAt = new Date()
@@ -180,9 +177,13 @@ async function archiveDepartment() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedDepartment.value = true
 }
 
 async function restoreDepartment() {
+	hasSubmittedDepartment.value = false
+
 	await fetcher.restore([ department.value.data.id ])
 	.then(() => {
 		if (department.value.data.deletedAt) department.value.data.deletedAt = null
@@ -190,5 +191,7 @@ async function restoreDepartment() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedDepartment.value = true
 }
 </script>

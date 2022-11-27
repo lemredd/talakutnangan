@@ -19,10 +19,10 @@ describe("Controller: POST /api/semester", () => {
 			"body": {
 				"data": {
 					"attributes": {
+						"endAt": semester.endAt.toJSON(),
 						"name": String(semester.name),
-						"startAt": String(semester.startAt),
-						"endAt": String(semester.endAt),
-						"semesterOrder": semester.semesterOrder
+						"semesterOrder": semester.semesterOrder,
+						"startAt": semester.startAt.toJSON()
 					},
 					"type": "semester"
 				}
@@ -43,10 +43,10 @@ describe("Controller: POST /api/semester", () => {
 			"body": {
 				"data": {
 					"attributes": {
-						"name": 1,
-						"startAt": 1,
 						"endAt": 1,
-						"semesterOrder": 1
+						"name": 1,
+						"semesterOrder": 1,
+						"startAt": 1
 					},
 					"type": "semester"
 				}

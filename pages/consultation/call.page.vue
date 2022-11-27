@@ -203,7 +203,7 @@ function join() {
 function leave() {
 	leaveAndHideAdditionalButtons()
 	leaveAndRemoveLocalTracks()
-	sendMessage(`${userProfile.data.name} leaved the call`)
+	sendMessage(`${userProfile.data.name} left the call`)
 }
 
 const otherParticipants = ref<RemoteTracks[]>([])
@@ -215,7 +215,7 @@ onMounted(() => {
 	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
-	}).then(() => sendMessage(`${userProfile.data.name} preparing for call`))
+	}).then(() => sendMessage(`${userProfile.data.name} is preparing for call`))
 
 	window.addEventListener("unload", async event => {
 		event.preventDefault()

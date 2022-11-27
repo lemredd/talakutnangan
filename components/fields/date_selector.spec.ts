@@ -26,4 +26,36 @@ describe("Component: fields/date_selector", () => {
 		const update = wrapper.props("modelValue")
 		expect(update === invalidDate).toBeFalsy()
 	})
+
+	it("can limit by given max value", async() => {
+		const rawDate = new Date("2022-10-10")
+		const invalidDateString = "2022-10-18"
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"max": "2022-10-17",
+				"modelValue": rawDate
+			}
+		})
+		const selectedDate = wrapper.find("#selected-date")
+		await selectedDate.setValue(invalidDateString)
+
+		const emission = wrapper.emitted()
+		expect(emission).not.toHaveProperty("update:modelValue")
+	})
+
+	it("can limit by given min value", async() => {
+		const rawDate = new Date("2022-10-10")
+		const invalidDateString = "2022-10-09"
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"min": "2022-10-10",
+				"modelValue": rawDate
+			}
+		})
+		const selectedDate = wrapper.find("#selected-date")
+		await selectedDate.setValue(invalidDateString)
+
+		const emission = wrapper.emitted()
+		expect(emission).not.toHaveProperty("update:modelValue")
+	})
 })
