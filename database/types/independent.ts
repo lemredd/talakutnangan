@@ -118,6 +118,11 @@ export interface ProfilePictureTransformerOptions {
  */
 export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }
 
+/**
+ * Useful for updating the many-to-many relationships that are archivable
+ */
+export interface ExistentiallySegregatedIDs extends SegregatedIDs { restoredIDs: number[] }
+
 export interface IncludedRelationships<T extends string = string> {
 	included: T[]
 }

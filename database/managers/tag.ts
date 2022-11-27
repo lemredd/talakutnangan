@@ -13,7 +13,7 @@ import BaseManager from "%/managers/base"
 import Transformer from "%/transformers/tag"
 
 import Condition from "%/helpers/condition"
-import segragateIDs from "%/helpers/segragate_IDs"
+import segregateIDs from "%/helpers/segregate_IDs"
 
 import siftBySlug from "%/queries/tag/sift_by_slug"
 import includeDefaults from "%/queries/tag/include_defaults"
@@ -53,7 +53,7 @@ export default class extends BaseManager<
 			})
 
 			const currentAttachedTagIDs = attachedTags.map(attachedTag => Number(attachedTag.tagID))
-			const { newIDs, deletedIDs } = segragateIDs(currentAttachedTagIDs, tagIDs)
+			const { newIDs, deletedIDs } = segregateIDs(currentAttachedTagIDs, tagIDs)
 
 			if (newIDs.length > 0) {
 				await PostTag.bulkCreate(
