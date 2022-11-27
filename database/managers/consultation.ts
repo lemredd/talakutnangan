@@ -218,14 +218,15 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
+			const hasFinished = (model?.finishedAt ?? null) !== null
 			let canStart = activeConsultations.length === 0
 
-			if (!canStart) {
+			if (!canStart && !hasFinished) {
 				canStart = activeConsultations.length === 1
 					&& Number(activeConsultations[0].id) === consultationID
 			}
 
-			return canStart
+			return canStart && !hasFinished
 		} catch (error) {
 			throw this.makeBaseError(error)
 		}
