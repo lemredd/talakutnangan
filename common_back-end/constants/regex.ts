@@ -12,9 +12,9 @@ export const chatMessageKind = /^[a-z_]+$/u
 export const chatMessageKindDescription
 = "have one or more, lowercase characters or underscore only"
 
-export const departmentFullName = /^[A-Z][a-zA-Z]{2,} ([a-zA-Z]{2,} )*[A-Z][a-zA-Z]{2,}$/u
+export const departmentFullName = /^[A-Z][a-zA-Z]{1,} ([a-zA-Z]{2,} )*[A-Z][a-zA-Z]{1,}$/u
 export const departmentFullNameDescription
-= "be an alphabetic name with one or more spaces. First and last words should be in title case."
+= "be an alphabetic name with one or more spaces. First and last words should be in title case"
 
 export const departmentAcronym = /([A-Z][a-z]*)+/u
 export const departmentAcronymDescription = "be an uppercased alphetic name with one or more spaces"
