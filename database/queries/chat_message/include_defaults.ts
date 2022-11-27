@@ -31,10 +31,12 @@ export default function<T>(
 					}
 				],
 				"model": User,
+				"paranoid": false,
 				"required": true
 			}
 		],
 		"model": ChatMessageActivity,
+		"paranoid": false,
 		"required": true
 	})
 	castInclude.push({
