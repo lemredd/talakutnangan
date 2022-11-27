@@ -261,6 +261,7 @@ export default class extends MultipartController {
 			}
 
 			data.prefersDark = false
+			data.emailVerifiedAt = new Date()
 
 			return data
 		})
