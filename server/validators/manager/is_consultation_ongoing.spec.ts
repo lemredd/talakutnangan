@@ -2,18 +2,18 @@ import type { AuthenticatedRequest } from "!/types/dependent"
 import type { ValidationConstraints } from "!/types/validation"
 
 import "~/setups/database.setup"
-import Factory from "~/factories/tag"
-import PostFactory from "~/factories/post"
-import PostTagFactory from "~/factories/post_tag"
+import Factory from "~/factories/consultation"
 
 import makeInitialState from "!/validators/make_initial_state"
 
-import validator from "./has_no_other_posts"
+import validator from "./is_consultation_ongoing"
 
-describe("Validator: has no other posts", () => {
+describe("Validator: is consultation ongoing", () => {
 	it("can accept valid input", async() => {
-		await new PostFactory().insertOne()
-		const model = await new Factory().insertOne()
+		const model = await new Factory()
+		.startedAt(() => new Date())
+		.finishedAt(() => null)
+		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
 			"field": "hello",
@@ -27,13 +27,9 @@ describe("Validator: has no other posts", () => {
 	})
 
 	it("cannot accept invalid value", async() => {
-		const postFactory = new PostFactory()
-		const postTagFactory = new PostTagFactory()
-		const post = await postFactory.insertOne()
-		const model = await new Factory().insertOne()
-		await postTagFactory
-		.post(() => Promise.resolve(post))
-		.tag(() => Promise.resolve(model))
+		const model = await new Factory()
+		.startedAt(() => null)
+		.finishedAt(() => null)
 		.insertOne()
 		const value = Promise.resolve(makeInitialState(model.id))
 		const constraints = {
