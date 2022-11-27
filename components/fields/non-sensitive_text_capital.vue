@@ -73,8 +73,6 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-import convertToTitle from "$/string/convert_to_title"
-
 import type { Textual, FieldStatus } from "@/fields/types"
 
 const props = defineProps<{
@@ -98,7 +96,7 @@ const emit = defineEmits<CustomEvents>()
 const modelValue = computed<string>({
 	"get": () => props.modelValue,
 	set(newValue: string): void {
-		emit("update:modelValue", convertToTitle(newValue))
+		emit("update:modelValue", newValue)
 	}
 })
 
