@@ -13,7 +13,7 @@
 					v-model="value"
 					:value="option.value"
 					type="radio"/>
-				<span>{{ option.label ?? option.value }}</span>
+				<span>{{ convertToTitle(option.label ?? option.value) }}</span>
 			</label>
 		</div>
 	</div>
@@ -49,6 +49,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue"
+
+import convertToTitle from "$/string/convert_to_title"
 
 import type { OptionInfo } from "$@/types/component"
 
