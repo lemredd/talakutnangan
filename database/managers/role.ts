@@ -99,7 +99,9 @@ export default class extends BaseManager<
 				...this.transaction.transactionObject
 			})
 
-			const currentAttachedRoleIDs = attachedRoles.map(attachedRole => attachedRole.roleID)
+			const currentAttachedRoleIDs = attachedRoles.map(
+				attachedRole => Number(attachedRole.roleID)
+			)
 			const { newIDs, deletedIDs } = segregateIDs(currentAttachedRoleIDs, roleIDs)
 
 			if (newIDs.length > 0) {

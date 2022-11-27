@@ -13,9 +13,6 @@
 			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">
-			<button class="material-icons" @click="saveAsPDF">
-				more_horiz
-			</button>
 			<button class="material-icons add-file-btn" @click="showFileUpload">
 				attach_file
 			</button>
@@ -37,12 +34,16 @@
 		<div v-if="isOngoing" class="message-box">
 			<input
 				v-model="textInput"
+				:disabled="isSending"
 				type="text"
 				placeholder="Enter your message here..."
 				@keyup.enter.exact="send"/>
 		</div>
 		<div v-if="isOngoing" class="right-controls">
-			<button class="send-btn material-icons" @click="send">
+			<button
+				:disabled="isSending"
+				class="send-btn material-icons"
+				@click="send">
 				send
 			</button>
 		</div>
@@ -50,28 +51,33 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-.user-controls {
-	@apply border-t p-3 flex;
-}
+	@import "@styles/btn.scss";
+	.user-controls {
+		@apply border-t p-3 flex;
+	}
 
-.will-not-start{
-		@apply text-sm opacity-50;
-}
+	.will-not-start{
+			@apply text-sm opacity-50;
+	}
 
-.message-box {
-	@apply flex-1 mx-2 border-0;
-	height: max-content;
-	input {
-		@apply bg-transparent border-b px-2;
-		width: 100%;
+	.message-box {
+		@apply flex-1 mx-2 border-0;
+		height: max-content;
+		input {
+			@apply bg-transparent border-b px-2;
+			width: 100%;
 
-		&:focus {
-			@apply border-b-gray-500;
-			outline: none;
+			&:focus {
+				@apply border-b-gray-500;
+				outline: none;
+			}
 		}
 	}
-}
+
+	.send-btn:disabled {
+		@apply opacity-20;
+		cursor: pointer;
+	}
 </style>
 
 <script setup lang="ts">
@@ -127,12 +133,10 @@ const {
 
 interface CustomEvents {
 	(eventName: "startConsultation"): void
-	(eventName: "saveAsPdf"): void
 }
 const emit = defineEmits<CustomEvents>()
 
 const startConsultation = () => emit("startConsultation")
-const saveAsPDF = () => emit("saveAsPdf")
 const mayStartConsultation = computed<boolean>(() => {
 	const shouldSoonStart = willSoonStart.value
 	const shouldStart = willStart.value
@@ -145,10 +149,15 @@ const mayStartConsultation = computed<boolean>(() => {
 const fetcher: Fetcher = new Fetcher()
 const chatMessageActivityFetcher = new ChatMessageActivityFetcher()
 
-function send(): void {
-	if (textInput.value === "") return
+const isSending = ref(false)
+async function send() {
+	isSending.value = true
+	if (textInput.value === "") {
+		isSending.value = false
+		return
+	}
 
-	fetcher.create({
+	await fetcher.create({
 		"data": {
 			"value": textInput.value
 		},
@@ -173,5 +182,7 @@ function send(): void {
 			seenMessageAt
 		})
 	})
+
+	isSending.value = false
 }
 </script>

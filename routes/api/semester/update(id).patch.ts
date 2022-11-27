@@ -16,6 +16,7 @@ import string from "!/validators/base/string"
 import required from "!/validators/base/required"
 import oneOf from "!/validators/comparison/one-of"
 import length from "!/validators/comparison/length"
+import isLessThan from "!/validators/comparison/is_less_than"
 import makeResourceDocumentRules from "!/rule_sets/make_resource_document"
 
 export default class extends BoundJSONController {
@@ -30,6 +31,7 @@ export default class extends BoundJSONController {
 	makeBodyRuleGenerator(unusedAuthenticatedRequest: AuthenticatedRequest): FieldRules {
 		const attributes = {
 			"endAt": {
+				"friendlyName": "end at",
 				"pipes": [ required, string, date ]
 			},
 			"name": {
@@ -39,6 +41,7 @@ export default class extends BoundJSONController {
 						"minimum": 10
 					}
 				},
+				"friendlyName": "semester name",
 				"pipes": [ required, string, length ]
 			},
 			"semesterOrder": {
@@ -47,10 +50,17 @@ export default class extends BoundJSONController {
 						"values": [ ...OrderValues ]
 					}
 				},
+				"friendlyName": "order",
 				"pipes": [ required, string, oneOf ]
 			},
 			"startAt": {
-				"pipes": [ required, string, date ]
+				"constraints": {
+					"isLessThan": {
+						"pointer": "data.attributes.endAt"
+					}
+				},
+				"friendlyName": "start at",
+				"pipes": [ required, string, date, isLessThan ]
 			}
 		}
 

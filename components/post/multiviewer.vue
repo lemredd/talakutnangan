@@ -288,7 +288,12 @@ onMounted(async() => {
 	await countCommentsOfPosts()
 
 	watch(
-		[ chosenDepartment, existence ],
+		[
+			chosenDepartment,
+			existence,
+			rangeBegin,
+			rangeEnd
+		],
 		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
 	)
 
