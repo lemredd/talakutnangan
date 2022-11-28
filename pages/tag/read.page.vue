@@ -120,6 +120,8 @@ function updateTag() {
 		fillSuccessMessages(receivedErrors, successMessages, customSuccessMessage)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
+
+	hasSubmittedTag.value = true
 }
 
 async function archiveTag() {
