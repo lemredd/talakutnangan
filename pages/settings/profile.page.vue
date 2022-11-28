@@ -268,10 +268,11 @@ if (pageContext.pageProps.parsedUnitError) {
 }
 
 const isProfilePictureLoaded = ref(true)
+const submitMessage = "Please submit the changes."
 async function submitProfilePicture(formData: FormData) {
 	isProfilePictureLoaded.value = false
-	const profilePictureFetcher = new ProfilePictureFetcher()
 
+	const profilePictureFetcher = new ProfilePictureFetcher()
 	if (userProfileData.value.profilePicture) {
 		await profilePictureFetcher.updateFile(
 			userProfileData.value.profilePicture.data.id,
@@ -281,7 +282,7 @@ async function submitProfilePicture(formData: FormData) {
 			fillSuccessMessages(
 				receivedErrors,
 				successMessages,
-				"Profile picture uploaded successfully."
+				`Profile picture uploaded successfully. ${submitMessage}`
 			)
 		})
 		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
@@ -312,7 +313,7 @@ async function submitSignature(formData: FormData) {
 		fillSuccessMessages(
 			receivedErrors,
 			successMessages,
-			"Signature uploaded successfully."
+			`Signature uploaded successfully. ${submitMessage}`
 		)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
@@ -322,6 +323,7 @@ async function submitSignature(formData: FormData) {
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
+		"deletedAt": null,
 		"email": userProfileData.value.email,
 		"emailVerifiedAt": null,
 		"kind": userProfileData.value.kind,

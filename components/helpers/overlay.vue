@@ -6,7 +6,10 @@
 		<div class="content bg-white text-black dark:bg-dark-200 dark:text-white">
 			<header>
 				<slot name="header"></slot>
-				<button class="close-btn material-icons-outlined" @click="emitClose">
+				<button
+					class="close-btn material-icons-outlined"
+					:disabled="disableCloseBtn"
+					@click="emitClose">
 					close
 				</button>
 			</header>
@@ -65,7 +68,10 @@
 </style>
 
 <script setup lang="ts">
-defineProps<{ isShown: boolean }>()
+defineProps<{
+	isShown: boolean
+	disableCloseBtn?: boolean
+}>()
 
 interface CustomEvents {
 	(event: "close"): void
