@@ -17,6 +17,7 @@
 			@close="hideCreateForm"/>
 		<Multiviewer
 			v-model="posts"
+			v-model:currentDepartment="currentDepartment"
 			:departments="departments"
 			:semesters="semesters"
 			class="multiviewer"/>
@@ -108,6 +109,8 @@ const semesters = ref<DeserializedSemesterListDocument>(
 	pageProps.semesters as DeserializedSemesterListDocument
 )
 
+const currentDepartment = ref<string>(userProfile.data.department.data.id)
+
 const {
 	"state": isCreateShown,
 	"on": showCreateForm,
@@ -157,19 +160,21 @@ onMounted(async() => {
 })
 
 const mayPost = computed<boolean>(() => {
-	const users = userProfile.data.roles.data
-	const isLimitedToOwnDepartment = permissionGroup.hasOneRoleAllowed(users, [
+	const roles = userProfile.data.roles.data
+	const department = userProfile.data.department.data
+	const isInOwnDepartment = currentDepartment.value === department.id
+	const isLimitedToOwnDepartment = permissionGroup.hasOneRoleAllowed(roles, [
 		CREATE_PERSONAL_POST_ON_OWN_DEPARTMENT
-	])
-
-	const isLimitedoAnyDepartment = permissionGroup.hasOneRoleAllowed(users, [
-		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
-	])
+	]) && isInOwnDepartment
 
 	const isLimitedToSocialPost = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
 		CREATE_SOCIAL_POST_ON_OWN_DEPARTMENT
+	]) && isInOwnDepartment
+
+	const isLimitedToAnyDepartment = permissionGroup.hasOneRoleAllowed(roles, [
+		CREATE_PUBLIC_POST_ON_ANY_DEPARTMENT
 	])
 
-	return isLimitedToOwnDepartment || isLimitedoAnyDepartment || isLimitedToSocialPost
+	return isLimitedToOwnDepartment || isLimitedToSocialPost || isLimitedToAnyDepartment
 })
 </script>
