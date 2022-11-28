@@ -109,8 +109,21 @@
 		max-height:100%;
 	}
 
+	.preview-file-container {
+		@apply mt-4 px-3 py-2;
+		@apply bg-true-gray-200 flex items-center;
+
+		.preview-file-title{
+			@apply flex-1 text-xs;
+		}
+	}
+
 	.close {
-		@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+		@apply p-2;
+		@apply absolute right-0 top-5;
+		@apply bg-black bg-opacity-60 text-white;
+
+		cursor: pointer;
 	}
 
 	.filter {

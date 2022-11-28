@@ -225,6 +225,15 @@
 		}
 	}
 
+	.preview-file-container {
+		@apply mt-4 px-3 py-2;
+		@apply bg-true-gray-200 flex items-center;
+
+		.preview-file-title{
+			@apply flex-1 text-xs;
+		}
+	}
+
 	article {
 		@apply flex flex-col flex-nowrap justify-between;
 		@apply p-4 bg-gray-400 bg-opacity-20 shadow-md;

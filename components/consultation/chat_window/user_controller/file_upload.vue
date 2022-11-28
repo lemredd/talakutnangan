@@ -99,6 +99,10 @@
 	appearance: none;
 }
 
+.file-size-info {
+	@apply ml-2 text-gray-500;
+}
+
 .preview-file{
 	@apply mt-5;
 }
@@ -115,15 +119,12 @@
 
 .preview-file-container {
 	@apply bg-true-gray-200 flex items-center px-3 py-2;
+
+	.preview-file-title{
+		@apply flex-1 text-xs;
+	}
 }
 
-.preview-file-title{
-	@apply flex-1 text-xs;
-}
-
-.file-size-info {
-	@apply ml-2 text-gray-500;
-}
 .close{
 	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
 }
