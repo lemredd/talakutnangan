@@ -29,7 +29,7 @@ export default function(
 		UPDATE_ANYONE_ON_OWN_DEPARTMENT
 	]) && isOnSameDepartment
 
-	const mayUpdateUser = isUpdateLimitedUpToDepartmentScope || mayUpdateAnyone
+	const mayUpdateUser = (isUpdateLimitedUpToDepartmentScope || mayUpdateAnyone) && !isDeleted
 
 	const isArchiveOrRestoreLimitedUpToDepartmentScope = permissionGroup.hasOneRoleAllowed(
 		userRoles,

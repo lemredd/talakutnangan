@@ -9,7 +9,8 @@
 			class="date"
 			:min="min"
 			:max="max"
-			type="date"/>
+			type="date"
+			:disabled="disabled"/>
 	</div>
 </template>
 
@@ -17,6 +18,10 @@
 	input.date {
 		@apply p-1;
 		@apply border border-gray-400;
+
+		&:disabled {
+			@apply opacity-70;
+		}
 	}
 </style>
 
@@ -30,6 +35,7 @@ const props = defineProps<{
 	modelValue: Date
 	min?: string
 	max?: string
+	disabled?: boolean
 }>()
 
 const emit = defineEmits<{(e: "update:modelValue", newModelValue: Date): void}>()

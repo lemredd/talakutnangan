@@ -14,7 +14,7 @@ export default function(
 	const isDeleted = Boolean(tag.deletedAt)
 	const roles = userProfile.data.roles.data
 
-	const mayUpdateTag = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ])
+	const mayUpdateTag = permissionGroup.hasOneRoleAllowed(roles, [ UPDATE ]) && !isDeleted
 
 	const mayArchiveTag = permissionGroup.hasOneRoleAllowed(roles, [
 		ARCHIVE_AND_RESTORE
