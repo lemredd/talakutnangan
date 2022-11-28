@@ -201,6 +201,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[0].acronym,
 					"email": fakeUserA.email,
+					"emailVerifiedAt": fakeUserA.emailVerifiedAt as Date,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
 					"prefersDark": false,
@@ -209,6 +210,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
+					"emailVerifiedAt": fakeUserB.emailVerifiedAt as Date,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
 					"prefersDark": false,
@@ -247,6 +249,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[0].acronym,
 					"email": fakeUserA.email,
+					"emailVerifiedAt": fakeUserA.emailVerifiedAt as Date,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
 					"prefersDark": false
@@ -254,6 +257,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
+					"emailVerifiedAt": fakeUserB.emailVerifiedAt as Date,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
 					"prefersDark": false
@@ -261,6 +265,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[2].acronym,
 					"email": fakeUserC.email,
+					"emailVerifiedAt": fakeUserC.emailVerifiedAt as Date,
 					"name": fakeUserC.name,
 					"password": fakeUserC.password,
 					"prefersDark": false
@@ -320,6 +325,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[0].acronym,
 					"email": fakeUserA.email,
+					"emailVerifiedAt": fakeUserA.emailVerifiedAt as Date,
 					"name": fakeUserA.name,
 					"password": fakeUserA.password,
 					"prefersDark": false
@@ -327,6 +333,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[1].acronym,
 					"email": fakeUserB.email,
+					"emailVerifiedAt": fakeUserB.emailVerifiedAt as Date,
 					"name": fakeUserB.name,
 					"password": fakeUserB.password,
 					"prefersDark": false
@@ -334,6 +341,7 @@ describe("Database Manager: User create operations", () => {
 				{
 					"department": departments[2].acronym,
 					"email": fakeUserC.email,
+					"emailVerifiedAt": fakeUserC.emailVerifiedAt as Date,
 					"name": fakeUserC.name,
 					"password": fakeUserC.password,
 					"prefersDark": false

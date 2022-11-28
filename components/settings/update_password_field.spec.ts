@@ -1,14 +1,16 @@
-import { nextTick } from "vue"
+import { nextTick, ref } from "vue"
 import { shallowMount, flushPromises } from "@vue/test-utils"
 
+import { BODY_CLASSES } from "$@/constants/provided_keys"
 import { UPDATE_PASSWORD_LINK } from "$/constants/template_links"
 
 import specializePath from "$/helpers/specialize_path"
+import BodyCSSClasses from "$@/external/body_css_classes"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Component from "./update_password_field.vue"
 
-describe.skip("Component: settings/update_password_field", () => {
+describe("Component: settings/update_password_field", () => {
 	it("can save user password", async() => {
 		const CURRENT_PASSWORD = "Hello"
 		const NEW_PASSWORD = "World"
@@ -18,6 +20,7 @@ describe.skip("Component: settings/update_password_field", () => {
 		const wrapper = shallowMount(Component, {
 			"global": {
 				"provide": {
+					[BODY_CLASSES]: ref(new BodyCSSClasses([])),
 					"pageContext": {
 						"pageProps": {
 							"userProfile": {

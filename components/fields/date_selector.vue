@@ -7,6 +7,8 @@
 			id="selected-date"
 			v-model="rawDate"
 			class="date"
+			:min="min"
+			:max="max"
 			type="date"/>
 	</div>
 </template>
@@ -26,6 +28,8 @@ import convertToRawDate from "$@/helpers/convert_to_raw_date"
 const props = defineProps<{
 	label?: string
 	modelValue: Date
+	min?: string
+	max?: string
 }>()
 
 const emit = defineEmits<{(e: "update:modelValue", newModelValue: Date): void}>()
@@ -37,6 +41,14 @@ const date = computed<Date>({
 
 const rawDate = computed<string>({
 	"get": () => convertToRawDate(date.value),
-	set(newValue: string) { date.value = new Date(newValue) }
+	set(newValue: string) {
+		const maxDate = new Date(props.max as string)
+		const minDate = new Date(props.min as string)
+		const newDate = new Date(newValue)
+		const isOutOfMaxBounds = maxDate < newDate
+		const isOutOfMinBounds = minDate > newDate
+
+		if (!isOutOfMaxBounds && !isOutOfMinBounds) date.value = new Date(newValue)
+	}
 })
 </script>

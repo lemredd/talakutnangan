@@ -26,27 +26,30 @@
 			@check-external-dependency-flags="flagSelector.checkExternal"
 			@uncheck-externally-dependent-flags="flagSelector.uncheckExternal"/>
 
-		<div class="controls flex justify-between">
-			<Suspensible :is-loaded="hasSubmittedRole">
-				<button type="submit" class="update-user-btn btn btn-primary">
+		<Suspensible :is-loaded="hasSubmittedRole">
+			<div class="controls">
+				<button
+					v-if="mayArchiveRole"
+					type="submit"
+					class="update-user-btn btn btn-primary">
 					submit
 				</button>
-			</Suspensible>
-			<button
-				v-if="mayRestoreRole"
-				type="button"
-				class="restore-btn btn btn-primary"
-				@click="restoreRole">
-				Restore
-			</button>
-			<button
-				v-if="mayArchiveRole"
-				type="button"
-				class="archive-btn btn btn-primary"
-				@click="archiveRole">
-				Archive
-			</button>
-		</div>
+				<button
+					v-if="mayRestoreRole"
+					type="button"
+					class="restore-btn btn btn-primary"
+					@click="restoreRole">
+					Restore
+				</button>
+				<button
+					v-if="mayArchiveRole"
+					type="button"
+					class="archive-btn btn btn-primary"
+					@click="archiveRole">
+					Archive
+				</button>
+			</div>
+		</Suspensible>
 		<ConfirmationPassword
 			v-model="password"
 			:must-confirm="isBeingConfirmed"
@@ -56,8 +59,12 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
-@import "@styles/status_messages.scss";
+	@import "@styles/btn.scss";
+	@import "@styles/status_messages.scss";
+
+	.controls {
+		@apply flex justify-between;
+	}
 </style>
 
 <script setup lang="ts">
@@ -88,7 +95,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", Require
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const roles = ref<DeserializedRoleDocument>(
+const role = ref<DeserializedRoleDocument>(
 	{
 		...pageProps.role,
 		"data": {
@@ -97,13 +104,6 @@ const roles = ref<DeserializedRoleDocument>(
 	} as DeserializedRoleDocument
 )
 
-const managementInfo = computed<RoleManagementInfo>(
-	() => makeManagementInfo(userProfile, roles.value.data)
-)
-
-const role = ref<DeserializedRoleDocument<"read">>(
-	pageProps.role as DeserializedRoleDocument<"read">
-)
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
 
@@ -121,17 +121,13 @@ const roleData = computed<RoleAttributes<"deserialized">>({
 		}
 	}
 })
-const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
-const password = ref<string>("")
-const flagSelectors = makeFlagSelectorInfos(roleData)
 
+const managementInfo = computed<RoleManagementInfo>(
+	() => makeManagementInfo(userProfile, role.value.data)
+)
 const mayUpdateRole = computed<boolean>(() => managementInfo.value.mayUpdateRole)
-
-const mayArchiveOrRestoreRole = computed<boolean>(
-	() => managementInfo.value.mayArchiveRole || managementInfo.value.mayRestoreRole)
-
-const mayArchiveRole = computed<boolean>(() => !isDeleted.value && mayArchiveOrRestoreRole.value)
-const mayRestoreRole = computed<boolean>(() => isDeleted.value && mayArchiveOrRestoreRole.value)
+const mayArchiveRole = computed<boolean>(() => managementInfo.value.mayArchiveRole)
+const mayRestoreRole = computed<boolean>(() => managementInfo.value.mayRestoreRole)
 
 const {
 	"state": isBeingConfirmed,
@@ -140,11 +136,13 @@ const {
 } = makeSwitch(false)
 
 const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
+const flagSelectors = makeFlagSelectorInfos(roleData)
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
 const hasSubmittedRole = ref<boolean>(true)
 
 const fetcher: Fetcher = new Fetcher()
+const password = ref<string>("")
 async function updateRole() {
 	hasSubmittedRole.value = false
 	await fetcher.update(role.value.data.id, {
@@ -178,6 +176,8 @@ async function updateRole() {
 }
 
 async function archiveRole() {
+	hasSubmittedRole.value = false
+
 	await fetcher.archive([ role.value.data.id ])
 	.then(() => {
 		if (!role.value.data.deletedAt) role.value.data.deletedAt = new Date()
@@ -185,9 +185,13 @@ async function archiveRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedRole.value = true
 }
 
 async function restoreRole() {
+	hasSubmittedRole.value = false
+
 	await fetcher.restore([ role.value.data.id ])
 	.then(() => {
 		if (role.value.data.deletedAt) role.value.data.deletedAt = null
@@ -195,5 +199,7 @@ async function restoreRole() {
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	hasSubmittedRole.value = true
 }
 </script>

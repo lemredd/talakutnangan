@@ -6,7 +6,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Component from "./scheduler.vue"
 import convertDateToRangeCompatibleDate
-	from "@/helpers/schedule_picker/convert_date_to_range_compatible_date"
+	from "@/helpers/convert_date_to_range_compatible_date"
 
 describe("Component: consultation/helpers/scheduler", () => {
 	it("can fill consultant schedules", async() => {

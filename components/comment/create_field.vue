@@ -7,7 +7,9 @@
 </template>
 
 <style lang="scss">
-
+	.field {
+		@apply p-0;
+	}
 </style>
 
 <script setup lang="ts">

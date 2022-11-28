@@ -13,7 +13,10 @@
 			type="text"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
-				<button type="submit" class="update-tag-btn btn btn-primary">
+				<button
+					v-if="mayArchiveTag"
+					type="submit"
+					class="update-tag-btn btn btn-primary">
 					update tag
 				</button>
 			</Suspensible>
@@ -57,6 +60,7 @@ import fillSuccessMessages from "$@/helpers/fill_success_messages"
 
 import RequestEnvironment from "$/singletons/request_environment"
 
+import Suspensible from "@/helpers/suspensible.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -67,10 +71,7 @@ const pageContext = inject("pageContext") as PageContext<"deserialized", "tag">
 const { pageProps } = pageContext
 const { userProfile } = pageProps
 
-const tag = ref<DeserializedTagDocument<"read">>(
-	pageProps.tag as DeserializedTagDocument<"read">
-)
-const tags = ref<DeserializedTagDocument>(
+const tag = ref<DeserializedTagDocument>(
 	{
 		...pageProps.tag,
 		"data": {
@@ -80,14 +81,10 @@ const tags = ref<DeserializedTagDocument>(
 )
 
 const managementInfo = computed<TagManagementInfo>(
-	() => makeManagementInfo(userProfile, tags.value.data)
+	() => makeManagementInfo(userProfile, tag.value.data)
 )
-
-const mayArchiveTag = computed<boolean>(
-	() => managementInfo.value.mayArchiveTag)
-
-const mayRestoreTag = computed<boolean>(
-	() => managementInfo.value.mayRestoreTag)
+const mayArchiveTag = computed<boolean>(() => managementInfo.value.mayArchiveTag)
+const mayRestoreTag = computed<boolean>(() => managementInfo.value.mayRestoreTag)
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction
@@ -124,7 +121,7 @@ function updateTag() {
 async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
 	.then(() => {
-		if (!tags.value.data.deletedAt) tags.value.data.deletedAt = new Date()
+		if (!tag.value.data.deletedAt) tag.value.data.deletedAt = new Date()
 
 		fillSuccessMessages(
 			receivedErrors,
@@ -139,7 +136,7 @@ async function archiveTag() {
 async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
 	.then(() => {
-		if (tags.value.data.deletedAt) tags.value.data.deletedAt = null
+		if (tag.value.data.deletedAt) tag.value.data.deletedAt = null
 
 		fillSuccessMessages(
 			receivedErrors,

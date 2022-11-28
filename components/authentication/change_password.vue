@@ -78,10 +78,11 @@ import { BODY_CLASSES } from "$@/constants/provided_keys"
 import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/user"
+import debounce from "$@/helpers/debounce"
 import makeSwitch from "$@/helpers/make_switch"
-import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import isUndefined from "$/type_guards/is_undefined"
 import BodyCSSClasses from "$@/external/body_css_classes"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 
@@ -104,8 +105,9 @@ const newPassword = ref<string>("")
 const confirmNewPassword = ref<string>("")
 
 const fetcher: Fetcher = new Fetcher()
+const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 
-function clearPasswords(): void {
+function clearPasswords() {
 	[
 		currentPassword,
 		newPassword,
@@ -113,10 +115,16 @@ function clearPasswords(): void {
 	].forEach(password => {
 		password.value = ""
 	})
+
+	if (!isUndefined(window)) bodyClasses.value.scroll(true)
 }
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
+const openDialogAsynchronously = debounce(() => {
+	openDialog()
+	if (!isUndefined(window)) bodyClasses.value.scroll(false)
+}, MILLISECOND_IN_A_SECOND)
 function cancel(): void {
 	receivedErrors.value = []
 	successMessages.value = []
@@ -132,20 +140,15 @@ function savePassword() {
 	)
 
 	.then(() => {
-		const TIMEOUT = 3000
 		fillSuccessMessages(receivedErrors, successMessages)
-		setTimeout(closeDialog, TIMEOUT)
+		openDialogAsynchronously()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 }
 
-const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 onMounted(() => {
 	if (userProfile.meta.hasDefaultPassword) {
-		setTimeout(() => {
-			openDialog()
-			if (!isUndefined(window)) bodyClasses.value.scroll(false)
-		}, MILLISECOND_IN_A_SECOND)
+		openDialogAsynchronously()
 	}
 })
 </script>

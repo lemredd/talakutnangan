@@ -13,6 +13,7 @@ import type { Serializable } from "$/types/general"
 export interface CommonRawBulkData extends Serializable {
 	name: string,
 	email: string,
+	emailVerifiedAt: Date,
 	department: string,
 	password: string,
 	prefersDark: false
@@ -116,6 +117,11 @@ export interface ProfilePictureTransformerOptions {
  * Useful for updating the many-to-many relationships
  */
 export interface SegregatedIDs { newIDs: number[], deletedIDs: number[] }
+
+/**
+ * Useful for updating the many-to-many relationships that are archivable
+ */
+export interface ExistentiallySegregatedIDs extends SegregatedIDs { restoredIDs: number[] }
 
 export interface IncludedRelationships<T extends string = string> {
 	included: T[]
