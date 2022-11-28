@@ -116,7 +116,10 @@ const mayArchiveDepartment = computed<boolean>(() => managementInfo.value.mayArc
 )
 const mayRestoreDepartment = computed<boolean>(() => managementInfo.value.mayRestoreDepartment)
 
-const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
+const fieldStatus = computed<FieldStatus>(() => {
+	const status = mayUpdateDepartment.value ? "enabled" : "disabled"
+	return status
+})
 const mayNotChangeAdmission = computed<boolean>(() => !mayUpdateDepartment.value)
 const MAY_ADMIT = "1"
 const mayAdmitRaw = computed<string[]>({

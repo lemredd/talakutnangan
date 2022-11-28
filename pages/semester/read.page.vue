@@ -8,6 +8,7 @@
 	<form @submit.prevent="openConfirmation">
 		<TextualField
 			v-model="semester.data.name"
+			v-model:status="nameFieldStatus"
 			class="name field"
 			label="Semester name: "
 			type="text"/>
@@ -15,15 +16,18 @@
 			v-model="semester.data.semesterOrder"
 			class="order field"
 			label="Order: "
-			:options="semesterOption"/>
+			:options="semesterOption"
+			:disabled="!mayUpdateSemester"/>
 		<DateSelect
 			v-model="semester.data.startAt"
 			label="Starts at: "
-			class="start-at field date"/>
+			class="start-at field"
+			:disabled="!mayUpdateSemester"/>
 		<DateSelect
 			v-model="semester.data.endAt"
 			label="Ends at: "
-			class="end-at field date"/>
+			class="end-at field"
+			:disabled="!mayUpdateSemester"/>
 		<Suspensible :is-loaded="hasSubmittedSemester">
 			<div class="controls">
 				<button
@@ -33,7 +37,7 @@
 					update semester
 				</button>
 				<button
-					v-if="mayRestoreSemester && mayUpdateSemester"
+					v-if="mayRestoreSemester"
 					type="button"
 					class="btn btn-primary"
 					@click="restoreSemester">
@@ -73,13 +77,14 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
 import type { SemesterManagementInfo } from "$@/types/independent"
 import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 
 import Fetcher from "$@/fetchers/semester"
 import makeSwitch from "$@/helpers/make_switch"
-import type { OptionInfo } from "$@/types/component"
 import makeManagementInfo from "@/semester/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
@@ -102,12 +107,7 @@ const { userProfile } = pageProps
 
 const semesterOption = makeOptionInfo([ "first", "second", "third" ]) as OptionInfo[]
 
-const semester = ref<DeserializedSemesterDocument<"read">>(
-	pageProps.semester as DeserializedSemesterDocument<"read">
-)
-const isDeleted = computed<boolean>(() => Boolean(semester.value.data.deletedAt))
-
-const semesters = ref<DeserializedSemesterDocument>(
+const semester = ref<DeserializedSemesterDocument>(
 	{
 		...pageProps.semester,
 		"data": {
@@ -117,20 +117,17 @@ const semesters = ref<DeserializedSemesterDocument>(
 )
 
 const managementInfo = computed<SemesterManagementInfo>(
-	() => makeManagementInfo(userProfile, semesters.value.data)
+	() => makeManagementInfo(userProfile, semester.value.data)
 )
 
 const mayUpdateSemester = computed<boolean>(() => managementInfo.value.mayUpdateSemester)
+const mayArchiveSemester = computed<boolean>(() => managementInfo.value.mayArchiveSemester)
+const mayRestoreSemester = computed<boolean>(() => managementInfo.value.mayRestoreSemester)
 
-const mayArchiveOrRestoreSemester = computed<boolean>(
-	() => managementInfo.value.mayArchiveSemester || managementInfo.value.mayRestoreSemester)
-
-const mayArchiveSemester = computed<boolean>(
-	() => !isDeleted.value && mayArchiveOrRestoreSemester.value
-)
-const mayRestoreSemester = computed<boolean>(
-	() => isDeleted.value && mayArchiveOrRestoreSemester.value
-)
+const nameFieldStatus = computed<FieldStatus>(() => {
+	const status = mayUpdateSemester.value ? "enabled" : "disabled"
+	return status
+})
 
 const password = ref<string>(
 	RequestEnvironment.isNotOnProduction

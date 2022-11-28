@@ -135,7 +135,11 @@ const {
 	"off": closeConfirmation
 } = makeSwitch(false)
 
-const nameFieldStatus = ref<FieldStatus>(mayUpdateRole.value ? "enabled" : "disabled")
+const nameFieldStatus = computed<FieldStatus>(() => {
+	const status = mayUpdateRole.value ? "enabled" : "disabled"
+
+	return status
+})
 const flagSelectors = makeFlagSelectorInfos(roleData)
 const areFlagSelectorsDisabled = computed<boolean>(() => !mayUpdateRole.value)
 
@@ -167,7 +171,6 @@ async function updateRole() {
 	.then(() => {
 		closeConfirmation()
 		password.value = ""
-		nameFieldStatus.value = "locked"
 
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
