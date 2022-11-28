@@ -39,44 +39,46 @@
 						type="file"
 						name="meta[fileContents]"
 						:accept="accept"
-						@change="extractFile"/>
+						@input="extractFile"/>
 					CHOOSE {{ subKind }}
 				</label>
 				<small class="file-size-info">The max {{ subKind }} size limit is 20MB.</small>
 			</form>
 
-			<div v-if="hasExtracted" class="preview-file">
-				<div v-if="isAcceptingImage" class="preview-img-container">
-					<div class="removable-image relative">
-						<span
-							class="material-icons close"
-							@click="removeFile">
-							close
+			<Suspensible :is-loaded="hasAttachedFile">
+				<div v-if="hasExtracted" class="preview-file">
+					<div v-if="isAcceptingImage" class="preview-img-container">
+						<div class="removable-image relative">
+							<span
+								class="material-icons close"
+								@click="removeFile">
+								close
+							</span>
+							<img class="preview-img" :src="previewFile"/>
+							<small class="preview-title">
+								{{ filename }}
+							</small>
+						</div>
+					</div>
+					<div
+						v-if="isAcceptingFile"
+						class="preview-file-container">
+						<span class="material-icons mr-2">
+							attachment
 						</span>
-						<img class="preview-img" :src="previewFile"/>
-						<small class="preview-title">
+						<small class="preview-file-title">
 							{{ filename }}
 						</small>
+						<button
+							:disabled="isSending"
+							type="button"
+							class="remove-file-btn material-icons cursor-pointer"
+							@click="removeFile">
+							close
+						</button>
 					</div>
 				</div>
-				<div
-					v-if="isAcceptingFile"
-					class="preview-file-container">
-					<span class="material-icons mr-2">
-						attachment
-					</span>
-					<small class="preview-file-title">
-						{{ filename }}
-					</small>
-					<button
-						:disabled="isSending"
-						type="button"
-						class="remove-file-btn material-icons cursor-pointer"
-						@click="removeFile">
-						close
-					</button>
-				</div>
-			</div>
+			</Suspensible>
 		</template>
 
 		<template #footer>
@@ -154,7 +156,14 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, inject, ComputedRef, DeepReadonly } from "vue"
+import {
+	ref,
+	inject,
+	nextTick,
+	computed,
+	ComputedRef,
+	DeepReadonly
+} from "vue"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
 
@@ -167,6 +176,7 @@ import Overlay from "@/helpers/overlay.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
+import { MILLISECOND_IN_A_SECOND } from "$/constants/numerical"
 
 const props = defineProps<{
 	accept: "image/*" | "*/*"
@@ -181,6 +191,7 @@ const isAcceptingImage = props.accept.includes("image/")
 const isAcceptingFile = props.accept.includes("*/")
 const subKind = isAcceptingImage ? "image" : "file"
 
+const hasAttachedFile = ref(true)
 const filename = ref<string|null>(null)
 const hasExtracted = computed<boolean>(() => filename.value !== null)
 const previewFile = ref<any>(null)
@@ -195,7 +206,17 @@ const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
-function extractFile(event: Event) {
+function removeFile() {
+	filename.value = null
+	previewFile.value = null
+	fileSize.value = null
+	receivedErrors.value = []
+}
+
+async function extractFile(event: Event) {
+	hasAttachedFile.value = false
+	removeFile()
+
 	receivedErrors.value = []
 	const target = event.target as HTMLInputElement
 	const file = target.files?.item(0)
@@ -206,13 +227,11 @@ function extractFile(event: Event) {
 
 	previewFile.value = file ? URL.createObjectURL(file) : ""
 	filename.value = rawFilename
-}
+	await nextTick()
 
-function removeFile() {
-	filename.value = null
-	previewFile.value = null
-	fileSize.value = null
-	receivedErrors.value = []
+	setTimeout(() => {
+		hasAttachedFile.value = true
+	}, MILLISECOND_IN_A_SECOND)
 }
 
 function emitClose() {
@@ -225,6 +244,7 @@ const isSendBtnDisabled = computed(
 	() => !hasExtracted.value
 	|| isFileSizeGreaterThanLimit.value
 	|| isSending.value
+	|| !hasAttachedFile.value
 )
 async function sendFile() {
 	isSending.value = true
