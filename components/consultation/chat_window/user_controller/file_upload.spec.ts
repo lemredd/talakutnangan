@@ -15,7 +15,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./file_upload.vue"
 import convertByteStringToBytes from "$/helpers/data/convert_byte_string_to_bytes"
 
-describe("Component: User controller/File Upload", () => {
+describe.skip("Component: User controller/File Upload", () => {
 	describe("image upload", () => {
 		const accept = "image/png"
 
