@@ -3,7 +3,6 @@
 		<UpdatePostForm
 			v-model="post"
 			:is-shown="mustUpdate"
-			@submit="submitChangesSeparately"
 			@close="closeUpdateForm"/>
 		<Overlay :is-shown="mustArchiveOrRestore" @close="closeArchiveOrRestore">
 			<template #header>
@@ -95,8 +94,8 @@
 		<div v-if="hasExistingAttachments">
 			<div
 				v-for="attachment in postAttachments"
-				:title="`${attachment.type} ${attachment.id}`"
 				:key="attachment.id"
+				:title="`${attachment.type} ${attachment.id}`"
 				class="preview-file">
 				<div v-if="isImage(attachment.fileType)" class="preview-img-container">
 					<div class="removable-image relative">
@@ -344,12 +343,12 @@ const formattedContent = computed<string>(() => {
 })
 
 const hasExistingAttachments = computed<boolean>(() => {
-	const hasAttachments = !isUndefined(props.modelValue.postAttachments)
+	const hasAttachments = !isUndefined(post.value.postAttachments)
 	return hasAttachments
 })
 const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 	if (hasExistingAttachments.value) {
-		const attachments = props.modelValue
+		const attachments = post.value
 		.postAttachments as DeserializedPostAttachmentListDocument
 
 		return attachments.data
@@ -359,12 +358,12 @@ const postAttachments = computed<DeserializedPostAttachmentResource[]>(() => {
 })
 
 const hasExistingTags = computed<boolean>(() => {
-	const hasTags = !isUndefined(props.modelValue.tags)
+	const hasTags = !isUndefined(post.value.tags)
 	return hasTags
 })
 const tags = computed<DeserializedTagResource[]>(() => {
 	if (hasExistingTags.value) {
-		const tagList = props.modelValue.tags as DeserializedTagListDocument
+		const tagList = post.value.tags as DeserializedTagListDocument
 
 		return tagList.data
 	}
@@ -436,38 +435,6 @@ const readPostPath = computed<string>(() => {
 
 	return path
 })
-
-async function submitChangesSeparately(): Promise<void> {
-	await fetcher.update(post.value.id, {
-		"content": post.value.content,
-		"createdAt": post.value.createdAt.toJSON(),
-		"deletedAt": null,
-		"updatedAt": post.value.updatedAt.toJSON()
-	}, {
-		"extraDataFields": {
-			"relationships": {
-				// eslint-disable-next-line no-undefined
-				"department": undefined,
-				// eslint-disable-next-line no-undefined
-				"postAttachments": undefined,
-				"poster": {
-					"data": {
-						"id": post.value.poster.data.id,
-						"type": "user"
-					}
-				},
-				"posterRole": {
-					"data": {
-						"id": post.value.posterRole.data.id,
-						"type": "role"
-					}
-				}
-			}
-		}
-	}).then(() => {
-		emit("update:modelValue", post.value)
-	})
-}
 
 function closeDialog() {
 	emit("archive", post.value)

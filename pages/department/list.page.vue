@@ -189,6 +189,7 @@ async function fetchDepartmentInfos(): Promise<void> {
 		},
 		"sort": [ chosenSort.value ]
 	}), {
+		"mayContinue": () => Promise.resolve(false),
 		async postOperations(deserializedData) {
 			const IDsToCount = deserializedData.data.map(data => data.id)
 			return await countUsersPerDepartment(IDsToCount)

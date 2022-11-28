@@ -13,7 +13,6 @@ import RequestEnvironment from "$/singletons/request_environment"
 
 import PermissionGroup from "$/permissions/post"
 import {
-	UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT,
 	ARCHIVE_AND_RESTORE_PERSONAL_POST_ON_OWN_DEPARTMENT
 } from "$/permissions/post_combinations"
 
@@ -21,112 +20,6 @@ import Component from "./viewer.vue"
 
 jest.useFakeTimers()
 describe("Component: post/viewer", () => {
-	it("should submit post errors", async() => {
-		const userID = "1"
-		const postID = "2"
-		const roleID = "3"
-		const modelValue = {
-			"content": "Hello world!",
-			"createdAt": new Date(),
-			"deletedAt": null,
-			"id": postID,
-			"poster": {
-				"data": {
-					"id": userID,
-					"type": "user"
-				}
-			} as DeserializedUserDocument<"roles">,
-			"posterRole": {
-				"data": {
-					"id": roleID,
-					"type": "role"
-				}
-			} as DeserializedRoleDocument,
-			"type": "post",
-			"updatedAt": new Date()
-		} as DeserializedPostResource<"poster"|"posterRole">
-		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
-		const wrapper = shallowMount<any>(Component, {
-			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							"userProfile": {
-								"data": {
-									"id": userID,
-									"roles": {
-										"data": [
-											{
-												"id": "1",
-												"postFlags": new PermissionGroup().generateFlags(
-													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
-												)
-											}
-										]
-									},
-									"type": "user"
-								}
-							}
-						}
-					}
-				},
-				"stubs": {
-					"Dropdown": false
-				}
-			},
-			"props": {
-				"commentCount": 0,
-				modelValue
-			}
-		})
-
-		const menu = wrapper.findComponent({ "name": "Menu" })
-		await menu.vm.$emit("updatePost")
-		const updatePostForm = wrapper.findComponent({ "name": "UpdatePostForm" })
-		await updatePostForm.vm.$emit("submit")
-		await flushPromises()
-
-		const castWrapper = wrapper.vm as any
-		expect(castWrapper.mustUpdate).toBeTruthy()
-		const castFetch = fetch as jest.Mock<any, any>
-		expect(castFetch).toHaveBeenCalledTimes(1)
-		const [ [ request ] ] = castFetch.mock.calls
-		expect(request).toHaveProperty("method", "PATCH")
-		expect(request).toHaveProperty("url", specializePath(POST_LINK.bound, { "id": postID }))
-		expect(request.headers.get("Content-Type")).toBe(JSON_API_MEDIA_TYPE)
-		expect(request.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
-		const expectedBody = {
-			"data": {
-				"attributes": {
-					"content": modelValue.content,
-					"createdAt": modelValue.createdAt.toJSON(),
-					"deletedAt": modelValue.deletedAt,
-					"updatedAt": modelValue.updatedAt.toJSON()
-				},
-				"id": postID,
-				"relationships": {
-					"poster": {
-						"data": {
-							"id": modelValue.poster.data.id,
-							"type": "user"
-						}
-					},
-					"posterRole": {
-						"data": {
-							"id": modelValue.posterRole.data.id,
-							"type": "role"
-						}
-					}
-				},
-				"type": "post"
-			}
-		}
-		expect(await request.json()).toStrictEqual(expectedBody)
-
-		const updateEvent = wrapper.emitted("update:modelValue")
-		expect(updateEvent).toHaveProperty("0.0", modelValue)
-	})
-
 	it("should request for archiving the post", async() => {
 		const userID = "1"
 		const postID = "2"
