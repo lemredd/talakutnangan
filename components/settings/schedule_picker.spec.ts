@@ -26,6 +26,7 @@ describe("Component: Schedule Picker", () => {
 			},
 			"props": {
 				"dayName": "Monday",
+				"disabled": false,
 				"scheduleEnd": convertTimeToMinutes("17:00"),
 				"scheduleStart": convertTimeToMinutes("08:00")
 			}
@@ -53,6 +54,7 @@ describe("Component: Schedule Picker", () => {
 			},
 			"props": {
 				"dayName": "Monday",
+				"disabled": false,
 				"scheduleEnd": convertTimeToMinutes("17:00"),
 				"scheduleId": "1",
 				"scheduleStart": convertTimeToMinutes("08:00")
@@ -130,6 +132,7 @@ describe("Component: Schedule Picker", () => {
 			},
 			"props": {
 				"dayName": "Monday",
+				"disabled": false,
 				"isNew": true,
 				"scheduleEnd": convertTimeToMinutes("00:00"),
 				"scheduleId": "1",
@@ -179,6 +182,7 @@ describe("Component: Schedule Picker", () => {
 			},
 			"props": {
 				"dayName": "Monday",
+				"disabled": false,
 				"scheduleEnd": convertTimeToMinutes("17:00"),
 				"scheduleId": "1",
 				"scheduleStart": convertTimeToMinutes("08:00")
