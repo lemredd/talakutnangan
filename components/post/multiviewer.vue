@@ -104,10 +104,9 @@
 </style>
 
 <script setup lang="ts">
-import { ref, computed, watch, inject, Ref, onMounted } from "vue"
+import { ref, computed, watch, Ref, onMounted } from "vue"
 
 import type { Existence } from "$/types/query"
-import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
 import type {
 	DeserializedPostListDocument,
@@ -135,22 +134,23 @@ import SelectableOptionsField from "@/fields/selectable_options.vue"
 import DateRangePicker from "@/helpers/filters/date_range_picker.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
 
-const pageContext = inject("pageContext") as PageContext<"deserialized">
-const { pageProps } = pageContext
-const { userProfile } = pageProps
-
 type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachments"|"tags"
 
 const props = defineProps<{
 	departments: DeserializedDepartmentListDocument,
 	modelValue: DeserializedPostListDocument<AssociatedPostResource>,
-	semesters: DeserializedSemesterListDocument
+	semesters: DeserializedSemesterListDocument,
+	currentDepartment: string
 }>()
 
 interface CustomEvents {
 	(
 		event: "update:modelValue",
 		post: DeserializedPostListDocument<AssociatedPostResource>
+	): void
+	(
+		event: "update:currentDepartment",
+		departmentID: string
 	): void
 }
 const emit = defineEmits<CustomEvents>()
@@ -190,7 +190,14 @@ const departmentNames = computed<OptionInfo[]>(() => [
 		"value": data.id
 	}))
 ])
-const chosenDepartment = ref<string>(userProfile.data.department.data.id)
+const chosenDepartment = computed<string>({
+	get(): string {
+		return props.currentDepartment
+	},
+	set(newDepartment: string): void {
+		emit("update:currentDepartment", newDepartment)
+	}
+})
 const existence = ref<string>("exists")
 const isLoaded = ref(true)
 
