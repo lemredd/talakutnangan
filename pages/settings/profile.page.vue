@@ -84,7 +84,7 @@
 				<input
 					id="dark-mode-toggle"
 					v-model="prefersDark"
-					:disabled="mayEditProfile"
+					:disabled="!mayEditProfile"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
@@ -101,7 +101,7 @@
 			<SchedulePickerGroup
 				v-for="day in DayValues"
 				:key="day"
-				:disabled="mayEditProfile"
+				:disabled="!mayEditProfile"
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
