@@ -5,7 +5,7 @@
 	<ReceivedSuccessMessages
 		v-if="successMessages.length"
 		:received-success-messages="successMessages"/>
-	<form @submit.prevent="openConfirmation">
+	<form @submit.prevent="updateSemester">
 		<TextualField
 			v-model="semester.data.name"
 			v-model:status="nameFieldStatus"
@@ -52,12 +52,6 @@
 				</button>
 			</div>
 		</Suspensible>
-
-		<ConfirmationPassword
-			v-model="password"
-			:must-confirm="isBeingConfirmed"
-			@cancel="closeConfirmation"
-			@confirm="updateSemester"/>
 	</form>
 </template>
 
@@ -84,7 +78,7 @@ import type { SemesterManagementInfo } from "$@/types/independent"
 import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 
 import Fetcher from "$@/fetchers/semester"
-import makeSwitch from "$@/helpers/make_switch"
+import makeOptionInfo from "$@/helpers/make_option_info"
 import makeManagementInfo from "@/semester/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
@@ -96,10 +90,8 @@ import Selectable from "@/fields/selectable_options.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
-import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
-import makeOptionInfo from "$@/helpers/make_option_info"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "semester">
 const { pageProps } = pageContext
@@ -140,12 +132,6 @@ const successMessages = ref<string[]>([])
 
 const fetcher = new Fetcher()
 
-const {
-	"state": isBeingConfirmed,
-	"on": openConfirmation,
-	"off": closeConfirmation
-} = makeSwitch(false)
-
 const hasSubmittedSemester = ref<boolean>(true)
 
 async function updateSemester() {
@@ -164,9 +150,6 @@ async function updateSemester() {
 		}
 	})
 	.then(() => {
-		closeConfirmation()
-		password.value = ""
-
 		fillSuccessMessages(receivedErrors, successMessages)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))

@@ -50,6 +50,8 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
+import convertToTitle from "$/string/convert_to_title"
+
 import type { OptionInfo } from "$@/types/component"
 
 type ComponentProps = {
