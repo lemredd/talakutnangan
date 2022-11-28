@@ -197,12 +197,12 @@ function join() {
 			"isTransmittingAudio": isTransmittingAudio.value
 		}
 	)
-	sendMessage(`${userProfile.data.name} joined the call`)
+	sendMessage(" joined the call")
 }
 function leave() {
 	leaveAndHideAdditionalButtons()
 	leaveAndRemoveLocalTracks()
-	sendMessage(`${userProfile.data.name} left the call`)
+	sendMessage(" left the call")
 }
 
 const otherParticipants = ref<RemoteTracks[]>([])

@@ -35,7 +35,8 @@
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
 				:is-current-user-consultant="isCurrentUserConsultant"
-				:is-consultation-finished-or-cancelled="isConsultationFinishedOrCancelled"
+				:will-soon-start="willSoonStart"
+				:will-start="willStart"
 				:is-ongoing="isOngoing"
 				@show-action-taken-overlay="showActionTakenOverlay"
 				@toggle-header-control-dropdown-shown="toggleHeaderControlDropdownShown"
@@ -258,12 +259,13 @@ const actionTakenHeader = isCurrentUserConsultant.value
 const actionTakenDescription = isCurrentUserConsultant.value
 	? "action taken to solve the consulter(s) concern."
 	: "reason for cancellation."
+
 const {
+	willSoonStart,
+	willStart,
 	isCanceled,
-	isDone,
 	isOngoing
 } = makeConsultationStates(props)
-const isConsultationFinishedOrCancelled = isDone.value || isCanceled.value
 const actionTaken = computed<string>({
 	get(): string {
 		return props.modelValue

@@ -12,7 +12,6 @@
 				<TextualField
 					v-model="userProfileData.name"
 					v-model:status="nameFieldStatus"
-					:disabled="mayEditProfile"
 					label="Display Name"
 					class="display-name-field"
 					type="text"/>
@@ -84,7 +83,7 @@
 				<input
 					id="dark-mode-toggle"
 					v-model="prefersDark"
-					:disabled="mayEditProfile"
+					:disabled="!mayEditProfile"
 					type="checkbox"
 					name=""
 					@click="toggleDarkMode"/>
@@ -101,7 +100,7 @@
 			<SchedulePickerGroup
 				v-for="day in DayValues"
 				:key="day"
-				:disabled="mayEditProfile"
+				:disabled="!mayEditProfile"
 				:day-name="day"
 				:schedules="schedules"/>
 		</div>
@@ -205,7 +204,9 @@ import { BODY_CLASSES } from "$@/constants/provided_keys"
 import settingsTabInfos from "@/settings/settings_tab_infos"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	UPDATE_OWN_DATA
+	UPDATE_OWN_DATA,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
 import UserFetcher from "$@/fetchers/user"
@@ -237,7 +238,18 @@ const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
-const nameFieldStatus = ref<FieldStatus>("locked")
+
+const mayEditProfile = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA,
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isPermitted
+})
+
+const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "locked" : "disabled")
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
@@ -324,14 +336,6 @@ function toggleDarkMode() {
 
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 }
-
-const mayEditProfile = computed<boolean>(() => {
-	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_OWN_DATA
-	])
-
-	return !isPermitted
-})
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
 </script>

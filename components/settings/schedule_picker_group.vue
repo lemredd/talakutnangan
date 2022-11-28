@@ -9,6 +9,7 @@
 		<SchedulePicker
 			v-for="schedule in daySchedules"
 			:key="schedule.id"
+			:disabled="disabled"
 			:schedule-id="schedule.id"
 			:day-name="schedule.dayName"
 			:schedule-start="schedule.scheduleStart"
@@ -17,7 +18,8 @@
 
 		<SchedulePicker
 			:is-new="true"
-			:day-name="props.dayName"
+			:disabled="disabled"
+			:day-name="dayName"
 			:schedule-start="convertTimeToMinutes('00:00')"
 			:schedule-end="convertTimeToMinutes('00:00')"
 			class="new-schedule-picker"
@@ -52,6 +54,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 const props = defineProps<{
 	dayName: string
+	disabled: boolean
 	schedules: DeserializedEmployeeScheduleResource[]
 }>()
 
