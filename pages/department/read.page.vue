@@ -59,7 +59,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 
 	.controls{
 		@apply flex justify-between;
@@ -84,7 +84,7 @@ import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import Checkbox from "@/fields/checkbox.vue"
 import Suspensible from "@/helpers/suspensible.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
-import NonSensitiveTextField from "@/fields/non-sensitive_text_capital.vue"
+import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ConfirmationPassword from "@/authentication/confirmation_password.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -149,7 +149,7 @@ async function updateDepartment() {
 		"acronym": department.value.data.acronym,
 		"deletedAt": null,
 		"fullName": department.value.data.fullName,
-		"mayAdmit": department.value.data.mayAdmit
+		"mayAdmit": department.value.data.mayAdmi
 	}, {
 		"extraUpdateDocumentProps": {
 			"meta": {
