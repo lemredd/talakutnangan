@@ -258,7 +258,7 @@ if (pageContext.pageProps.parsedUnitError) {
 	receivedErrors.value = [ pageContext.pageProps.parsedUnitError.detail ]
 }
 
-
+const submitMessage = "Please submit the changes."
 function submitProfilePicture(formData: FormData) {
 	const profilePictureFetcher = new ProfilePictureFetcher()
 
@@ -271,7 +271,7 @@ function submitProfilePicture(formData: FormData) {
 			fillSuccessMessages(
 				receivedErrors,
 				successMessages,
-				"Profile picture uploaded successfully."
+				`Profile picture uploaded successfully. ${submitMessage}`
 			)
 		})
 		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
@@ -297,7 +297,7 @@ function submitSignature(formData: FormData) {
 		fillSuccessMessages(
 			receivedErrors,
 			successMessages,
-			"Signature uploaded successfully."
+			`Signature uploaded successfully. ${submitMessage}`
 		)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
