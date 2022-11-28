@@ -8,6 +8,7 @@
 	<form @submit.prevent="openConfirmation">
 		<TextualField
 			v-model="tag.data.name"
+			v-model:status="nameFieldStatus"
 			label="Tag name"
 			class="name border-solid"
 			type="text"/>
@@ -56,6 +57,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { TagManagementInfo } from "$@/types/independent"
 import type { DeserializedTagDocument } from "$/types/documents/tag"
@@ -128,10 +130,11 @@ function updateTag() {
 		}
 	})
 	.then(() => {
-		const customSuccessMessage = "Tag has been successfully updated successfully!"
-
 		closeConfirmation()
 		password.value = ""
+		nameFieldStatus.value = "locked"
+
+		const customSuccessMessage = "Tag has been successfully updated successfully!"
 		fillSuccessMessages(receivedErrors, successMessages, customSuccessMessage)
 	})
 	.catch(response => extractAllErrorDetails(response, receivedErrors, successMessages))
@@ -141,6 +144,7 @@ async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
 	.then(() => {
 		if (!tag.value.data.deletedAt) tag.value.data.deletedAt = new Date()
+		nameFieldStatus.value = "disabled"
 
 		fillSuccessMessages(
 			receivedErrors,
@@ -156,6 +160,7 @@ async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
 	.then(() => {
 		if (tag.value.data.deletedAt) tag.value.data.deletedAt = null
+		nameFieldStatus.value = "enabled"
 
 		fillSuccessMessages(
 			receivedErrors,
