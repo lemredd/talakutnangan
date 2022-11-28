@@ -1,5 +1,8 @@
 <template>
-	<Overlay :is-shown="isShown" @close="emitClose">
+	<Overlay
+		:is-shown="isShown"
+		:disable-close-btn="isSending"
+		@close="emitClose">
 		<template #header>
 		</template>
 		<template #default>
@@ -65,28 +68,36 @@
 					<small class="preview-file-title">
 						{{ filename }}
 					</small>
-					<span
+					<button
+						:disabled="isSending"
+						type="button"
 						class="remove-file-btn material-icons cursor-pointer"
 						@click="removeFile">
 						close
-					</span>
+					</button>
 				</div>
 			</div>
 		</template>
+
 		<template #footer>
-			<button
-				class="btn back-btn"
-				type="button"
-				@click="emitClose">
-				Back
-			</button>
-			<button
-				:disabled="isSendBtnDisabled"
-				class="send-btn btn btn-primary"
-				type="button"
-				@click="sendFile">
-				Send
-			</button>
+			<Suspensible :is-loaded="!isSending" class="suspended-btns">
+				<div class="loaded-btns">
+					<button
+						:disabled="isSending"
+						class="btn back-btn"
+						type="button"
+						@click="emitClose">
+						Back
+					</button>
+					<button
+						:disabled="isSendBtnDisabled"
+						class="send-btn btn btn-primary"
+						type="button"
+						@click="sendFile">
+						Send
+					</button>
+				</div>
+			</Suspensible>
 		</template>
 	</Overlay>
 </template>
@@ -97,6 +108,10 @@
 	#choose-file-btn {
 		display:none;
 		appearance: none;
+	}
+
+	.file-size-info {
+		@apply ml-2 text-dark-100;
 	}
 
 	.preview-file {
@@ -129,6 +144,13 @@
 		@apply ml-2;
 		@apply text-gray-700;
 	}
+
+	.suspended-btns, .loaded-btns {
+		width: 100%;
+	}
+	.loaded-btns {
+		@apply flex justify-between;
+	}
 </style>
 
 <script setup lang="ts">
@@ -142,6 +164,7 @@ import Fetcher from "$@/fetchers/chat_message"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Overlay from "@/helpers/overlay.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import { DeserializedChatMessageActivityResource } from "$/types/documents/chat_message_activity"
 
