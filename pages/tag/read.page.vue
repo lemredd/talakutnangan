@@ -14,7 +14,7 @@
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
 				<button
-					v-if="mayArchiveTag"
+					v-if="mayUpdateTag"
 					type="submit"
 					class="update-tag-btn btn btn-primary">
 					update tag
@@ -91,6 +91,8 @@ const tag = ref<DeserializedTagDocument>(
 const managementInfo = computed<TagManagementInfo>(
 	() => makeManagementInfo(userProfile, tag.value.data)
 )
+const mayUpdateTag = computed<boolean>(() => managementInfo.value.mayUpdateTag)
+const nameFieldStatus = ref<FieldStatus>(mayUpdateTag.value ? "enabled" : "disabled")
 const mayArchiveTag = computed<boolean>(() => managementInfo.value.mayArchiveTag)
 const mayRestoreTag = computed<boolean>(() => managementInfo.value.mayRestoreTag)
 
