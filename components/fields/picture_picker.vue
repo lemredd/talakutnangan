@@ -11,7 +11,7 @@
 				:id="inputId"
 				type="file"
 				name="data[attributes][fileContents]"
-				:accept="determineFilesToAccept"
+				:accept="filesToAccept"
 				class="input-pic"
 				@change="submitImage"/>
 		</form>
@@ -25,6 +25,8 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from "vue"
+
 import convertForParameter from "$/string/convert_for_parameter"
 
 const props = defineProps<{
@@ -37,11 +39,9 @@ const emit = defineEmits<{
 
 const inputId = `input-${convertForParameter(props.resourceType)}`
 
-function determineFilesToAccept() {
-	return props.resourceType === "profile_picture"
-		? "image/"
-		: "image/png"
-}
+const filesToAccept = computed<string>(
+	() => props.resourceType === "profile_picture" ? "image/*" : "image/png"
+)
 
 function submitImage(event: Event) {
 	const target = event.target as HTMLInputElement
