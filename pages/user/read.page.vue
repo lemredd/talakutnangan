@@ -76,7 +76,6 @@
 	</form>
 
 	<form
-		v-if="mayUpdateUser"
 		class="user-data-form"
 		@submit.prevent="updateDepartment">
 		<h1 class="user-data-form-header">
