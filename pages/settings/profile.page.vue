@@ -19,54 +19,58 @@
 		</div>
 
 		<div class="pictures">
-			<PicturePicker
-				resource-type="profile_picture"
-				:disabled="mayEditProfile"
-				@submit-file="submitProfilePicture">
-				<div class="content">
-					<div class="picture-picker-header">
-						<h3>
-							Profile Picture
-						</h3>
+			<Suspensible :is-loaded="isProfilePictureLoaded">
+				<PicturePicker
+					resource-type="profile_picture"
+					:disabled="mayEditProfile"
+					@submit-file="submitProfilePicture">
+					<div class="content">
+						<div class="picture-picker-header">
+							<h3>
+								Profile Picture
+							</h3>
+						</div>
+
+						<label
+							for="input-profile-picture"
+							class="upload-btn input-profile-picture">
+							<span class="material-icons">add_circle</span>
+							<small class="upload-replace">
+								upload or replace image
+							</small>
+						</label>
 					</div>
 
-					<label
-						for="input-profile-picture"
-						class="input-profile-picture">
-						<span class="material-icons">add_circle</span>
-						<small class="upload-replace">
-							upload or replace image
-						</small>
-					</label>
-				</div>
+					<ProfilePicture class="profile-picker-sm"/>
+				</PicturePicker>
+			</Suspensible>
 
-				<ProfilePicture class="profile-picker-sm"/>
-			</PicturePicker>
+			<Suspensible :is-loaded="isSignatureLoaded">
+				<PicturePicker
+					v-if="!isUnReachableEmployee"
+					resource-type="signature"
+					:disabled="mayEditProfile"
+					@submit-file="submitSignature">
+					<div class="content">
+						<div class="picture-picker-header">
+							<h3>
+								Signature
+							</h3>
+						</div>
 
-			<PicturePicker
-				v-if="!isUnReachableEmployee"
-				resource-type="signature"
-				:disabled="mayEditProfile"
-				@submit-file="submitSignature">
-				<div class="content">
-					<div class="picture-picker-header">
-						<h3>
-							Signature
-						</h3>
+						<label
+							for="input-signature"
+							class="upload-btn input-signature">
+							<span class="material-icons">add_circle</span>
+							<small class="upload-replace signatures">
+								upload or replace image
+							</small>
+						</label>
 					</div>
 
-					<label
-						for="input-signature"
-						class="input-signature">
-						<span class="material-icons">add_circle</span>
-						<small class="upload-replace signatures">
-							upload or replace image
-						</small>
-					</label>
-				</div>
-
-				<Signature class="signature-picker-sm"/>
-			</PicturePicker>
+					<Signature class="signature-picker-sm"/>
+				</PicturePicker>
+			</Suspensible>
 		</div>
 
 		<div class="dark-mode-toggle">
@@ -151,11 +155,15 @@
 		@apply flex flex items-center;
 	}
 
-	.upload-replace{
-		@apply text-center ml-1;
+	.upload-btn {
+		cursor: pointer;
 
-		&.signatures{
-			@apply underline;
+		.upload-replace{
+			@apply text-center ml-1;
+
+			&:hover {
+				@apply underline;
+			}
 		}
 	}
 
@@ -217,6 +225,7 @@ import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
 
 import Signature from "@/helpers/signature.vue"
+import Suspensible from "@/helpers/suspensible.vue"
 import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/helpers/profile_picture.vue"
@@ -258,12 +267,14 @@ if (pageContext.pageProps.parsedUnitError) {
 	receivedErrors.value = [ pageContext.pageProps.parsedUnitError.detail ]
 }
 
+const isProfilePictureLoaded = ref(true)
 const submitMessage = "Please submit the changes."
-function submitProfilePicture(formData: FormData) {
-	const profilePictureFetcher = new ProfilePictureFetcher()
+async function submitProfilePicture(formData: FormData) {
+	isProfilePictureLoaded.value = false
 
+	const profilePictureFetcher = new ProfilePictureFetcher()
 	if (userProfileData.value.profilePicture) {
-		profilePictureFetcher.updateFile(
+		await profilePictureFetcher.updateFile(
 			userProfileData.value.profilePicture.data.id,
 			formData
 		)
@@ -276,7 +287,7 @@ function submitProfilePicture(formData: FormData) {
 		})
 		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 	} else {
-		profilePictureFetcher.createFile(
+		await profilePictureFetcher.createFile(
 			userProfileData.value.id,
 			formData
 		)
@@ -285,11 +296,16 @@ function submitProfilePicture(formData: FormData) {
 		})
 		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 	}
-}
-function submitSignature(formData: FormData) {
-	const signatureFetcher = new SignatureFetcher()
 
-	signatureFetcher.renew(
+	isProfilePictureLoaded.value = true
+}
+
+const isSignatureLoaded = ref(true)
+async function submitSignature(formData: FormData) {
+	isSignatureLoaded.value = false
+
+	const signatureFetcher = new SignatureFetcher()
+	await signatureFetcher.renew(
 		userProfileData.value.id,
 		formData
 	)
@@ -301,6 +317,8 @@ function submitSignature(formData: FormData) {
 		)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+
+	isSignatureLoaded.value = true
 }
 
 function updateUser() {
