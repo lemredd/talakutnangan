@@ -8,13 +8,14 @@
 	<form @submit.prevent="updateTag">
 		<TextualField
 			v-model="tag.data.name"
+			v-model:status="nameFieldStatus"
 			label="Tag name"
 			class="name border-solid"
 			type="text"/>
 		<div class="controls">
 			<Suspensible :is-loaded="hasSubmittedTag">
 				<button
-					v-if="mayArchiveTag"
+					v-if="mayUpdateTag"
 					type="submit"
 					class="update-tag-btn btn btn-primary">
 					update tag
@@ -50,6 +51,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from "vue"
 
+import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { TagManagementInfo } from "$@/types/independent"
 import type { DeserializedTagDocument } from "$/types/documents/tag"
@@ -83,6 +85,8 @@ const tag = ref<DeserializedTagDocument>(
 const managementInfo = computed<TagManagementInfo>(
 	() => makeManagementInfo(userProfile, tag.value.data)
 )
+const mayUpdateTag = computed<boolean>(() => managementInfo.value.mayUpdateTag)
+const nameFieldStatus = ref<FieldStatus>(mayUpdateTag.value ? "enabled" : "disabled")
 const mayArchiveTag = computed<boolean>(() => managementInfo.value.mayArchiveTag)
 const mayRestoreTag = computed<boolean>(() => managementInfo.value.mayRestoreTag)
 
@@ -122,6 +126,7 @@ async function archiveTag() {
 	await fetcher.archive([ tag.value.data.id ])
 	.then(() => {
 		if (!tag.value.data.deletedAt) tag.value.data.deletedAt = new Date()
+		nameFieldStatus.value = "disabled"
 
 		fillSuccessMessages(
 			receivedErrors,
@@ -137,6 +142,7 @@ async function restoreTag() {
 	await fetcher.restore([ tag.value.data.id ])
 	.then(() => {
 		if (tag.value.data.deletedAt) tag.value.data.deletedAt = null
+		nameFieldStatus.value = "enabled"
 
 		fillSuccessMessages(
 			receivedErrors,

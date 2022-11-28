@@ -27,9 +27,10 @@
 		<Suspensible :is-loaded="hasSubmittedDepartment">
 			<div class="controls">
 				<button
-					v-if="mayArchiveDepartment"
+					v-if="mayUpdateDepartment"
 					type="submit"
-					class="update-department-btn btn btn-primary">
+					class="update-department-btn btn btn-primary"
+					@click="openConfirmation">
 					update department
 				</button>
 				<button
@@ -116,7 +117,10 @@ const mayArchiveDepartment = computed<boolean>(() => managementInfo.value.mayArc
 )
 const mayRestoreDepartment = computed<boolean>(() => managementInfo.value.mayRestoreDepartment)
 
-const fieldStatus = ref<FieldStatus>(mayUpdateDepartment.value ? "enabled" : "disabled")
+const fieldStatus = computed<FieldStatus>(() => {
+	const status = mayUpdateDepartment.value ? "enabled" : "disabled"
+	return status
+})
 const mayNotChangeAdmission = computed<boolean>(() => !mayUpdateDepartment.value)
 const MAY_ADMIT = "1"
 const mayAdmitRaw = computed<string[]>({
@@ -149,7 +153,7 @@ async function updateDepartment() {
 		"acronym": department.value.data.acronym,
 		"deletedAt": null,
 		"fullName": department.value.data.fullName,
-		"mayAdmit": department.value.data.mayAdmi
+		"mayAdmit": department.value.data.mayAdmit
 	}, {
 		"extraUpdateDocumentProps": {
 			"meta": {

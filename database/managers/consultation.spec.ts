@@ -111,6 +111,23 @@ describe("Database Manager: Consultation read operations", () => {
 		expect(canStart).toBeFalsy()
 	})
 
+	it("cannot start because same consultation was finished", async() => {
+		const manager = new Manager()
+		const user = await new UserFactory().insertOne()
+		const attachedRole = await new AttachedRoleFactory()
+		.user(() => Promise.resolve(user))
+		.insertOne()
+		const model = await new Factory()
+		.consultantInfo(() => Promise.resolve(attachedRole))
+		.startedAt(() => new Date())
+		.finishedAt(() => new Date())
+		.insertOne()
+
+		const canStart = await manager.canStart(model.id)
+
+		expect(canStart).toBeFalsy()
+	})
+
 	it("can sum time by students", async() => {
 		const manager = new Manager()
 		const consultant = await new UserFactory().insertOne()

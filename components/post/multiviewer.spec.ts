@@ -71,36 +71,12 @@ describe("Component: post/multiviewer", () => {
 
 		const unusedWrapper = shallowMount<any>(Component, {
 			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							"userProfile": {
-								"data": {
-									"department": {
-										"data": departments.data[0]
-									},
-									"id": userID,
-									"roles": {
-										"data": [
-											{
-												"id": "1",
-												"postFlags": permissionGroup.generateFlags(
-													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
-												)
-											}
-										]
-									},
-									"type": "user"
-								}
-							}
-						}
-					}
-				},
 				"stubs": {
 					"Suspensible": false
 				}
 			},
 			"props": {
+				"currentDepartment": departments.data[0].id,
 				departments,
 				modelValue,
 				semesters
@@ -211,36 +187,12 @@ describe("Component: post/multiviewer", () => {
 
 		const wrapper = shallowMount<any>(Component, {
 			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							"userProfile": {
-								"data": {
-									"department": {
-										"data": departments.data[0]
-									},
-									"id": userID,
-									"roles": {
-										"data": [
-											{
-												"id": "1",
-												"postFlags": permissionGroup.generateFlags(
-													...UPDATE_PERSONAL_POST_ON_OWN_DEPARTMENT
-												)
-											}
-										]
-									},
-									"type": "user"
-								}
-							}
-						}
-					}
-				},
 				"stubs": {
 					"Suspensible": false
 				}
 			},
 			"props": {
+				"currentDepartment": departments.data[0].id,
 				departments,
 				modelValue,
 				semesters
@@ -294,7 +246,7 @@ describe("Component: post/multiviewer", () => {
 
 		const castFetch = fetch as jest.Mock<any, any>
 		expect(castFetch).toHaveBeenCalledTimes(3)
-		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest] ] = castFetch.mock.calls
+		const [ [ firstRequest ], [ secondRequest ], [ thirdRequest ] ] = castFetch.mock.calls
 		expect(firstRequest).toHaveProperty("method", "GET")
 		expect(firstRequest).toHaveProperty("url", specializePath(COUNT_COMMENTS, {
 			"query": stringifyQuery({

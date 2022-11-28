@@ -49,7 +49,7 @@ describe("Page: department/read", () => {
 		expect(mayAdmit).toEqual(department.data.mayAdmit)
 	})
 
-	it.only("can update department information", async() => {
+	it("can update department information", async() => {
 		fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 		const department = {

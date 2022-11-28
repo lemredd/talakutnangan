@@ -16,6 +16,7 @@ import IDParameterValidator from "!/validations/id_parameter"
 import PageMiddleware from "!/bases/controller-likes/page_middleware"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
 import ChatMessageActivityManager from "%/managers/chat_message_activity"
+import isConsultationOngoing from "!/validators/manager/is_consultation_ongoing"
 import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
 export default class extends PageMiddleware {
@@ -28,7 +29,9 @@ export default class extends PageMiddleware {
 	get validations(): Validation[] {
 		return [
 			new IDParameterValidator([
-				[ "id", Manager, exists ]
+				[ "id", Manager, exists, {
+					"pipes": [ isConsultationOngoing ]
+				} ]
 			])
 		]
 	}
