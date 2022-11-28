@@ -33,7 +33,7 @@ export default async function(
 				value: string
 			) => {
 				const subject = `The consultation with an ID of "${value}"`
-				const predicate = "cannot be started because there are other started ones."
+				const predicate = "does not exist."
 
 				return `${subject} ${predicate}`
 			}
