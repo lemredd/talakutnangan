@@ -14,13 +14,13 @@
 					v-if="mustShowFinishButton"
 					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">
-					finish consultation
+					Finish consultation
 				</a>
 				<a
 					v-if="mustShowCancelButton"
 					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">
-					cancel consultation
+					Cancel consultation
 				</a>
 				<a
 					v-if="!isCurrentUserConsultant
