@@ -180,6 +180,7 @@ function removeFile() {
 }
 
 function emitClose() {
+	removeFile()
 	emit("close")
 }
 
