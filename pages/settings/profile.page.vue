@@ -12,7 +12,6 @@
 				<TextualField
 					v-model="userProfileData.name"
 					v-model:status="nameFieldStatus"
-					:disabled="mayEditProfile"
 					label="Display Name"
 					class="display-name-field"
 					type="text"/>
@@ -205,7 +204,9 @@ import { BODY_CLASSES } from "$@/constants/provided_keys"
 import settingsTabInfos from "@/settings/settings_tab_infos"
 import { user as permissionGroup } from "$/permissions/permission_list"
 import {
-	UPDATE_OWN_DATA
+	UPDATE_OWN_DATA,
+	UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+	UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 } from "$/permissions/user_combinations"
 
 import UserFetcher from "$@/fetchers/user"
@@ -327,10 +328,12 @@ function toggleDarkMode() {
 
 const mayEditProfile = computed<boolean>(() => {
 	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_OWN_DATA
+		UPDATE_OWN_DATA,
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
 	])
 
-	return !isPermitted
+	return isPermitted
 })
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
