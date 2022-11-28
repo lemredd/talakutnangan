@@ -1,7 +1,7 @@
 import type { Request, Response, BaseManagerClass } from "!/types/dependent"
 
 import Policy from "!/bases/policy"
-import Manager from "%/managers/role"
+import Manager from "%/managers/user"
 import OkResponseInfo from "!/response_infos/ok"
 import BoundController from "!/controllers/bound"
 
