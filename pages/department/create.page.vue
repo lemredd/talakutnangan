@@ -83,9 +83,9 @@ const capitalAcronym = computed<string>({
 function createDepartment() {
 	fetcher.create({
 		"acronym": acronym.value,
+		"deletedAt": null,
 		"fullName": fullName.value,
-		"mayAdmit": mayAdmit.value,
-		"deletedAt": null
+		"mayAdmit": mayAdmit.value
 	})
 	.then(() => {
 		fullName.value = ""

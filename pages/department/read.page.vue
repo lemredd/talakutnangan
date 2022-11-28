@@ -59,7 +59,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/btn.scss";
 
 	.controls{
 		@apply flex justify-between;
@@ -149,8 +149,7 @@ async function updateDepartment() {
 		"acronym": department.value.data.acronym,
 		"deletedAt": null,
 		"fullName": department.value.data.fullName,
-		"mayAdmit": department.value.data.mayAdmit,
-		"deletedAt": null
+		"mayAdmit": department.value.data.mayAdmi
 	}, {
 		"extraUpdateDocumentProps": {
 			"meta": {
