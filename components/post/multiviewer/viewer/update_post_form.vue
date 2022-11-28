@@ -358,10 +358,8 @@ async function updateTags() {
 		fillSuccessMessages(
 			receivedErrors,
 			successMessages,
-			"Successfully update tags."
+			"Successfully update tags. Please submit the changes."
 		)
-
-		updatePostState()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(
 		responseWithErrors,
