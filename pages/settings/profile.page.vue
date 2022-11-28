@@ -238,7 +238,18 @@ const userProfileData = ref(userProfile.data)
 const isReachableEmployee = computed(() => userProfileData.value.kind === "reachable_employee")
 const isUnReachableEmployee = computed(() => userProfileData.value.kind === "unreachable_employee")
 
-const nameFieldStatus = ref<FieldStatus>("locked")
+
+const mayEditProfile = computed<boolean>(() => {
+	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
+		UPDATE_OWN_DATA,
+		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
+		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
+	])
+
+	return isPermitted
+})
+
+const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "locked" : "disabled")
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
@@ -325,16 +336,6 @@ function toggleDarkMode() {
 
 	userProfileData.value.prefersDark = !userProfileData.value.prefersDark
 }
-
-const mayEditProfile = computed<boolean>(() => {
-	const isPermitted = permissionGroup.hasOneRoleAllowed(userProfile.data.roles.data, [
-		UPDATE_OWN_DATA,
-		UPDATE_ANYONE_ON_OWN_DEPARTMENT,
-		UPDATE_ANYONE_ON_ALL_DEPARTMENTS
-	])
-
-	return isPermitted
-})
 
 const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
 </script>
