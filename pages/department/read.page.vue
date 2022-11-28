@@ -27,7 +27,7 @@
 		<Suspensible :is-loaded="hasSubmittedDepartment">
 			<div class="controls">
 				<button
-					v-if="mayArchiveDepartment"
+					v-if="mayUpdateDepartment"
 					type="submit"
 					class="update-department-btn btn btn-primary">
 					update department

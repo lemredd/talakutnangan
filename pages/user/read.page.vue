@@ -40,6 +40,7 @@
 		</div>
 		<Suspensible :is-loaded="hasSubmittedUser">
 			<button
+				v-if="mayUpdateUser"
 				type="submit"
 				class="update-user-btn btn btn-primary"
 				@click="updateUser">
@@ -65,6 +66,7 @@
 		</div>
 		<Suspensible :is-loaded="hasSubmittedRole">
 			<button
+				v-if="mayUpdateUser"
 				type="submit"
 				class="update-roles-btn btn btn-primary"
 				@click="updateRoles">
@@ -90,6 +92,7 @@
 		</div>
 		<Suspensible :is-loaded="hasSubmittedDepartment">
 			<button
+				v-if="mayUpdateUser"
 				type="submit"
 				class="update-department-btn btn btn-primary"
 				@click="updateDepartment">

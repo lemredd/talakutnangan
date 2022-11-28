@@ -27,7 +27,7 @@
 		<Suspensible :is-loaded="hasSubmittedSemester">
 			<div class="controls">
 				<button
-					v-if="mayArchiveSemester"
+					v-if="mayUpdateSemester"
 					type="submit"
 					class="update-user-btn btn btn-primary">
 					update semester
