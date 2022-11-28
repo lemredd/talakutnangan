@@ -68,11 +68,12 @@
 import { ref, inject, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
+import type { OptionInfo } from "$@/types/component"
 import type { SemesterManagementInfo } from "$@/types/independent"
 import type { DeserializedSemesterDocument } from "$/types/documents/semester"
 
 import Fetcher from "$@/fetchers/semester"
-import type { OptionInfo } from "$@/types/component"
+import makeOptionInfo from "$@/helpers/make_option_info"
 import makeManagementInfo from "@/semester/make_management_info"
 import RequestEnvironment from "$/singletons/request_environment"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
@@ -86,7 +87,6 @@ import TextualField from "@/fields/non-sensitive_text_capital.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
 
-import makeOptionInfo from "$@/helpers/make_option_info"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized", "semester">
 const { pageProps } = pageContext
