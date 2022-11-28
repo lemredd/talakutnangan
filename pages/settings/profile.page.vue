@@ -305,6 +305,7 @@ function submitSignature(formData: FormData) {
 
 function updateUser() {
 	new UserFetcher().update(userProfileData.value.id, {
+		"deletedAt": null,
 		"email": userProfileData.value.email,
 		"emailVerifiedAt": null,
 		"kind": userProfileData.value.kind,
