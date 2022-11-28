@@ -11,21 +11,19 @@
 					View consultation form
 				</a>
 				<a
-					v-if="mustShowFinishButton"
+					v-if="mayShowFinishButton"
 					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">
-					finish consultation
+					Finish consultation
 				</a>
 				<a
-					v-if="mustShowCancelButton"
+					v-if="mayShowCancelButton"
 					class="additional-control show-action-taken-overlay-btn"
 					@click="showActionTakenOverlay">
-					cancel consultation
+					Cancel consultation
 				</a>
 				<a
-					v-if="!isCurrentUserConsultant
-						&& !isConsultationFinishedOrCancelled
-						&& !isOngoing"
+					v-if="mayShowRescheduleButton"
 					class="additional-control show-rescheduling-overlay-btn"
 					@click="showReschedulerOverlay">
 					Reschedule consultation
@@ -69,8 +67,9 @@ import Dropdown from "@/helpers/minor_dropdown.vue"
 const props = defineProps<{
 	consultationId: string,
 	isCurrentUserConsultant: boolean,
-	isConsultationFinishedOrCancelled: boolean,
 	isHeaderControlDropdownShown: boolean,
+	willSoonStart: boolean
+	willStart: boolean
 	isOngoing: boolean
 }>()
 
@@ -98,10 +97,15 @@ function toggleHeaderControlDropdownShown() {
 	emit("toggleHeaderControlDropdownShown")
 }
 
-const mustShowFinishButton
-= props.isCurrentUserConsultant && !props.isConsultationFinishedOrCancelled
-const mustShowCancelButton
-= !props.isCurrentUserConsultant && !props.isConsultationFinishedOrCancelled
+const mayShowFinishButton = computed<boolean>(
+	() => props.isCurrentUserConsultant && props.isOngoing
+)
+const mayShowCancelButton = computed<boolean>(
+	() => !props.isCurrentUserConsultant && (props.willSoonStart || props.willStart)
+)
+const mayShowRescheduleButton = computed<boolean>(
+	() => !props.isCurrentUserConsultant && props.willSoonStart
+)
 function showActionTakenOverlay() {
 	toggleHeaderControlDropdownShown()
 	emit("showActionTakenOverlay")

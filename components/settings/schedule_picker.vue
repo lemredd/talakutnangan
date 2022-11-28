@@ -9,6 +9,7 @@
 			v-if="!isNew && !isEditing"
 			id="edit-btn"
 			class="btn btn-primary w-[max-content]"
+			:disabled="disabled"
 			@click="toggleEditing">
 			edit
 		</button>
@@ -38,6 +39,7 @@
 			v-if="isNew && !isAdding"
 			id="add-btn"
 			class="btn btn-primary w-[max-content]"
+			:disabled="disabled"
 			@click="toggleAdding">
 			Add
 		</button>
@@ -150,6 +152,7 @@ type Props = {
 	scheduleId?: string
 	isNew?: boolean
 	dayName: string
+	disabled: boolean
 	scheduleStart: number
 	scheduleEnd: number
 }

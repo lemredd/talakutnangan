@@ -4,7 +4,7 @@ import Component from "./extra_controls.vue"
 
 describe("Component: chat_window/extra_controls", () => {
 	it("should emit toggling of action taken", async() => {
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
 					"Dropdown": false,
@@ -13,10 +13,11 @@ describe("Component: chat_window/extra_controls", () => {
 			},
 			"props": {
 				"consultationId": "1",
-				"isConsultationFinishedOrCancelled": false,
 				"isCurrentUserConsultant": true,
 				"isHeaderControlDropdownShown": true,
-				"isOngoing": false
+				"isOngoing": false,
+				"willSoonStart": false,
+				"willStart": false
 			}
 		})
 
@@ -30,7 +31,7 @@ describe("Component: chat_window/extra_controls", () => {
 
 	it("should lead to printable consultation form", () => {
 		const id = "1"
-		const wrapper = shallowMount(Component, {
+		const wrapper = shallowMount<any>(Component, {
 			"global": {
 				"stubs": {
 					"Dropdown": false,
@@ -42,7 +43,10 @@ describe("Component: chat_window/extra_controls", () => {
 				"isConsultationFinishedOrCancelled": false,
 				"isCurrentUserConsultant": true,
 				"isHeaderControlDropdownShown": true,
-				"isOngoing": false
+				"isOngoing": false,
+				"willSoonStart": false,
+				"willStart": false
+
 			}
 		})
 		const printableFormLink = wrapper.find(".view-printable-form-link")

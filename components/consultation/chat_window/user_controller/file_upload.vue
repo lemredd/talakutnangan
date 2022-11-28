@@ -94,41 +94,41 @@
 <style scoped lang="scss">
 @import "@styles/btn.scss";
 
-#choose-file-btn {
-	display:none;
-	appearance: none;
-}
-
-.file-size-info {
-	@apply ml-2 text-gray-500;
-}
-
-.preview-file{
-	@apply mt-5;
-}
-
-.preview-img{
-	@apply py-5 max-w-3;
-	max-width:100%;
-	max-height:100%;
-}
-
-.preview-title{
-	@apply max-w-30 text-xs;
-}
-
-.preview-file-container {
-	@apply bg-true-gray-200 flex items-center px-3 py-2;
-
-	.preview-file-title{
-		@apply flex-1 text-xs;
+	#choose-file-btn {
+		display:none;
+		appearance: none;
 	}
-}
 
-.close{
-	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
-}
+	.preview-file {
+		@apply mt-5;
+	}
 
+	.preview-img {
+		@apply py-5 max-w-3;
+		max-width:100%;
+		max-height:100%;
+	}
+
+	.preview-title {
+		@apply max-w-30 text-xs;
+	}
+
+	.preview-file-container {
+		@apply bg-true-gray-200 flex items-center px-3 py-2;
+
+		.preview-file-title {
+			@apply flex-1 text-xs;
+		}
+	}
+
+	.close {
+		@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
+	}
+
+	.selected-file {
+		@apply ml-2;
+		@apply text-gray-700;
+	}
 </style>
 
 <script setup lang="ts">
@@ -193,6 +193,7 @@ function removeFile() {
 }
 
 function emitClose() {
+	removeFile()
 	emit("close")
 }
 

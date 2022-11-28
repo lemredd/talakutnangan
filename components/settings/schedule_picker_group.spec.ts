@@ -10,6 +10,7 @@ describe("Component: Schedule Picker Group", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				"dayName": "monday",
+				"disabled": false,
 				"schedules": [
 					{
 						"dayName": "monday",
@@ -46,6 +47,7 @@ describe("Component: Schedule Picker Group", () => {
 		const wrapper = shallowMount<any>(Component, {
 			"props": {
 				dayName,
+				"disabled": false,
 				"schedules": []
 			}
 		})

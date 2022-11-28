@@ -415,16 +415,6 @@ describe("Page: settings/profile", () => {
 
 			const darkModeBtn = wrapper.find("#dark-mode-toggle")
 
-			fetchMock.mockResponseOnce(
-				JSON.stringify({}),
-				{ "status": RequestEnvironment.status.NO_CONTENT }
-			)
-			fetchMock.mockResponseOnce(
-				JSON.stringify({
-					"data": []
-				}),
-				{ "status": RequestEnvironment.status.OK }
-			)
 			await darkModeBtn.trigger("click")
 
 			expect(wrapper.emitted()).toHaveProperty("toggleDarkMode")
