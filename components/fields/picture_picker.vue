@@ -39,9 +39,7 @@ const emit = defineEmits<{
 
 const inputId = `input-${convertForParameter(props.resourceType)}`
 
-const filesToAccept = computed<string>(
-	() => props.resourceType === "profile_picture" ? "image/*" : "image/png"
-)
+const filesToAccept = computed<string>(() => "image/*")
 
 function submitImage(event: Event) {
 	const target = event.target as HTMLInputElement
