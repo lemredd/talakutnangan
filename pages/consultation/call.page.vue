@@ -197,12 +197,12 @@ function join() {
 			"isTransmittingAudio": isTransmittingAudio.value
 		}
 	)
-	sendMessage(" joined the call")
+	sendMessage("joined the call")
 }
 function leave() {
 	leaveAndHideAdditionalButtons()
 	leaveAndRemoveLocalTracks()
-	sendMessage(" left the call")
+	sendMessage("left the call")
 }
 
 const otherParticipants = ref<RemoteTracks[]>([])
@@ -214,12 +214,12 @@ onMounted(() => {
 	initiateVideoConferenceEngine(otherParticipants as Ref<RemoteTracks[]>)
 	.then(() => {
 		isReadyForCalling.value = true
-	}).then(() => sendMessage(`${userProfile.data.name} is preparing for call`))
+	}).then(() => sendMessage("is preparing for call"))
 
 	window.addEventListener("unload", async event => {
 		event.preventDefault()
 		try {
-			await sendMessage(`${userProfile.data.name} completely exited from call`)
+			await sendMessage("completely exited from call")
 			window.close()
 		} finally {
 			window.close()
