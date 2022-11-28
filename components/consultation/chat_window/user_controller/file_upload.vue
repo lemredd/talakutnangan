@@ -37,8 +37,9 @@
 						name="meta[fileContents]"
 						:accept="accept"
 						@change="extractFile"/>
-					CHOOSE FILE
+					CHOOSE {{ subKind }}
 				</label>
+				<small class="file-size-info">The max {{ subKind }} size limit is 20MB.</small>
 			</form>
 
 			<div v-if="hasExtracted" class="preview-file">
@@ -120,6 +121,9 @@
 	@apply flex-1 text-xs;
 }
 
+.file-size-info {
+	@apply ml-2 text-gray-500;
+}
 .close{
 	@apply p-2 bg-black bg-opacity-60 text-white absolute right-0 top-5;
 }
@@ -167,6 +171,19 @@ const ownChatMessageActivity = inject(
 	CHAT_MESSAGE_ACTIVITY
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
+function extractFile(event: Event) {
+	receivedErrors.value = []
+	const target = event.target as HTMLInputElement
+	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
+
+	fileSize.value = file?.size as number|null
+	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
+
+	previewFile.value = file ? URL.createObjectURL(file) : ""
+	filename.value = rawFilename
+}
+
 function removeFile() {
 	filename.value = null
 	previewFile.value = null
@@ -197,18 +214,5 @@ async function sendFile() {
 	.catch(response => extractAllErrorDetails(response, receivedErrors))
 
 	isSending.value = false
-}
-
-function extractFile(event: Event) {
-	receivedErrors.value = []
-	const target = event.target as HTMLInputElement
-	const file = target.files?.item(0)
-	const rawFilename = file?.name as ""
-
-	fileSize.value = file?.size as number|null
-	if (isFileSizeGreaterThanLimit.value) receivedErrors.value.push("Maximum file size is 20mb")
-
-	previewFile.value = file ? URL.createObjectURL(file) : ""
-	filename.value = rawFilename
 }
 </script>
