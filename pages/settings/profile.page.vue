@@ -33,7 +33,7 @@
 
 						<label
 							for="input-profile-picture"
-							class="input-profile-picture">
+							class="upload-btn input-profile-picture">
 							<span class="material-icons">add_circle</span>
 							<small class="upload-replace">
 								upload or replace image
@@ -60,7 +60,7 @@
 
 						<label
 							for="input-signature"
-							class="input-signature">
+							class="upload-btn input-signature">
 							<span class="material-icons">add_circle</span>
 							<small class="upload-replace signatures">
 								upload or replace image
@@ -155,11 +155,15 @@
 		@apply flex flex items-center;
 	}
 
-	.upload-replace{
-		@apply text-center ml-1;
+	.upload-btn {
+		cursor: pointer;
 
-		&.signatures{
-			@apply underline;
+		.upload-replace{
+			@apply text-center ml-1;
+
+			&:hover {
+				@apply underline;
+			}
 		}
 	}
 
@@ -264,12 +268,12 @@ if (pageContext.pageProps.parsedUnitError) {
 }
 
 const isProfilePictureLoaded = ref(true)
-function submitProfilePicture(formData: FormData) {
+async function submitProfilePicture(formData: FormData) {
 	isProfilePictureLoaded.value = false
 	const profilePictureFetcher = new ProfilePictureFetcher()
 
 	if (userProfileData.value.profilePicture) {
-		profilePictureFetcher.updateFile(
+		await profilePictureFetcher.updateFile(
 			userProfileData.value.profilePicture.data.id,
 			formData
 		)
@@ -282,7 +286,7 @@ function submitProfilePicture(formData: FormData) {
 		})
 		.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
 	} else {
-		profilePictureFetcher.createFile(
+		await profilePictureFetcher.createFile(
 			userProfileData.value.id,
 			formData
 		)
@@ -296,11 +300,11 @@ function submitProfilePicture(formData: FormData) {
 }
 
 const isSignatureLoaded = ref(true)
-function submitSignature(formData: FormData) {
+async function submitSignature(formData: FormData) {
 	isSignatureLoaded.value = false
 
 	const signatureFetcher = new SignatureFetcher()
-	signatureFetcher.renew(
+	await signatureFetcher.renew(
 		userProfileData.value.id,
 		formData
 	)
