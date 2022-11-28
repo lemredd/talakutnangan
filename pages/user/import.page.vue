@@ -25,9 +25,11 @@
 					id="choose-file-btn"
 					type="file"
 					name="meta[importedCSV]"
-					accept="text/csv"/>
+					accept="text/csv"
+					@change="updateSelectedName"/>
 				CHOOSE FILE
 			</label>
+			<span v-if="hasSelected" class="selected-file">{{ CSVFilename }}</span>
 		</div>
 		<div>
 			<input
@@ -83,31 +85,36 @@
 	</form>
 </template>
 
-<style scoped lang = "scss">
-@import "@styles/btn.scss";
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
 
-.tabs-header {
-	@apply mb-8 border-b;
-}
-
-.kind{
-	@apply flex-col;
-	margin-bottom: 3em;
-}
-
-#choose-file-btn {
-	display:none;
-	appearance: none;
-}
-#import-btn{
-	margin-top:1em;
-}
-
-@media (min-width: 640px) {
-	.kind{
-		@apply flex flex-row;
+	.tabs-header {
+		@apply mb-8 border-b;
 	}
-}
+
+	.selected-file {
+		@apply ml-2;
+		@apply text-gray-700;
+	}
+
+	.kind{
+		@apply flex-col;
+		margin-bottom: 3em;
+	}
+
+	#choose-file-btn {
+		display:none;
+		appearance: none;
+	}
+	#import-btn{
+		margin-top:1em;
+	}
+
+	@media (min-width: 640px) {
+		.kind{
+			@apply flex flex-row;
+		}
+	}
 </style>
 
 <script setup lang="ts">
@@ -171,6 +178,17 @@ function importData(event: Event) {
 		)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))
+}
+
+const CSVFilename = ref<string>("")
+const hasSelected = computed<boolean>(() => CSVFilename.value !== "")
+
+function updateSelectedName(event: Event): void {
+	const target = event.target as HTMLInputElement
+	const file = target.files?.item(0)
+	const rawFilename = file?.name as ""
+
+	CSVFilename.value = rawFilename
 }
 
 function isStudentResource(resource: DeserializedUserResource)
