@@ -14,21 +14,21 @@
 
 		<section class="details">
 			<h2>
-				Consultant Name:
+				Consultor Name:
 			</h2>
 			<h6 id="consultant" class="consultant">
 				{{ consultant.data.name }}
 			</h6>
 
 			<h2>
-				Consultant Role:
+				Consultor Role:
 			</h2>
 			<h6 id="consultant-role" class="consultant-role">
 				{{ consultantRole.data.name }}
 			</h6>
 
 			<h2>
-				Consulter/s:
+				Consultee(s):
 			</h2>
 			<ul id="consulters" class="consulters">
 				<li
