@@ -37,7 +37,7 @@
 							{{ totalNumberOfConsulters }}
 						</div>
 					</div>
-					<small> Number of consulters interacted </small>
+					<small> Number of consultees interacted </small>
 				</section>
 				<section>
 					<div>
@@ -63,7 +63,7 @@
 							</p>
 						</div>
 					</div>
-					<small>Weekly average per consulter</small>
+					<small>Weekly average per consultee</small>
 				</section>
 				<section>
 					<div

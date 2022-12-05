@@ -31,6 +31,7 @@ describe("Page: /department", () => {
 			"data": {
 				"type": "department",
 				"attributes": {
+					"deletedAt": null,
 					"fullName": "Hello World",
 					"acronym": "HW",
 					"mayAdmit": true
