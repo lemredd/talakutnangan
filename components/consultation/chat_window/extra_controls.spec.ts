@@ -15,7 +15,7 @@ describe("Component: chat_window/extra_controls", () => {
 				"consultationId": "1",
 				"isCurrentUserConsultant": true,
 				"isHeaderControlDropdownShown": true,
-				"isOngoing": false,
+				"isOngoing": true,
 				"willSoonStart": false,
 				"willStart": false
 			}

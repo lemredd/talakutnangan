@@ -227,7 +227,6 @@ describe("Page: settings/profile", () => {
 			})
 
 			const displayNameField = wrapper.find(".input-container")
-			const editNameButton = displayNameField.find(".edit-button")
 			const displayNameInput = displayNameField.find("input")
 
 			fetchMock.mockResponseOnce(
@@ -241,10 +240,7 @@ describe("Page: settings/profile", () => {
 				{ "status": RequestEnvironment.status.OK }
 			)
 
-			await editNameButton.trigger("click")
 			await displayNameInput.setValue("Something")
-			const saveNameButton = displayNameField.find(".save-button")
-			await saveNameButton.trigger("click")
 
 			const displayNameInputElement = displayNameInput.getRootNodes()[0] as HTMLInputElement
 			expect(displayNameInputElement.value).toEqual("Something")

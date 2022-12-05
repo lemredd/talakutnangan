@@ -16,7 +16,7 @@
 				v-model="selectedConsultants"
 				:current-user="userProfileData"
 				class="consultant required"
-				header="Consultant"
+				header="Consultor"
 				:maximum-participants="MAX_CONSULTANTS"
 				text-field-label="Type the employee to add"
 				kind="reachable_employee"/>
@@ -33,7 +33,7 @@
 				v-model="selectedConsulters"
 				:current-user="userProfileData"
 				class="consulters"
-				header="Consulters"
+				header="Consultee(s)"
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
 				kind="student"/>

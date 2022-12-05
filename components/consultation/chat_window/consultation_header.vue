@@ -257,7 +257,7 @@ const actionTakenHeader = isCurrentUserConsultant.value
 	? "Mark this consultation as finished?"
 	: "Cancel this consultation?"
 const actionTakenDescription = isCurrentUserConsultant.value
-	? "action taken to solve the consulter(s) concern."
+	? "action taken to solve the consultee(s) concern."
 	: "reason for cancellation."
 
 const {
