@@ -122,4 +122,72 @@ describe("Component: consultation/list/item", () => {
 		const lengthOfUniqueUsers = wrapper.props("chatMessageActivities").data.length - 1
 		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
 	})
+
+	it("should display profile pictures even if inactive", () => {
+		const wrapper = shallowMount<any>(Component, {
+			"global": {
+				"provide": {
+					[BODY_CLASSES]: [],
+					"pageContext": {
+						"pageProps": {
+							"userProfile": {
+								"data": {
+									"kind": "student"
+								}
+							}
+						},
+						"urlPathname": "/consultation/read/2"
+					}
+				}
+			},
+			"props": {
+				"chatMessageActivities": {
+					"data": [
+						{
+							"consultation": { "data": { "id": "1" } },
+							"id": "1",
+							"user": {
+								"data": {
+									"id": "1",
+									"name": "participant A"
+								}
+							}
+						},
+						{
+							"consultation": { "data": { "id": "1" } },
+							"id": "2",
+							"user": {
+								"data": {
+									"id": "2",
+									"name": "participant B"
+								}
+							}
+						},
+						{
+							"consultation": { "data": { "id": "1" } },
+							"id": "3",
+							"user": {
+								"data": {
+									"id": "2",
+									"name": "participant"
+								}
+							}
+						}
+					]
+				},
+				"consultation": {
+					"id": "1",
+					"reason": "Reason A"
+				},
+				"previewMessages": {
+					"data": []
+				}
+			}
+		})
+
+		const profilePictures = wrapper.findAllComponents(".profile-picture-item")
+		const lengthOfUniqueUsers = wrapper.props("chatMessageActivities").data.length - 1
+		expect(profilePictures).toHaveLength(lengthOfUniqueUsers)
+		profilePictures.forEach(p => console.log(p.html(), "\n\n\n"))
+	})
 })
