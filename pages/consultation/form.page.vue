@@ -16,26 +16,26 @@
 			<h2>
 				Consultor Name:
 			</h2>
-			<h6 id="consultant" class="consultant">
-				{{ consultant.data.name }}
+			<h6 id="consultor" class="consultor">
+				{{ consultor.data.name }}
 			</h6>
 
 			<h2>
 				Consultor Role:
 			</h2>
-			<h6 id="consultant-role" class="consultant-role">
-				{{ consultantRole.data.name }}
+			<h6 id="consultor-role" class="consultor-role">
+				{{ consultorRole.data.name }}
 			</h6>
 
 			<h2>
 				Consultee(s):
 			</h2>
-			<ul id="consulters" class="consulters">
+			<ul id="consultees" class="consultees">
 				<li
-					v-for="consulter in consulters"
-					:key="consulter.id"
-					class="consulter">
-					{{ consulter.user?.data.name }}
+					v-for="consultee in consultees"
+					:key="consultee.id"
+					class="consultee">
+					{{ consultee.user?.data.name }}
 				</li>
 			</ul>
 
@@ -105,19 +105,19 @@
 			v-if="consultation.data.finishedAt"
 			class="signatures mt-15">
 			<h1>Signatures</h1>
-			<div class="consultant-signature">
-				<h2>Consultant</h2>
-				<img :src="consultant.data.signature?.data.fileContents"/>
-				<small>{{ consultant.data.name }}</small>
+			<div class="consultor-signature">
+				<h2>Consultor</h2>
+				<img :src="consultor.data.signature?.data.fileContents"/>
+				<small>{{ consultor.data.name }}</small>
 			</div>
 			<div
-				class="consulter-signature mt-5">
+				class="consultee-signature mt-5">
 				<h2>Consulter/s</h2>
 				<div
-					v-for="consulter in consulters"
-					:key="consulter.id">
-					<img :src="consulter.user?.data.signature?.data.fileContents"/>
-					<small>{{ consulter.user?.data.name }}</small>
+					v-for="consultee in consultees"
+					:key="consultee.id">
+					<img :src="consultee.user?.data.signature?.data.fileContents"/>
+					<small>{{ consultee.user?.data.name }}</small>
 				</div>
 			</div>
 		</section>
@@ -276,23 +276,23 @@ const actionTaken = computed<string>(() => {
 		return consultation.value.data.actionTaken
 	}
 
-	return "Please wait for the consultant to provide the action taken."
+	return "Please wait for the consultor to provide the action taken."
 })
-const consultant = computed<DeserializedUserDocument<"signature">>(() => {
-	const user = consultation.value.data.consultant
+const consultor = computed<DeserializedUserDocument<"signature">>(() => {
+	const user = consultation.value.data.consultor
 	return user as DeserializedUserDocument<"signature">
 })
-const consultantRole = computed<DeserializedRoleDocument>(() => {
-	const role = consultation.value.data.consultantRole
+const consultorRole = computed<DeserializedRoleDocument>(() => {
+	const role = consultation.value.data.consultorRole
 	return role as DeserializedRoleDocument
 })
 
 const consultationChatMessageActivities
 = chatMessageActivitiesData as DeserializedChatMessageActivityResource[]
-const consulters = consultationChatMessageActivities.filter(
+const consultees = consultationChatMessageActivities.filter(
 	(
 		activity: DeserializedChatMessageActivityResource
-	) => activity.user?.data.id !== consultant.value.data.id
+	) => activity.user?.data.id !== consultor.value.data.id
 )
 
 const chatMessages = ref<DeserializedChatMessageListDocument<"user">>(
