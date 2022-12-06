@@ -1,9 +1,11 @@
 <template>
 	<div class="scheduler">
 		<div
-			v-if="hasConsultantSchedules"
-			class="consultant-has-schedules">
-			<p>Please select the day and time from the consultant's available schedules</p>
+			v-if="hasConsultorSchedules"
+			class="consultor-has-schedules">
+			<p class="date-and-time-selection-message">
+				Please select the day and time from the consultor's available schedules
+			</p>
 			<div class="required">
 				<SelectableOptionsField
 					v-model="chosenDate"
@@ -30,19 +32,36 @@
 					label="Time:"
 					:options="selectableTimes"/>
 				<p v-else class="selected-day-is-past">
-					This consultant's schedule for this day has ended.
+					This consultor's schedule for this day has ended.
 				</p>
 			</div>
 		</div>
-		<div v-else class="consultant-no-schedules">
+		<div v-else class="consultor-no-schedules">
 			<p class="consultation-no-schedules">
-				This consultant has not set any schedules yet.
+				This consultor has not set any schedules yet.
 			</p>
 		</div>
 	</div>
 </template>
 
-<style></style>
+<style scoped lang="scss">
+
+	.date-and-time-selection-message {
+		@apply mb-4;
+	}
+
+	.selected-day-is-past{
+		@apply text-red-500;
+	}
+
+	.selectable-day, .selectable-time {
+		@apply mb-4;
+	}
+
+	.consultation-no-schedules{
+		@apply text-red-500;
+	}
+</style>
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue"
@@ -65,7 +84,7 @@ import convertToTimeString from "@/helpers/schedule_picker/convert_time_object_t
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 
 type DefinedProps = {
-	consultantSchedules: DeserializedEmployeeScheduleListDocument
+	consultorSchedules: DeserializedEmployeeScheduleListDocument
 	chosenDay: string
 	chosenTime: string
 }
@@ -84,23 +103,23 @@ const reorderedDays = computed<Day[]>(
 	() => [ ...DayValues.slice(dayIndex.value), ...DayValues.slice(0, dayIndex.value) ]
 )
 
-const hasConsultantSchedules = computed<boolean>(() => props.consultantSchedules.data.length > 0)
+const hasConsultorSchedules = computed<boolean>(() => props.consultorSchedules.data.length > 0)
 const selectableDays = computed<OptionInfo[]>(() => {
-	const { consultantSchedules } = props
+	const { consultorSchedules } = props
 	const dates: Date[] = []
-	if (hasConsultantSchedules.value) {
-		const consultantDays = makeUnique(
-			consultantSchedules.data.map(schedule => schedule.dayName)
+	if (hasConsultorSchedules.value) {
+		const consultorDays = makeUnique(
+			consultorSchedules.data.map(schedule => schedule.dayName)
 		)
 
-		consultantDays.sort((element1, element2) => {
+		consultorDays.sort((element1, element2) => {
 			const element1Index = reorderedDays.value.indexOf(element1 as Day)
 			const element2Index = reorderedDays.value.indexOf(element2 as Day)
 
 			return Math.sign(element1Index - element2Index)
 		})
 
-		for (const day of consultantDays) {
+		for (const day of consultorDays) {
 			const dateCounter = new Date()
 			dateCounter.setHours(0)
 			dateCounter.setMinutes(0)
@@ -159,16 +178,16 @@ const chosenTime = computed({
 	set(newValue: string) { emit("update:chosenTime", newValue) }
 })
 const selectableTimes = computed(() => {
-	const { consultantSchedules } = props
+	const { consultorSchedules } = props
 	const availableTimes: OptionInfo[] = []
 	const dayToDerive = isCustomDate.value && customDate.value
 		? customDate.value
 		: chosenDate.value
 
-	if (hasConsultantSchedules.value && dayToDerive) {
+	if (hasConsultorSchedules.value && dayToDerive) {
 		const convertedDate = new Date(dayToDerive)
 		const day = DayValues[convertedDate.getDay()]
-		const schedulesByDay = consultantSchedules.data.filter(
+		const schedulesByDay = consultorSchedules.data.filter(
 			schedule => schedule.dayName === day
 		)
 		schedulesByDay.forEach(schedule => {

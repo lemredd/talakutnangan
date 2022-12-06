@@ -44,7 +44,6 @@
 	@import "@styles/mixins.scss";
 	@import "@styles/btn.scss";
 
-
 	.left {
 		@apply dark:bg-dark-700 bg-white;
 		position: fixed;
