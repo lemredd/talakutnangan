@@ -1,8 +1,8 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RoleQueryParameters } from "$/types/query"
-import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"
+import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 
 import User from "%/models/user"
 import Model from "%/models/role"
@@ -12,7 +12,6 @@ import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 
 import Condition from "%/helpers/condition"
-import trimRight from "$/string/trim_right"
 import makeUnique from "$/array/make_unique"
 import segregateIDsExistentially from "%/helpers/segregate_IDs_existentially"
 
