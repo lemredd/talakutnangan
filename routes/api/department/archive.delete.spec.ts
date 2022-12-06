@@ -1,6 +1,7 @@
 import ErrorBag from "$!/errors/error_bag"
 import MockRequester from "~/setups/mock_requester"
-import DepartmentFactory from "~/factories/department"
+import Factory from "~/factories/department"
+import UserFactory from "~/factories/user"
 
 import Controller from "./archive.delete"
 
@@ -14,13 +15,13 @@ describe("Controller: DELETE /api/department", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await new DepartmentFactory().insertOne()
+		const department = await new Factory().insertOne()
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "department",
-						"id": String(department.id)
+						"id": String(department.id),
+						"type": "department"
 					}
 				]
 			}
@@ -31,19 +32,44 @@ describe("Controller: DELETE /api/department", () => {
 		requester.expectSuccess()
 	})
 
+	it("cannot accept department with user", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const department = await new Factory().insertOne()
+		await new UserFactory().in(department).insertOne()
+		requester.customizeRequest({
+			"body": {
+				"data": [
+					{
+						"id": String(department.id),
+						"type": "department"
+					}
+				]
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		const body = requester.expectFailure(ErrorBag).toJSON()
+		expect(body).toHaveLength(1)
+		expect(body).toHaveProperty("0.source.pointer", "data.0.id")
+	})
+
 	it("cannot accept already-archived resources", async() => {
 		const controller = new Controller()
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await new DepartmentFactory().insertOne()
+		const department = await new Factory().insertOne()
 		await department.destroy({ "force": false })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "department",
-						"id": String(department.id)
+						"id": String(department.id),
+						"type": "department"
 					}
 				]
 			}
@@ -61,14 +87,14 @@ describe("Controller: DELETE /api/department", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const department = await new DepartmentFactory().insertOne()
+		const department = await new Factory().insertOne()
 		await department.destroy({ "force": true })
 		requester.customizeRequest({
 			"body": {
 				"data": [
 					{
-						"type": "department",
-						"id": String(department.id)
+						"id": String(department.id),
+						"type": "department"
 					}
 				]
 			}
