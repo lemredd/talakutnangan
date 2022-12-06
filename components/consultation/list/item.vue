@@ -52,6 +52,9 @@
 				@apply bg-opacity-10;
 				background-color: $color-primary;
 
+				&.canceled {
+					@apply bg-red-700 bg-opacity-100;
+				}
 				&.scheduled {
 					@apply bg-dark-50 bg-opacity-100;
 				}
