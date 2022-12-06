@@ -35,7 +35,7 @@
 			v-for="consultation in consultations.data"
 			:key="consultation.id"
 			:consultation="consultation"
-			:chat-message-activities="chatMessageActivities"
+			:chat-message-activities="determineActivities(consultation)"
 			:preview-messages="previewMessages"/>
 	</div>
 </template>
@@ -95,6 +95,7 @@ import type {
 } from "$/types/documents/chat_message_activity"
 import type {
 	ConsultationRelationshipNames,
+	DeserializedConsultationResource,
 	DeserializedConsultationListDocument
 } from "$/types/documents/consultation"
 
@@ -114,6 +115,12 @@ import MinorDropdown from "@/helpers/minor_dropdown.vue"
 
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
+const props = defineProps<{
+	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
+	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
+	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
+}>()
+
 const {
 	"state": isDropdownShown
 } = makeSwitch(false)
@@ -132,9 +139,16 @@ const { "pageProps": { userProfile } } = pageContext
 const isUserAStudent = computed(() => userProfile.data.kind === "student")
 const isUserAReachableEmployee = computed(() => userProfile.data.kind === "reachable_employee")
 
-defineProps<{
-	chatMessageActivities: DeserializedChatMessageActivityListDocument<"user"|"consultation">,
-	consultations: DeserializedConsultationListDocument<ConsultationRelationshipNames>,
-	previewMessages: DeserializedChatMessageListDocument<"user"|"consultation">
-}>()
+function determineActivities(consultation: DeserializedConsultationResource) {
+	const activities = props.chatMessageActivities.data.filter(
+		activity => activity.consultation.data.id === consultation.id
+	)
+
+	return {
+		"data": activities,
+		"meta": {
+			"count": activities.length
+		}
+	}
+}
 </script>
