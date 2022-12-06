@@ -51,9 +51,12 @@ export default class extends BaseManager<
 					AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
 						AttachedRole.tableName, {
 							"attributes": [ AttachedRole.sequelize.fn("count", "*") ],
-							"where": new Condition().equal(
-								"roleID",
-								AttachedRole.sequelize.col(`${Model.tableName}.id`)
+							"where": new Condition().and(
+								new Condition().equal(
+									"roleID",
+									AttachedRole.sequelize.col(`${Model.tableName}.id`)
+								),
+								new Condition().is("deletedAt", null)
 							)
 							.build()
 						}
