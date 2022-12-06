@@ -119,13 +119,6 @@ const consultationID = computed<string>(() => props.consultation.id)
 const readURL = computed<string>(() => specializePath(READ_CONSULTATION, {
 	"id": consultationID.value
 }))
-const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
-	const activities = props.chatMessageActivities.data.filter(
-		activity => activity.consultation.data.id === props.consultation.id
-	)
-
-	return activities
-})
 const {
 	isCanceled,
 	isDone,
@@ -153,7 +146,7 @@ const statusBadgeClasses = computed(() => ({
 }))
 
 const profilePictures = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
-	const activities = makeUniqueBy(ownedActivities.value, "user.data.id")
+	const activities = makeUniqueBy(props.chatMessageActivities.data, "user.data.id")
 
 	return activities
 })
