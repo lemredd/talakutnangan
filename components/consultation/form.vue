@@ -114,6 +114,13 @@
 	font-size: 16px;
 	}
 
+	@screen md {
+		.overlay .content {
+			margin: 10% 0 !important;
+			max-height: 100vh !important;
+		}
+	}
+
 	.selectable {
 		@apply flex justify-between;
 
