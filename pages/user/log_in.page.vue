@@ -23,7 +23,7 @@ body {
 			position: fixed;
 			inset: 0;
 
-			background-image: url("/api/user/log_in");
+			background-image: url("/api/user/log_in/image");
 			background-repeat: no-repeat;
 			background-size: cover;
 		}
