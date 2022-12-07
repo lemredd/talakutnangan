@@ -15,6 +15,7 @@ import { ARCHIVE_AND_RESTORE } from "$/permissions/department_combinations"
 import { department as permissionGroup } from "$/permissions/permission_list"
 
 import exists from "!/validators/manager/exists"
+import doNotHaveAnyOwnedUser from "!/validators/manager/do_not_have_any_owned_user"
 import makeResourceIdentifierListDocumentRules
 	from "!/rule_sets/make_resource_identifier_list_document"
 
@@ -35,7 +36,11 @@ export default class extends JSONController {
 	}
 
 	makeBodyRuleGenerator(unusedRequest: Request): FieldRules {
-		return makeResourceIdentifierListDocumentRules("department", exists, DepartmentManager)
+		return makeResourceIdentifierListDocumentRules("department", exists, DepartmentManager, {
+			"postIDRules": {
+				"pipes": [ doNotHaveAnyOwnedUser ]
+			}
+		})
 	}
 
 	async handle(request: Request, unusedResponse: Response): Promise<NoContentResponseInfo> {
