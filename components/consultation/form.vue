@@ -117,10 +117,14 @@
 		}
 	}
 
-	.consultor-fields .selectable {
+	.has-selected-consultor .selectable {
 		@apply flex-col;
 
-		select { @apply m-0; }
+		select {
+			@screen md {
+				@apply ml-4 mt-2;
+			}
+		}
 	}
 
 	.selectable {
@@ -128,6 +132,7 @@
 
 		select {
 			@apply p-2;
+			@apply rounded-md;
 			@apply dark:bg-transparent dark:text-white;
 
 			option {
@@ -179,7 +184,8 @@
 
 		&.has-selected-consultor {
 			@screen md {
-				@apply flex-row;
+				@apply mb-0;
+				@apply flex-row justify-start;
 			}
 		}
 	}
