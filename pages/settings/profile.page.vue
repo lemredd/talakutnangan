@@ -204,6 +204,7 @@
 <script setup lang="ts">
 import { ref, Ref, inject, computed } from "vue"
 
+import { DayValues } from "$/types/database"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
@@ -223,6 +224,8 @@ import SignatureFetcher from "$@/fetchers/signature"
 import BodyCSSClasses from "$@/external/body_css_classes"
 import ProfilePictureFetcher from "$@/fetchers/profile_picture"
 import RequestEnvironment from "$/singletons/request_environment"
+import fillSuccessMessages from "$@/helpers/fill_success_messages"
+import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 
 import Signature from "@/helpers/signature.vue"
 import Suspensible from "@/helpers/suspensible.vue"
@@ -230,13 +233,9 @@ import PicturePicker from "@/fields/picture_picker.vue"
 import TextualField from "@/fields/non-sensitive_text.vue"
 import ProfilePicture from "@/helpers/profile_picture.vue"
 import SettingsHeader from "@/helpers/tabbed_page_header.vue"
-import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
-import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
-
-import { DayValues } from "$/types/database"
 
 const bodyClasses = inject(BODY_CLASSES) as Ref<BodyCSSClasses>
 const pageContext = inject("pageContext") as PageContext<"deserialized">
