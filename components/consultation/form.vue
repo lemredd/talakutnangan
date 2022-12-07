@@ -12,7 +12,7 @@
 			<p class="status-messages warning">
 				* Names are case-sensitive.
 			</p>
-			<div class="consultor">
+			<div class="consultor-fields" :class="consultorFieldsClasses">
 				<SearchableChip
 					v-model="selectedConsultors"
 					:current-user="userProfileData"
@@ -117,6 +117,12 @@
 		}
 	}
 
+	.consultor-fields .selectable {
+		@apply flex-col;
+
+		select { @apply m-0; }
+	}
+
 	.selectable {
 		@apply flex md:items-center;
 
@@ -167,9 +173,19 @@
 		}
 	}
 
+	.consultor-fields {
+		@apply mb-4;
+		@apply flex flex-col;
+
+		&.has-selected-consultor {
+			@screen md {
+				@apply flex-row;
+			}
+		}
+	}
+
 	.schedule-selector {
 		@apply mt-5;
-
 	}
 </style>
 
@@ -241,6 +257,9 @@ const consultorRoles = computed(() => {
 	return makeOptionInfo(roleIDs, labels) as OptionInfo[]
 })
 const addressConsultorAs = ref("")
+const consultorFieldsClasses = computed(() => ({
+	"has-selected-consultor": selectedConsultors.value.length
+}))
 
 const MAX_CONSULTERS = 5
 const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
