@@ -19,7 +19,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().insertOne()
+		const model = await new Factory().finishedAt(() => null).insertOne()
 		const newModel = await new Factory()
 		.scheduledStartAt(() => new Date(currentTime - 1))
 		.startedAt(() => new Date(currentTime))
@@ -69,7 +69,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		const { validations } = controller
 		const bodyValidation = validations[BODY_VALIDATION_INDEX]
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
-		const model = await new Factory().startedAt(() => null).insertOne()
+		const model = await new Factory().startedAt(() => null).finishedAt(() => null).insertOne()
 		await new EmployeeScheduleFactory()
 		.user(() => Promise.resolve(model.consultant as User))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay() - 1])
@@ -82,7 +82,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 					"attributes": {
 						"actionTaken": model.actionTaken,
 						"attachedRoleID": model.attachedRoleID,
-						"finishedAt": model.finishedAt,
+						"finishedAt": new Date(),
 						"reason": model.reason,
 						"scheduledStartAt": model.scheduledStartAt.toJSON(),
 						"startedAt": model.startedAt
@@ -103,6 +103,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 				}
 			}
 		})
+
 
 		await requester.runMiddleware(bodyValidationFunction)
 
