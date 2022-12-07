@@ -118,11 +118,15 @@
 	}
 
 	.has-selected-consultor .selectable {
-		@apply flex-col;
+		@apply flex-col items-start;
+
+		@screen md {
+			@apply ml-4;
+		}
 
 		select {
 			@screen md {
-				@apply ml-4 mt-2;
+				@apply ml-0 mt-2;
 			}
 		}
 	}
