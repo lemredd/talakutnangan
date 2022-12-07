@@ -44,8 +44,15 @@
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+	.selectable-day.selectable, .selectable-time.selectable {
+		select {
+			@apply m-0;
+		}
+	}
+</style>
 
+<style scoped lang="scss">
 	.date-and-time-selection-message {
 		@apply mb-4;
 	}
@@ -56,6 +63,7 @@
 
 	.selectable-day, .selectable-time {
 		@apply mb-4;
+		@apply flex flex-col items-start;
 	}
 
 	.consultation-no-schedules{
