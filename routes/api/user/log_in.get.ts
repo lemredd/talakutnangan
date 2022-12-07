@@ -22,6 +22,7 @@ export default class extends Controller {
 		const link = specializePath(DRIVE_LINK, {
 			"id": IMAGE_FILE_IDS[0]
 		})
+
 		return [
 			...super.middlewares,
 			new ForceRedirector(link)

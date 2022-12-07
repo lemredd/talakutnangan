@@ -11,8 +11,8 @@ import PatchResetPassword from "!%/api/user/reset_password(id).patch"
 
 export const controllers = [
 	GetList,
-	GetRead,
 	GetLogIn,
+	GetRead,
 	PostLogIn,
 	PostImport,
 	PostLogOut,
