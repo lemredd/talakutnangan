@@ -32,9 +32,9 @@
 			</div>
 
 			<SearchableChip
-				v-model="selectedConsulters"
+				v-model="selectedConsultees"
 				:current-user="userProfileData"
-				class="consulters"
+				class="consultees"
 				header="Consultee(s)"
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
@@ -268,7 +268,7 @@ const consultorFieldsClasses = computed(() => ({
 }))
 
 const MAX_CONSULTERS = 5
-const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
+const selectedConsultees = ref<DeserializedUserResource<"studentDetail">[]>([
 	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
 ])
 
@@ -363,8 +363,8 @@ function addConsultation(): void {
 				},
 				"participants": {
 					"data": [
-						...selectedConsulters.value.map(consulter => ({
-							"id": consulter.id,
+						...selectedConsultees.value.map(consultee => ({
+							"id": consultee.id,
 							"type": "user"
 						})),
 						consultor
