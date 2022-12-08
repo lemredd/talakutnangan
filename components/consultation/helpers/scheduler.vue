@@ -6,34 +6,40 @@
 			<p class="date-and-time-selection-message">
 				Please select the day and time from the consultor's available schedules
 			</p>
-			<div class="required">
-				<SelectableOptionsField
-					v-model="chosenDate"
-					class="selectable-day"
-					label="Day:"
-					:options="selectableDays"/>
-				<div v-if="isCustomDate" class="selectable date-picker">
-					<span>Select a date:</span>
-					<input
-						v-model="customDate"
-						:min="castToCompatibleDate(dateToday)"
-						:max="castToCompatibleDate(dateInNextMonth)"
-						type="date"/>
-				</div>
-			</div>
 
 			<div
-				v-if="chosenDay"
-				:class="selectableTimes.length ? 'required' : ''">
-				<SelectableOptionsField
-					v-if="selectableTimes.length"
-					v-model="chosenTime"
-					class="selectable-time"
-					label="Time:"
-					:options="selectableTimes"/>
-				<p v-else class="selected-day-is-past">
-					This consultor's schedule for this day has ended.
-				</p>
+				class="date-and-time-fields"
+				:class="dateAndTimeFieldsClasses">
+				<div class="date-field required">
+					<SelectableOptionsField
+						v-model="chosenDate"
+						class="selectable-day"
+						label="Day:"
+						:options="selectableDays"/>
+					<div v-if="isCustomDate" class="selectable date-picker">
+						<span>Select a date:</span>
+						<input
+							v-model="customDate"
+							:min="castToCompatibleDate(dateToday)"
+							:max="castToCompatibleDate(dateInNextMonth)"
+							type="date"/>
+					</div>
+				</div>
+
+				<div
+					v-if="chosenDay"
+					class="time-field"
+					:class="selectableTimes.length ? 'required' : ''">
+					<SelectableOptionsField
+						v-if="selectableTimes.length"
+						v-model="chosenTime"
+						class="selectable-time"
+						label="Time:"
+						:options="selectableTimes"/>
+					<p v-else class="selected-day-is-past">
+						This consultor's schedule for this day has ended.
+					</p>
+				</div>
 			</div>
 		</div>
 		<div v-else class="consultor-no-schedules">
@@ -53,21 +59,41 @@
 </style>
 
 <style scoped lang="scss">
-	.date-and-time-selection-message {
-		@apply mb-4;
-	}
 
-	.selected-day-is-past{
-		@apply text-red-500;
-	}
+	.consultor-has-schedules {
 
-	.selectable-day, .selectable-time {
-		@apply mb-4;
-		@apply flex flex-col items-start;
-	}
+		.date-and-time-selection-message {
+			@apply mb-4;
+		}
 
-	.consultation-no-schedules{
-		@apply text-red-500;
+		.date-and-time-fields {
+			@apply flex flex-col;
+
+			.selected-day-is-past {
+				@apply text-red-500;
+			}
+
+			.selectable-day, .selectable-time {
+				@apply mb-4;
+				@apply flex flex-col items-start;
+			}
+
+			@screen md {
+				@apply flex-row;
+
+				&.has-selected-day::after {
+					content: "hello";
+				}
+
+				.time-field {
+					@apply ml-4;
+				}
+			}
+		}
+
+		.consultation-no-schedules{
+			@apply text-red-500;
+		}
 	}
 </style>
 
@@ -228,4 +254,8 @@ const selectableTimes = computed(() => {
 
 	return availableTimes
 })
+
+const dateAndTimeFieldsClasses = computed(() => ({
+	"has-selected-day": Boolean(chosenDate.value)
+}))
 </script>

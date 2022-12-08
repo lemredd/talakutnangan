@@ -56,6 +56,7 @@
 				label="What are the other reasons(s)?"
 				type="text"/>
 			<Scheduler
+				v-if="selectedConsultors.length"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultor-schedules="consultorSchedules"
@@ -101,13 +102,13 @@
 	@import "@styles/variables.scss";
 
 	.btn {
-	border: none;
-	color: white;
-	padding: 10px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
+		border: none;
+		color: white;
+		padding: 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
 	}
 
 	@screen md {
@@ -150,11 +151,11 @@
 	.required{
 		&::before {
 			@apply text-xs;
+			@apply mb-2;
 
 			display:block;
 			color: $color-primary;
 			content:"* required";
-
 		}
 	}
 </style>
