@@ -1,9 +1,10 @@
 import type { Pipe } from "$/types/database"
 import type { Serializable } from "$/types/general"
 import type { RoleQueryParameters } from "$/types/query"
-import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 import type { RoleAttributes, RoleResourceIdentifier } from "$/types/documents/role"
+import type { Model as BaseModel, ModelCtor, FindAndCountOptions } from "%/types/dependent"
 
+import User from "%/models/user"
 import Model from "%/models/role"
 import BaseManager from "%/managers/base"
 import DatabaseError from "$!/errors/database"
@@ -11,7 +12,6 @@ import AttachedRole from "%/models/attached_role"
 import RoleTransformer from "%/transformers/role"
 
 import Condition from "%/helpers/condition"
-import trimRight from "$/string/trim_right"
 import makeUnique from "$/array/make_unique"
 import segregateIDsExistentially from "%/helpers/segregate_IDs_existentially"
 
@@ -41,45 +41,23 @@ export default class extends BaseManager<
 
 	async countUsers(roleIDs: number[]): Promise<Serializable> {
 		try {
-			if (!Model.sequelize || !AttachedRole.sequelize) {
-				throw new DatabaseError("Developer may have forgot to register the models.")
-			}
-
-			const subselectQuery = Model.sequelize.literal(`(${
-				trimRight(
-					// @ts-ignore
-					AttachedRole.sequelize.getQueryInterface().queryGenerator.selectQuery(
-						AttachedRole.tableName, {
-							"attributes": [ AttachedRole.sequelize.fn("count", "*") ],
-							"where": new Condition().equal(
-								"roleID",
-								AttachedRole.sequelize.col(`${Model.tableName}.id`)
-							)
-							.build()
-						}
-					),
-					";"
-				)
-			})`)
-			const [ counts ] = await Model.sequelize.query(
-				// @ts-ignore
-				Model.sequelize.getQueryInterface().queryGenerator.selectQuery(
-					Model.tableName, {
-						"attributes": [ "id", [ subselectQuery, "count" ] ],
-						"where": new Condition().or(
-							...roleIDs.map(roleID => new Condition().equal("id", roleID))
-						)
-						.build()
+			const models = await Model.findAll({
+				"include": [
+					{
+						"model": User,
+						"required": false
 					}
-				)
-			) as unknown as [ { id: number, count: string }[] ]
+				],
+				"where": new Condition().isIncludedIn("id", roleIDs).build(),
+				...this.transaction.transactionObject
+			})
 
 			const identifierObjects: RoleResourceIdentifier<"read">[] = []
-			counts.forEach(countInfo => {
+			models.forEach(model => {
 				identifierObjects.push({
-					"id": String(countInfo.id),
+					"id": String(model.id),
 					"meta": {
-						"userCount": Number(countInfo.count)
+						"userCount": Number(model.users.length)
 					},
 					"type": "role"
 				})

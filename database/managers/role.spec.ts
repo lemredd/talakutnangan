@@ -99,6 +99,20 @@ describe("Database Manager: Role read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
+	it("cannot count single archived model", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		await new UserFactory().attach(model).insertOne()
+		const lastUser = await new UserFactory().attach(model).insertOne()
+		await lastUser.destroy({ "force": false })
+
+		const counts = await manager.countUsers([ model.id ])
+
+		expect(counts).toHaveProperty("data.0.id", String(model.id))
+		expect(counts).toHaveProperty("data.0.type", "role")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 1)
+	})
+
 	it("can count single model with zero users", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()

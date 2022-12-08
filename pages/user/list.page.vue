@@ -163,7 +163,7 @@ const selectedIDs = ref<string[]>([])
 
 const sortNames = computed<OptionInfo[]>(() => [
 	{
-		"label": "Ascending by Name",
+		"label": "Ascending by name",
 		"value": "name"
 	},
 	{
