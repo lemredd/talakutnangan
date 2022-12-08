@@ -143,16 +143,19 @@
 		}
 	}
 
-	.content{
-		@apply flex flex-col sm:flex-row sm:justify-between my-7;
+	.content {
+		@apply flex flex-col sm:flex-row my-7;
 	}
 
 	h3 {
 		@apply text-xl;
 	}
 
-	.input-profile-picture,.input-signature{
-		@apply flex flex items-center;
+	.input-profile-picture {
+		@apply flex flex items-center ml-4;
+	}
+	.input-signature {
+		@apply flex flex items-center ml-4 sm: ml-14;
 	}
 
 	.upload-btn {
