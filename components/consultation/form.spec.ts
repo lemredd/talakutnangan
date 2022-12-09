@@ -240,6 +240,39 @@ describe("Component: consultation/form", () => {
 			const otherReasonField = wrapper.findComponent(".other-reason")
 			expect(otherReasonField.exists()).toBeTruthy()
 		})
+
+		it("should fill date and time if consultation is urgent", async() => {
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"id": "1",
+										"type": "user"
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"Overlay": false,
+						"SearchableChip": false
+					}
+				},
+				"props": {
+					"isShown": true
+				}
+			})
+			const isUrgentCheckbox = wrapper.find(".is-urgent-checkbox")
+			const castWrapper = wrapper.vm as any
+
+			await isUrgentCheckbox.setValue(true)
+
+			expect(castWrapper.chosenDay).toBeTruthy()
+			expect(castWrapper.chosenTime).toBeTruthy()
+		})
 	})
 
 	describe("Form submission", () => {
