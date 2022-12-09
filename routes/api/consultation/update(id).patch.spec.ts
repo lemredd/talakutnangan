@@ -72,7 +72,7 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
 		const model = await new Factory().startedAt(() => null).finishedAt(() => null).insertOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(model.consultant as User))
+		.user(() => Promise.resolve(model.consultor as User))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay() - 1])
 		.scheduleStart(() => convertTimeToMinutes("00:00"))
 		.scheduleEnd(() => convertTimeToMinutes("23:57"))
@@ -90,9 +90,9 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 					},
 					"id": String(model.id),
 					"relationships": {
-						"consultant": {
+						"consultor": {
 							"data": {
-								"id": String(model.consultant?.id),
+								"id": String(model.consultor?.id),
 								"type": "user"
 							}
 						}

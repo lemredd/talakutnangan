@@ -81,7 +81,7 @@ export default class extends JSONController {
 				"constraints": {
 					"isWithinEmployeeSchedule": {
 						"forceConfirmationPointer": "meta.mustForceStart",
-						"userIDPointer": "data.relationships.consultant.data.id"
+						"userIDPointer": "data.relationships.consultor.data.id"
 					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",

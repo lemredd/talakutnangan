@@ -128,7 +128,7 @@ export default class extends DoubleBoundJSONController {
 					},
 					"isWithinEmployeeSchedule": {
 						"forceConfirmationPointer": "meta.mustForceStart",
-						"userIDPointer": "data.relationships.consultant.data.id"
+						"userIDPointer": "data.relationships.consultor.data.id"
 					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
