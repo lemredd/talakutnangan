@@ -29,7 +29,7 @@ body {
 			background-image: $imageURL;
 			background-repeat: no-repeat;
 			background-size: cover;
-			filter: sepia(100%) saturate(200%) brightness(80%) $redTint;
+			filter: sepia(100%) saturate(300%) brightness(80%) $redTint;
 		}
 	}
 
