@@ -17,8 +17,9 @@ export default function<T>(
 ): FindOptions<T> {
 	const newState = { ...currentState }
 
-	const condition = new Condition()
 	if (constraints.filter.tagIDs !== "*") {
+		const condition = new Condition()
+
 		condition.isIncludedIn("id", constraints.filter.tagIDs)
 
 		if (isUndefined(newState.include)) {
