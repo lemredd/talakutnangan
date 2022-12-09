@@ -19,8 +19,11 @@ export default class extends Controller {
 	get validations(): Validation[] { return [] }
 
 	get middlewares(): OptionalMiddleware[] {
+		const imageLength = IMAGE_FILE_IDS.length
+		const randomIndex = Math.floor(Math.random() * imageLength)
+
 		const link = specializePath(DRIVE_LINK, {
-			"id": IMAGE_FILE_IDS[0]
+			"id": IMAGE_FILE_IDS[randomIndex]
 		})
 
 		return [
