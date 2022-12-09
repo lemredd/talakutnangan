@@ -258,7 +258,8 @@ async function retrievePosts() {
 				"end": rangeEnd.value
 			},
 			"departmentID": chosenDepartment.value === NULL_AS_STRING ? null : chosenDepartment.value,
-			"existence": existence.value as Existence
+			"existence": existence.value as Existence,
+			"tagIDs": tags.value.length === 0 ? "*" : tags.value.map(selectedTag => selectedTag.id)
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
@@ -309,7 +310,8 @@ onMounted(async() => {
 			chosenDepartment,
 			existence,
 			rangeBegin,
-			rangeEnd
+			rangeEnd,
+			tags
 		],
 		debounce(resetPostList, DEBOUNCED_WAIT_DURATION)
 	)
