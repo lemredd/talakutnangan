@@ -73,6 +73,7 @@
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultor-schedules="consultorSchedules"
+				:is-urgent="isUrgent"
 				class="schedule-selector"/>
 
 			<div class="may-not-start-right-away-msg">
@@ -274,7 +275,6 @@ const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
-const isUrgent = ref(false)
 const forceCreate = ref<boolean>(true)
 
 const MAX_CONSULTORS = 1
@@ -352,14 +352,23 @@ const scheduledStartAt = computed<string>(() => {
 	return chosenDate.toJSON()
 })
 
+const isUrgent = ref(false)
+watch(isUrgent, newValue => {
+	if (newValue) {
+		const currentDate = new Date()
+		currentDate.setHours(0, 0, 0, 0)
+		chosenDay.value = currentDate.toJSON()
+	}
+})
+
+
 const isRequiredInfoCompleted = computed(
 	() => Boolean(selectedConsultors.value.length)
 		&& Boolean(addressConsultorAs.value)
 		&& Boolean(consultorSchedules.value.data.length)
 		&& Boolean(reason.value)
-		&& Boolean(chosenTime.value)
+		&& Boolean(chosenTime.value || isUrgent.value)
 )
-
 function addConsultation(): void {
 	const consultor = {
 		"id": selectedConsultors.value[0]?.id,

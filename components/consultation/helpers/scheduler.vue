@@ -15,7 +15,8 @@
 						v-model="chosenDate"
 						class="selectable-day"
 						label="Day:"
-						:options="selectableDays"/>
+						:options="selectableDays"
+						:disabled="isUrgent"/>
 					<div v-if="isCustomDate" class="selectable date-picker">
 						<span>Select a date:</span>
 						<input
@@ -120,6 +121,7 @@ type DefinedProps = {
 	consultorSchedules: DeserializedEmployeeScheduleListDocument
 	chosenDay: string
 	chosenTime: string
+	isUrgent?: boolean
 }
 type CustomEvents = {
 	(event: "update:chosenDay", newChosenDay: string): void
@@ -255,7 +257,9 @@ const selectableTimes = computed(() => {
 })
 const hasSelectableTimes = computed(() => selectableTimes.value.length)
 const mustShowPastDayError = computed(
-	() => !hasSelectableTimes.value && (customDate.value || !isCustomDate.value)
+	() => !hasSelectableTimes.value
+	&& (customDate.value || !isCustomDate.value)
+	&& !props.isUrgent
 )
 
 const dateAndTimeFieldsClasses = computed(() => ({
