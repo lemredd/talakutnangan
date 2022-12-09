@@ -75,6 +75,7 @@ describe("Component: post/viewer", () => {
 			},
 			"props": {
 				"commentCount": 0,
+				"mayHaveMenu": true,
 				modelValue
 			}
 		})

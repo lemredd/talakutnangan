@@ -73,6 +73,7 @@
 					</div>
 				</div>
 				<Menu
+					v-if="mayHaveMenu"
 					:post="post"
 					@update-post="openUpdateForm"
 					@archive-post="confirmArchive"
@@ -331,7 +332,8 @@ type AssociatedPostResource = "poster"|"posterRole"|"department"|"postAttachment
 
 const props = defineProps<{
 	commentCount: number,
-	modelValue: DeserializedPostResource<AssociatedPostResource>
+	modelValue: DeserializedPostResource<AssociatedPostResource>,
+	mayHaveMenu: boolean
 }>()
 
 interface CustomEvents {
