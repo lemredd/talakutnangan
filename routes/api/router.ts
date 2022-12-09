@@ -2,7 +2,6 @@ import ControllerLike from "!/bases/controller-likes/controller"
 
 import { controllers as semesterControllers } from "!%/api/semester/router"
 import { controllers as auditTrailControllers } from "!%/api/audit_trail/router"
-import { controllers as asynchronousFileControllers } from "!%/api/asynchronous_file/router"
 
 import { controllers as tagControllers } from "!%/api/tag/router"
 import { controllers as postControllers } from "!%/api/post/router"
@@ -56,8 +55,7 @@ const forumRelatedControllers = [
 
 const miscelleneousControllers = [
 	...semesterControllers,
-	...auditTrailControllers,
-	...asynchronousFileControllers
+	...auditTrailControllers
 ]
 
 export const controllers: (new() => ControllerLike)[] = [
