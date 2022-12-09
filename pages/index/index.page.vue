@@ -9,11 +9,9 @@
 					v-model="posts.data[i]"
 					:may-have-menu="false"
 					:comment-count="posts.data[i].meta?.commentCount || 0"
-					class="viewer"
-					@archive="archivePost"
-					@restore="restorePost"/>
+					class="viewer"/>
 			</div>
-			<p class="empty-post" v-else>
+			<p v-else class="empty-post">
 				There are no posts found in the forum.
 			</p>
 		</div>
@@ -41,10 +39,7 @@
 import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
-import type {
-	DeserializedPostResource,
-	DeserializedPostListDocument
-} from "$/types/documents/post"
+import type { DeserializedPostListDocument } from "$/types/documents/post"
 
 import isUndefined from "$/type_guards/is_undefined"
 
@@ -66,12 +61,4 @@ const hasProfile = Boolean(userProfile)
 const hasDefaultPassword = hasProfile
 	&& !isUndefined(userProfile.meta.hasDefaultPassword)
 	&& userProfile.meta.hasDefaultPassword
-
-function archivePost(postToRemove: DeserializedPostResource) {
-	// To be done
-}
-
-function restorePost(postToRemove: DeserializedPostResource) {
-	// To be done
-}
 </script>
