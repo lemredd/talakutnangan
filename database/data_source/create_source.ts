@@ -22,7 +22,6 @@ import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
-import AsynchronousFile from "%/models/asynchronous_file"
 import AttachedChatFile from "%/models/attached_chat_file"
 import ChatMessageActivity from "%/models/chat_message_activity"
 
@@ -47,7 +46,6 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		ProfilePicture,
 		PostAttachment,
 		EmployeeSchedule,
-		AsynchronousFile,
 		AttachedChatFile,
 		ChatMessageActivity
 	]
