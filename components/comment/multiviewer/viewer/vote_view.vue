@@ -9,6 +9,7 @@
 					title="upvote"
 					type="checkbox"/>
 			</label>
+			{{ upvoted }}
 			<label class="material-icons down-vote" :class="{ 'active-vote': hasDownvoted }">
 				south_west
 				<input
@@ -17,7 +18,7 @@
 					title="downvote"
 					type="checkbox"/>
 			</label>
-			{{ title }}
+			{{ downvoted }}
 		</div>
 	</Suspensible>
 </template>
@@ -50,7 +51,8 @@ import type { CompleteVoteKind } from "$/types/documents/comment"
 import Suspensible from "@/helpers/suspensible.vue"
 
 const props = defineProps<{
-	title: string,
+	upvoted: string,
+	downvoted: string,
 	isLoaded: boolean,
 	modelValue: CompleteVoteKind,
 }>()
