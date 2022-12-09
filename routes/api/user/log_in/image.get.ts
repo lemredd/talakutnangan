@@ -7,7 +7,7 @@ import Validation from "!/bases/validation"
 import specializePath from "$/helpers/specialize_path"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
+import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
@@ -20,15 +20,14 @@ export default class extends Controller {
 
 	get middlewares(): OptionalMiddleware[] {
 		const imageLength = IMAGE_FILE_IDS.length
-		const randomIndex = Math.floor(Math.random() * imageLength)
-
-		const link = specializePath(DRIVE_LINK, {
-			"id": IMAGE_FILE_IDS[randomIndex]
-		})
 
 		return [
 			...super.middlewares,
-			new ForceRedirector(link)
+			new DynamicGatedRedirector(() => Promise.resolve({
+				"location": specializePath(DRIVE_LINK, {
+					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * imageLength)]
+				})
+			}))
 		]
 	}
 
