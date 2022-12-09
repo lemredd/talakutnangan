@@ -54,6 +54,19 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		})
 
 		it("should show start button if consultation will start", () => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -62,6 +75,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
@@ -95,6 +109,19 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		})
 
 		it("should show forceful start button", () => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -103,6 +130,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
@@ -117,17 +145,30 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"finishedAt": null,
 						"id": "1",
 						"reason": "",
-						"scheduledStartAt": new Date("2022-10-04 10:00"),
+						"scheduledStartAt": new Date("2022-10-10 10:00"),
 						"startedAt": null,
 						"type": "consultation"
 					}
 				}
 			})
-
-			console.log(wrapper.props(), "\n\n\n")
+			const startBtn = wrapper.find("button.start")
+			expect(startBtn.text()).toEqual("Force Start")
 		})
 
 		it("should start upon pressing the button", async() => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -136,6 +177,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
