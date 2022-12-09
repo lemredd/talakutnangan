@@ -5,6 +5,9 @@ import type {
 	IsWithinEmployeeScheduleRuleConstraints
 } from "!/types/validation"
 
+import isBoolean from "validator/lib/isBoolean"
+import toBoolean from "validator/lib/toBoolean"
+
 import Manager from "%/managers/employee_schedule"
 import isUndefined from "$/type_guards/is_undefined"
 import accessDeepPath from "$!/helpers/access_deep_path"
@@ -26,6 +29,14 @@ export default async function(
 	if (isUndefined(constraints.isWithinEmployeeSchedule)) {
 		throw makeDeveloperError(constraints.field)
 	}
+
+	const isForcedRaw = accessDeepPath(
+		constraints.source,
+		constraints.isWithinEmployeeSchedule.forceConfirmationPointer
+	)
+	const isForced = isBoolean(isForcedRaw) && toBoolean(isForcedRaw)
+
+	if (isForced) return state
 
 	const manager = new Manager(constraints.request)
 
