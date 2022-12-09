@@ -18,7 +18,6 @@ import CommentVote from "%/models/comment_vote"
 import Consultation from "%/models/consultation"
 import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
-import FoundPostWord from "%/models/found_post_word"
 import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
 import ProfanityFilter from "%/models/profanity_filter"
@@ -46,7 +45,6 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		Consultation,
 		AttachedRole,
 		StudentDetail,
-		FoundPostWord,
 		ProfilePicture,
 		PostAttachment,
 		ProfanityFilter,
