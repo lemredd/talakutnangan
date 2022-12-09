@@ -464,7 +464,7 @@ describe("Component: consultation/form", () => {
 
 			// Display consultor
 			await flushPromises()
-			const employeeChip = wrapper.find(".chip")
+			const employeeChip = wrapper.find(".consultor-fields .chip")
 			await employeeChip.trigger("click")
 			const selectableConsultorRoles = wrapper.find(".consultor-roles")
 			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
@@ -489,9 +489,8 @@ describe("Component: consultation/form", () => {
 			await consulteeSearchField.setValue(students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			await flushPromises()
-			const studentChip = wrapper.find(".chip")
+			const studentChip = wrapper.find(".consultees .chip.unselected")
 			await studentChip.trigger("click")
-			await nextTick()
 
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
