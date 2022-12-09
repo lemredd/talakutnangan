@@ -653,5 +653,141 @@ describe("Component: consultation/form", () => {
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/consultation")
 			expect(previousCalls).not.toHaveProperty("0.arguments.1")
 		})
+
+		it("should submit as urgent", async() => {
+			const roles = {
+				"data": [
+					{
+						"id": 1,
+						"name": "role"
+					}
+				]
+			}
+			const employees = {
+				"data": [
+					{
+						"attributes": {
+							"email": "",
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
+						},
+						"id": "2",
+						"type": "user"
+					}
+				]
+			}
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				],
+				"meta": {
+					"count": 1
+				}
+			}
+			fetchMock.mockResponseOnce(
+				JSON.stringify(employees),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				"",
+				{ "status": RequestEnvironment.status.NO_CONTENT }
+			)
+
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"id": "1",
+										"type": "user"
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"Overlay": false,
+						"Scheduler": false,
+						"SearchableChip": false,
+						"SelectableOptionsField": false,
+						"Suspensible": false
+
+					}
+				},
+				"props": {
+					"isShown": true
+				}
+			})
+
+			const consultorBox = wrapper.find(".consultor")
+			const consultorSearchField = consultorBox.findComponent({
+				"name": "NonSensitiveTextField"
+			})
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
+			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+
+			// Display consultor
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
+			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
+
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			const dayOptions = selectableDay.findAll("option")
+
+			// Load selectable times and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date().setHours(7)
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
+			const selectableTimeField = selectableTime.find("select")
+			await selectableTimeField.setValue(timeOptions[1].attributes("value"))
+
+			const isUrgentCheckbox = wrapper.find(".is-urgent-checkbox")
+			await isUrgentCheckbox.setValue(true)
+
+			const submitBtn = wrapper.find(".submit-btn")
+			await submitBtn.trigger("click")
+			await flushPromises()
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON.meta.mustForceStart).toBeTruthy()
+
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("0.arguments.0", "/consultation")
+			expect(previousCalls).not.toHaveProperty("0.arguments.1")
+		})
 	})
 })
