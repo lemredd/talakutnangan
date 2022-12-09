@@ -30,13 +30,15 @@ const existence = computed<string>({
 
 const existenceOptions = [
 	{
+		"label": "Exists",
 		"value": "exists"
 	},
 	{
+		"label": "Archived",
 		"value": "archived"
 	},
 	{
-		"label": "all",
+		"label": "All",
 		"value": "*"
 	}
 ] as OptionInfo[]

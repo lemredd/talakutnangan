@@ -5,11 +5,10 @@ import { DayValues } from "$/types/database"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Component from "./scheduler.vue"
-import convertDateToRangeCompatibleDate
-	from "@/helpers/convert_date_to_range_compatible_date"
+import convertToCompatibleDate from "@/helpers/convert_date_to_range_compatible_date"
 
 describe("Component: consultation/helpers/scheduler", () => {
-	it("can fill consultant schedules", async() => {
+	it("can fill consultor schedules", async() => {
 		const currentTime = new Date()
 		const currentHour = 8
 		currentTime.setHours(currentHour)
@@ -39,7 +38,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 			"props": {
 				"chosenDay": "",
 				"chosenTime": "",
-				"consultantSchedules": {
+				"consultorSchedules": {
 					"data": [],
 					"meta": {
 						"count": 0
@@ -53,7 +52,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 		castedWrapper.dateToday = currentTime
 
 		await wrapper.setProps({
-			"consultantSchedules": schedules
+			"consultorSchedules": schedules
 		})
 
 		// Customizable date
@@ -91,7 +90,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 			"props": {
 				"chosenDay": defaultDay.toJSON(),
 				"chosenTime": "",
-				"consultantSchedules": schedules
+				"consultorSchedules": schedules
 			}
 		})
 
@@ -148,7 +147,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 			"props": {
 				"chosenDay": defaultDay.toJSON(),
 				"chosenTime": "",
-				"consultantSchedules": schedules
+				"consultorSchedules": schedules
 			}
 		})
 
@@ -162,7 +161,7 @@ describe("Component: consultation/helpers/scheduler", () => {
 		await selectableDay.setValue(castedWrapper.CUSTOM_DAY)
 		await wrapper.setProps({ "chosenDay": currentTime.toJSON() })
 		const customDateField = wrapper.find(".selectable.date-picker input")
-		const chosenDate = convertDateToRangeCompatibleDate(currentTime)
+		const chosenDate = convertToCompatibleDate(currentTime)
 		await customDateField.setValue(chosenDate)
 		await wrapper.setProps({ "chosenDay": new Date(chosenDate).toJSON() })
 		const selectableTime = wrapper
