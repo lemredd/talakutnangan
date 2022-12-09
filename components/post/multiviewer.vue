@@ -15,6 +15,12 @@
 						:semesters="semesters"
 						class="filter date-picker"/>
 					<SelectableExistence v-model="existence" class="filter existence"/>
+					<SearchableChip
+						v-model="tags"
+						header="Tags"
+						:maximum-tags="MAX_TAGS"
+						text-field-label="Type the tags to search"
+						class="filter tags"/>
 				</div>
 			</div>
 		</form>
@@ -112,12 +118,13 @@ import type {
 	DeserializedPostListDocument,
 	DeserializedPostResource
 } from "$/types/documents/post"
+import type { DeserializedTagResource } from "$/types/documents/tag"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
 import type {
 	DeserializedSemesterListDocument
 } from "$/types/documents/semester"
 
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { DEFAULT_LIST_LIMIT, MAX_TAGS } from "$/constants/numerical"
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 
 import Fetcher from "$@/fetchers/post"
@@ -130,6 +137,7 @@ import adjustBeforeMidnightOfNextDay from "$/time/adjust_before_midnight_of_next
 
 import Viewer from "@/post/multiviewer/viewer.vue"
 import Suspensible from "@/helpers/suspensible.vue"
+import SearchableChip from "@/post/searchable_chip.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
 import DateRangePicker from "@/helpers/filters/date_range_picker.vue"
 import SelectableExistence from "@/fields/selectable_radio/existence.vue"
@@ -178,6 +186,8 @@ const hasNoPosts = computed<boolean>(() => posts.value.data.length === 0)
 const hasRemainingPosts = computed<boolean>(
 	() => posts.value.data.length < (posts.value.meta?.count || 0)
 )
+
+const tags = ref<DeserializedTagResource[]>([])
 
 const NULL_AS_STRING = "~"
 const departmentNames = computed<OptionInfo[]>(() => [
