@@ -67,7 +67,8 @@
 			v-if="mayVote"
 			:model-value="vote"
 			:is-loaded="hasRenewedVote"
-			:title="friendlyVoteCount"
+			:upvoted="upvoteCount"
+			:downvoted="downvoteCount"
 			@update:model-value="switchVote"/>
 	</section>
 	<UpdateCommentField
@@ -225,12 +226,24 @@ const mayVote = computed<boolean>(() => {
 	return !hasNotLoaded && mayVoteComment.value && hasRenewedVote.value
 })
 
-const voteCount = computed<number>(() => {
+const unusedVoteCount = computed<number>(() => {
 	if (isUndefined(props.modelValue.meta)) return 0
 	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
 })
 
-const friendlyVoteCount = computed<string>(() => `${voteCount.value} votes`)
+const upvoteCountFetch = computed<number>(() => {
+	if (isUndefined(props.modelValue.meta)) return 0
+	return props.modelValue.meta.upvoteCount
+})
+
+const downvoteCountFetch = computed<number>(() => {
+	if (isUndefined(props.modelValue.meta)) return 0
+	return props.modelValue.meta.downvoteCount
+})
+
+const upvoteCount = computed<string>(() => `${upvoteCountFetch.value} votes`)
+
+const downvoteCount = computed<string>(() => `${downvoteCountFetch.value} downvotes`)
 
 const comment = ref<DeserializedCommentResource<"user">>(props.modelValue)
 
