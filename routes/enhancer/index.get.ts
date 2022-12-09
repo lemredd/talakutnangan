@@ -24,8 +24,7 @@ export default class extends PageMiddleware {
 
 	async getPageProps(request: Request): Promise<Serializable> {
 		const hasProfile = Boolean(request.user)
-		// eslint-disable-next-line no-undefined
-		const posts = hasProfile ? undefined : await this.loadPosts(request as AuthenticatedRequest)
+		const posts = hasProfile ? await this.loadPosts(request as AuthenticatedRequest) : null
 
 		const pageProps = {
 			posts
