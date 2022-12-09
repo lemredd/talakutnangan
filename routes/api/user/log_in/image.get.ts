@@ -1,6 +1,6 @@
 import type { OptionalMiddleware } from "!/types/independent"
 
-import { IMAGE_FILE_IDS, DRIVE_LINK } from "!/constants/image_file_ids"
+import { IMAGE_FILE_IDS, IMAGE_FILE_COUNT, DRIVE_LINK } from "!/constants/image_file_ids"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
@@ -19,13 +19,11 @@ export default class extends Controller {
 	get validations(): Validation[] { return [] }
 
 	get middlewares(): OptionalMiddleware[] {
-		const imageLength = IMAGE_FILE_IDS.length
-
 		return [
 			...super.middlewares,
 			new DynamicGatedRedirector(() => Promise.resolve({
 				"location": specializePath(DRIVE_LINK, {
-					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * imageLength)]
+					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * IMAGE_FILE_COUNT)]
 				})
 			}))
 		]

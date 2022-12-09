@@ -690,4 +690,6 @@ export const IMAGE_FILE_IDS = [
 	"1Ys3jpDti0NLVRog8tN0loFhrwOJDvY5M"
 ]
 
+export const IMAGE_FILE_COUNT = IMAGE_FILE_IDS.length
+
 export const DRIVE_LINK = "https://drive.google.com/uc?id=:id"
