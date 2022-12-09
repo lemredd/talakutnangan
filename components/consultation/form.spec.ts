@@ -319,6 +319,14 @@ describe("Component: consultation/form", () => {
 					"isShown": true
 				}
 			})
+			const castWrapper = wrapper.vm as any
+			const currentTime = new Date()
+			const currentHour = 8
+			currentTime.setHours(currentHour)
+			currentTime.setMinutes(0)
+			currentTime.setSeconds(0)
+			currentTime.setMilliseconds(0)
+			castWrapper.dateToday = currentTime
 
 			const [ consultorSearchField ] = wrapper.findAllComponents({
 				"name": "NonSensitiveTextField"
@@ -338,17 +346,16 @@ describe("Component: consultation/form", () => {
 			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			// Load selectable days and its options
-			await flushPromises()
-			const selectableDay = wrapper.find(".selectable-day")
-			const dayOptions = selectableDay.findAll("option")
+			const scheduler = wrapper.findComponent({ "name": "Scheduler" })
+			const chosenDay = new Date().toJSON()
+			scheduler.vm.$emit("update:chosenDay", chosenDay)
+			await nextTick()
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			// Load selectable times and its options
-			await flushPromises()
-			const selectableDayField = selectableDay.find("select")
-			await selectableDayField.setValue(dayOptions[1].attributes("value"))
-			expect(submitBtn.attributes("disabled")).toBeFalsy()
+
+			scheduler.vm.$emit("update:chosenTime", String(convertTimeToMinutes("08:00")))
+			await nextTick()
+			expect(submitBtn.attributes("disabled")).toBeUndefined()
 		})
 
 		it("should submit with other consultees", async() => {
