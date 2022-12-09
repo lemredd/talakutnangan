@@ -241,6 +241,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import Overlay from "@/helpers/overlay.vue"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -356,6 +357,9 @@ const isUrgent = ref(false)
 watch(isUrgent, newValue => {
 	if (newValue) {
 		const currentDate = new Date()
+		chosenTime.value
+		= String(convertTimeToMinutes(`${currentDate.getHours()}:${currentDate.getMinutes()}`))
+
 		currentDate.setHours(0, 0, 0, 0)
 		chosenDay.value = currentDate.toJSON()
 	}
