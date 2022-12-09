@@ -53,7 +53,7 @@ describe("Component: consultation rescheduler", () => {
 				"isShown": true
 			}
 		})
-		// Load consultant schedules
+		// Load consultor schedules
 		await flushPromises()
 
 		// Change day
@@ -84,7 +84,7 @@ describe("Component: consultation rescheduler", () => {
 		const castFetch = fetch as jest.Mock<any, any>
 		expect(castFetch).toHaveBeenCalledTimes(2)
 		const [
-			[ unusedRequestForFetchingConsultantSchedule ],
+			[ unusedRequestForFetchingConsultorSchedule ],
 			[ requestForUpdatingConsultationSchedule ]
 		] = castFetch.mock.calls
 		expect(requestForUpdatingConsultationSchedule).toHaveProperty("method", "PATCH")
@@ -98,8 +98,8 @@ describe("Component: consultation rescheduler", () => {
 					"startedAt": null
 				},
 				"relationships": {
-					"consultant": {},
-					"consultantRole": {
+					"consultor": {},
+					"consultorRole": {
 						"data": {
 							"type": "role"
 						}

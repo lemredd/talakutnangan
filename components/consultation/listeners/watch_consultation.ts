@@ -5,9 +5,9 @@ import type { DeserializedConsultationResource } from "$/types/documents/consult
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 
 export default function(
-	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
+	consultation: Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>,
 	registerListeners: (
-		newConsultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+		newConsultation: DeserializedConsultationResource<"consultor"|"consultorRole">
 	) => void
 ): WatchEffect {
 	function makeFinishWatcher(): WatchEffect {

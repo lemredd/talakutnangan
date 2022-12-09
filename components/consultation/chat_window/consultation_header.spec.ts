@@ -23,7 +23,7 @@ describe("Component: chat window/consultation header", () => {
 			const dateNow = new Date("2022-10-20 10:00:00")
 			const scheduledStartAt
 			= new Date(dateNow.valueOf() - convertTimeToMilliseconds("00:00:02"))
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": "10",
 					"kind": "reachable_employee",
@@ -49,7 +49,7 @@ describe("Component: chat window/consultation header", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								"userProfile": consultant
+								"userProfile": consultor
 							}
 						}
 					}
@@ -82,7 +82,7 @@ describe("Component: chat window/consultation header", () => {
 			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 			const remainingMilliseconds = convertTimeToMilliseconds("00:05:00")
 			const remainingTime = convertMStoTimeObject(remainingMilliseconds)
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": "10",
 					"kind": "reachable_employee",
@@ -91,7 +91,7 @@ describe("Component: chat window/consultation header", () => {
 			}
 			const fakeConsultation = {
 				"actionTaken": null,
-				consultant,
+				consultor,
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
@@ -107,7 +107,7 @@ describe("Component: chat window/consultation header", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								"userProfile": consultant
+								"userProfile": consultor
 							}
 						}
 					}
@@ -175,7 +175,7 @@ describe("Component: chat window/consultation header", () => {
 			const scheduledStartAt = new Date(Date.now() - convertTimeToMilliseconds("00:00:02"))
 			const remainingMilliseconds = convertTimeToMilliseconds("00:05:00")
 			const remainingTime = convertMStoTimeObject(remainingMilliseconds)
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": "10",
 					"kind": "reachable_employee",
@@ -184,7 +184,7 @@ describe("Component: chat window/consultation header", () => {
 			}
 			const fakeConsultation = {
 				"actionTaken": null,
-				consultant,
+				consultor,
 				"finishedAt": null,
 				"id": "1",
 				"reason": "",
@@ -200,7 +200,7 @@ describe("Component: chat window/consultation header", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								"userProfile": consultant
+								"userProfile": consultor
 							}
 						}
 					}

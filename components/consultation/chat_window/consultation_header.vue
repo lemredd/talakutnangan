@@ -34,7 +34,7 @@
 				v-if="!isCanceled"
 				:consultation-id="consultation.id"
 				:is-header-control-dropdown-shown="isHeaderControlDropdownShown"
-				:is-current-user-consultant="isCurrentUserConsultant"
+				:is-current-user-consultor="isCurrentUserConsultor"
 				:will-soon-start="willSoonStart"
 				:will-start="willStart"
 				:is-ongoing="isOngoing"
@@ -138,7 +138,7 @@ interface CustomEvents {
 
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
-	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	consultation: DeserializedConsultationResource<"consultor"|"consultorRole">
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	modelValue: string,
 	isActionTakenOverlayShown: boolean,
@@ -245,18 +245,18 @@ function switchTab(event: Event) {
 	fileRepoTab.value = innerText.toLocaleLowerCase()
 }
 
-const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
+const consultation = computed<DeserializedConsultationResource<"consultor"|"consultorRole">>(
 	() => props.consultation
 )
 const path = computed<string>(() => specializePath(CONSULTATION_CALL, {
 	"id": consultation.value.id
 }))
 
-const isCurrentUserConsultant = computed(() => kind === "reachable_employee")
-const actionTakenHeader = isCurrentUserConsultant.value
+const isCurrentUserConsultor = computed(() => kind === "reachable_employee")
+const actionTakenHeader = isCurrentUserConsultor.value
 	? "Mark this consultation as finished?"
 	: "Cancel this consultation?"
-const actionTakenDescription = isCurrentUserConsultant.value
+const actionTakenDescription = isCurrentUserConsultor.value
 	? "action taken to solve the consultee(s) concern."
 	: "reason for cancellation."
 
@@ -283,7 +283,7 @@ function hideActionTakenOverlay(): void {
 	emit("hideActionTakenOverlay")
 }
 function finishOrCancelConsultation() {
-	if (isCurrentUserConsultant.value) emit("finishConsultation")
+	if (isCurrentUserConsultor.value) emit("finishConsultation")
 	else emit("cancelConsultation")
 }
 

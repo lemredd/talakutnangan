@@ -28,32 +28,32 @@ describe("PATCH /api/consultation/:id", () => {
 	it("can be accessed by authenticated user", async() => {
 		jest.useRealTimers()
 		const normalRole = await new RoleFactory().insertOne()
-		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultor, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const consultantInfo = await AttachedRole.findOne({
+		const consultorInfo = await AttachedRole.findOne({
 			"where": {
 				"roleID": normalRole.id,
-				"userID": consultant.id
+				"userID": consultor.id
 			}
 		}) as AttachedRole
-		await new SignatureFactory().user(() => Promise.resolve(consultant)).insertOne()
+		await new SignatureFactory().user(() => Promise.resolve(consultor)).insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
 		const newModel = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.makeOne()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.consultation(() => Promise.resolve(model))
 		.insertOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:58"))
@@ -74,9 +74,9 @@ describe("PATCH /api/consultation/:id", () => {
 				},
 				"id": String(model.id),
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": String(consultant.id),
+							"id": String(consultor.id),
 							"type": "user"
 						}
 					}
@@ -110,35 +110,35 @@ describe("PATCH /api/consultation/:id", () => {
 		const SCHEDULED_START_TIME = new Date()
 		const STARTED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:01"))
 		const normalRole = await new RoleFactory().insertOne()
-		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultor, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const consultantInfo = await AttachedRole.findOne({
+		const consultorInfo = await AttachedRole.findOne({
 			"where": {
 				"roleID": normalRole.id,
-				"userID": consultant.id
+				"userID": consultor.id
 			}
 		}) as AttachedRole
 		await new SignatureFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
 		const chatMessageActivityModel = await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.consultation(() => Promise.resolve(model))
 		.insertOne()
 		const newModel = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.scheduledStartAt(() => SCHEDULED_START_TIME)
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => null)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:57"))
@@ -159,9 +159,9 @@ describe("PATCH /api/consultation/:id", () => {
 				},
 				"id": String(model.id),
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": String(consultant.id),
+							"id": String(consultor.id),
 							"type": "user"
 						}
 					}
@@ -206,35 +206,35 @@ describe("PATCH /api/consultation/:id", () => {
 		const STARTED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:01"))
 		const FINISHED_TIME = new Date(Date.now() + convertTimeToMilliseconds("00:00:02"))
 		const normalRole = await new RoleFactory().insertOne()
-		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultor, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beReachableEmployee())
-		const consultantInfo = await AttachedRole.findOne({
+		const consultorInfo = await AttachedRole.findOne({
 			"where": {
 				"roleID": normalRole.id,
-				"userID": consultant.id
+				"userID": consultor.id
 			}
 		}) as AttachedRole
 		await new SignatureFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => null)
 		.insertOne()
 		const chatMessageActivityModel = await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.consultation(() => Promise.resolve(model))
 		.insertOne()
 		const newModel = await new Factory()
-		.consultantInfo(() => Promise.resolve(consultantInfo))
+		.consultorInfo(() => Promise.resolve(consultorInfo))
 		.scheduledStartAt(() => SCHEDULED_START_TIME)
 		.startedAt(() => STARTED_TIME)
 		.finishedAt(() => FINISHED_TIME)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:59"))
@@ -255,9 +255,9 @@ describe("PATCH /api/consultation/:id", () => {
 				},
 				"id": String(model.id),
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": String(consultant.id),
+							"id": String(consultor.id),
 							"type": "user"
 						}
 					}

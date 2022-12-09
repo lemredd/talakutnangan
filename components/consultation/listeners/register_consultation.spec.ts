@@ -23,7 +23,7 @@ describe("Listener: Consultation", () => {
 		const consultations = ref([ consultation ]) as any
 		listener(
 			consultation as Ref<
-				DeserializedConsultationResource<"consultant"|"consultantRole">
+				DeserializedConsultationResource<"consultor"|"consultorRole">
 			>,
 			consultations,
 			"1"
@@ -63,7 +63,7 @@ describe("Listener: Consultation", () => {
 		}) as any
 		listener(
 			consultation as Ref<
-				DeserializedConsultationResource<"consultant"|"consultantRole">
+				DeserializedConsultationResource<"consultor"|"consultorRole">
 			>,
 			consultations,
 			"1"

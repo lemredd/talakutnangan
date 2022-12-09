@@ -194,13 +194,13 @@ export default class extends BaseManager<
 		})
 
 		const consultationsToDelete = futureConsultations.filter(consultation => {
-			const { scheduledStartAt, consultantInfo } = consultation
+			const { scheduledStartAt, consultorInfo } = consultation
 			const day = DayValues[scheduledStartAt.getDay()]
 			const hours = scheduledStartAt.getHours()
 			const minutes = scheduledStartAt.getMinutes()
 			for (const [ userID, targetDay, targetStartTime, targetEndTime ] of targetTimes) {
 				if (
-					consultantInfo?.userID === userID
+					consultorInfo?.userID === userID
 					&& targetDay === day
 					&& (
 						targetStartTime.hours < hours

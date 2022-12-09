@@ -18,16 +18,16 @@ describe("DELETE /api/chat_message_activity", () => {
 		await App.create(new Route())
 	})
 
-	it("can be archived by consulter", async() => {
+	it("can be archived by consultee", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { "user": consulter, cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultee, cookie } = await App.makeAuthenticatedCookie(
 			role,
 			user => user.beStudent()
 		)
 		const model = await new Factory().insertOne()
-		await new StudentDetailFactory().user(() => Promise.resolve(consulter)).insertOne()
+		await new StudentDetailFactory().user(() => Promise.resolve(consultee)).insertOne()
 		await new SignatureFactory()
-		.user(() => Promise.resolve(consulter))
+		.user(() => Promise.resolve(consultee))
 		.insertOne()
 
 		const response = await App.request
@@ -50,21 +50,21 @@ describe("DELETE /api/chat_message_activity", () => {
 		expect(await Consultation.count()).toBe(1)
 	})
 
-	it("can be archived by the consultant", async() => {
+	it("can be archived by the consultor", async() => {
 		const role = await new RoleFactory().insertOne()
-		const { "user": consultant, cookie } = await App.makeAuthenticatedCookie(
+		const { "user": consultor, cookie } = await App.makeAuthenticatedCookie(
 			role,
 			user => user.beReachableEmployee()
 		)
-		const consultantInfo = new AttachedRoleFactory()
-		.user(() => Promise.resolve(consultant))
+		const consultorInfo = new AttachedRoleFactory()
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 		const consultation = new ConsultationFactory()
-		.consultantInfo(() => consultantInfo)
+		.consultorInfo(() => consultorInfo)
 		.insertOne()
 		const model = await new Factory().consultation(() => consultation).insertOne()
 		await new SignatureFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 
 		const response = await App.request

@@ -18,7 +18,7 @@
 					:current-user="userProfileData"
 					class="consultor required"
 					header="Consultor"
-					:maximum-participants="MAX_CONSULTANTS"
+					:maximum-participants="MAX_CONSULTORS"
 					text-field-label="Type the employee to add"
 					kind="reachable_employee"/>
 
@@ -36,7 +36,7 @@
 				:current-user="userProfileData"
 				class="consultees"
 				header="Consultee(s)"
-				:maximum-participants="MAX_CONSULTERS"
+				:maximum-participants="MAX_CONSULTEES"
 				text-field-label="Type the students to add"
 				kind="student"/>
 
@@ -253,7 +253,7 @@ const reason = computed<string>(() => {
 })
 const forceCreate = ref<boolean>(true)
 
-const MAX_CONSULTANTS = 1
+const MAX_CONSULTORS = 1
 const selectedConsultors = ref<DeserializedUserResource<"roles">[]>([])
 const consultorRoles = computed(() => {
 	const roleIDs: string[] = []
@@ -272,7 +272,7 @@ const consultorFieldsClasses = computed(() => ({
 	"has-selected-consultor": selectedConsultors.value.length
 }))
 
-const MAX_CONSULTERS = 5
+const MAX_CONSULTEES = 5
 const selectedConsultees = ref<DeserializedUserResource<"studentDetail">[]>([
 	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
 ])

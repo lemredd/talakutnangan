@@ -81,11 +81,11 @@ export default class extends JSONController {
 				"constraints": {
 					"isWithinEmployeeSchedule": {
 						"forceConfirmationPointer": "meta.mustForceStart",
-						"userIDPointer": "data.relationships.consultant.data.id"
+						"userIDPointer": "data.relationships.consultor.data.id"
 					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
-						"userIDPointer": "data.relationships.consultant.data.id"
+						"userIDPointer": "data.relationships.consultor.data.id"
 					}
 				},
 				"pipes": [
@@ -114,14 +114,14 @@ export default class extends JSONController {
 						"pipes": []
 					}
 				},
-				"relationshipName": "consultant",
+				"relationshipName": "consultor",
 				"typeName": "user",
 				"validator": existWithSameAttribute
 			},
 			{
 				"ClassName": RoleManager,
 				"isArray": false,
-				"relationshipName": "consultantRole",
+				"relationshipName": "consultorRole",
 				"typeName": "role",
 				"validator": exists
 			},
@@ -183,13 +183,13 @@ export default class extends JSONController {
 	: Promise<CreatedResponseInfo> {
 		const resource = request.body.data as ConsultationResource<"create">
 		if (resource.relationships.participants.data.findIndex(
-			identifier => Number(identifier.id) === Number(resource.relationships.consultant.data.id)
+			identifier => Number(identifier.id) === Number(resource.relationships.consultor.data.id)
 		) === -1) {
 			throw new ValidationError(
 				{
-					"pointer": "data.relationships.consultant.data.id"
+					"pointer": "data.relationships.consultor.data.id"
 				},
-				"The ID of the consultant must be one of the participants."
+				"The ID of the consultor must be one of the participants."
 			)
 		}
 

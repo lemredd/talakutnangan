@@ -96,14 +96,14 @@ export default class extends BaseManager<
 			const { attributes, relationships } = details
 
 			const {
-				"consultant": {
+				"consultor": {
 					"data": {
-						"id": consultantID
+						"id": consultorID
 					}
 				},
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
-						"id": consultantRoleID
+						"id": consultorRoleID
 					}
 				},
 				"participants": {
@@ -123,8 +123,8 @@ export default class extends BaseManager<
 					}
 				],
 				"where": new Condition().and(
-					new Condition().equal("userID", consultantID),
-					new Condition().equal("roleID", consultantRoleID)
+					new Condition().equal("userID", consultorID),
+					new Condition().equal("roleID", consultorRoleID)
 				).build(),
 				...this.transaction.transactionObject
 			}) as AttachedRole
@@ -139,7 +139,7 @@ export default class extends BaseManager<
 				this.transaction.transactionObject
 			)
 
-			model.consultantInfo = attachedRole
+			model.consultorInfo = attachedRole
 
 			const rawChatMessageActivities = rawParticipants.map(participant => {
 				const userID = Number(participant.id)
@@ -180,8 +180,8 @@ export default class extends BaseManager<
 
 			return await this.serialize(model, transformerOptions, new Transformer({
 				"included": [
-					"consultant",
-					"consultantRole",
+					"consultor",
+					"consultorRole",
 					"chatMessageActivities",
 					"chatMessages"
 				]
@@ -208,7 +208,7 @@ export default class extends BaseManager<
 					{
 						"model": AttachedRole,
 						"required": true,
-						"where": new Condition().equal("userID", model?.consultantInfo?.userID).build()
+						"where": new Condition().equal("userID", model?.consultorInfo?.userID).build()
 					}
 				],
 				"where": new Condition().and(

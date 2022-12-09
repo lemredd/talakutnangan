@@ -23,7 +23,7 @@ describe("Component: consultation/chat_window", () => {
 				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -33,7 +33,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					"consultant": {
+					"consultor": {
 						"data": {
 							"id": "1",
 							"type": "user"
@@ -55,7 +55,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -80,7 +80,7 @@ describe("Component: consultation/chat_window", () => {
 				fetchMock.mockResponseOnce("", { "status": RequestEnvironment.status.NO_CONTENT })
 
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -90,7 +90,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					"consultant": {
+					"consultor": {
 						"data": {
 							"id": "1",
 							"type": "user"
@@ -111,7 +111,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -165,7 +165,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					"consultant": {
+					"consultor": {
 						"data": {
 							"id": "1",
 							"type": "user"
@@ -216,7 +216,7 @@ describe("Component: consultation/chat_window", () => {
 		describe("during", () => {
 			it("should automatically terminate the consultation", async() => {
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -228,7 +228,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					consultant,
+					consultor,
 					"finishedAt": null,
 					id,
 					"reason": "",
@@ -244,7 +244,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -313,7 +313,7 @@ describe("Component: consultation/chat_window", () => {
 			it("should restart the timer", async() => {
 				jest.useFakeTimers()
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -325,7 +325,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					consultant,
+					consultor,
 					"finishedAt": null,
 					id,
 					"reason": "",
@@ -341,7 +341,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -400,7 +400,7 @@ describe("Component: consultation/chat_window", () => {
 
 			it("should scroll to the latest message", async() => {
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -412,7 +412,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					consultant,
+					consultor,
 					"finishedAt": null,
 					id,
 					"reason": "",
@@ -428,7 +428,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -457,7 +457,7 @@ describe("Component: consultation/chat_window", () => {
 		describe("after", () => {
 			it("should automatically terminate the consultation", async() => {
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -469,7 +469,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					consultant,
+					consultor,
 					"finishedAt": null,
 					id,
 					"reason": "",
@@ -485,7 +485,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -504,7 +504,7 @@ describe("Component: consultation/chat_window", () => {
 				await flushPromises()
 				const firstUpdatedFakeConsultation = {
 					...fakeConsultation,
-					consultant,
+					consultor,
 					"startedAt": new Date(Date.now() - convertTimeToMilliseconds("00:00:01"))
 				} as DeserializedConsultationResource
 				await wrapper.setProps({
@@ -545,14 +545,14 @@ describe("Component: consultation/chat_window", () => {
 				expect(secondRequest.headers.get("Accept")).toBe(JSON_API_MEDIA_TYPE)
 
 				const body = await secondRequest.json()
-				expect(body).toHaveProperty("data.relationships.consultant.data.id")
+				expect(body).toHaveProperty("data.relationships.consultor.data.id")
 				expect(body).toHaveProperty("meta.doesAllowConflicts")
 				ConsultationTimerManager.clearAllListeners()
 			})
 
-			it("can be terminated by consultant with action taken", async() => {
+			it("can be terminated by consultor with action taken", async() => {
 				const scheduledStartAt = new Date()
-				const consultant = {
+				const consultor = {
 					"data": {
 						"id": "10",
 						"kind": "reachable_employee",
@@ -564,7 +564,7 @@ describe("Component: consultation/chat_window", () => {
 				const id = "1"
 				const fakeConsultation = {
 					"actionTaken": null,
-					consultant,
+					consultor,
 					"finishedAt": null,
 					id,
 					"reason": "",
@@ -580,7 +580,7 @@ describe("Component: consultation/chat_window", () => {
 						"provide": {
 							"pageContext": {
 								"pageProps": {
-									"userProfile": consultant
+									"userProfile": consultor
 								}
 							}
 						}
@@ -652,7 +652,7 @@ describe("Component: consultation/chat_window", () => {
 	describe("chat messages", () => {
 		it("is sorted properly", () => {
 			const scheduledStartAt = new Date()
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": "10",
 					"kind": "reachable_employee",
@@ -663,7 +663,7 @@ describe("Component: consultation/chat_window", () => {
 			const id = "1"
 			const fakeConsultation = {
 				"actionTaken": null,
-				"consultant": {
+				"consultor": {
 					"data": {
 						"id": "1",
 						"type": "user"
@@ -699,7 +699,7 @@ describe("Component: consultation/chat_window", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								"userProfile": consultant
+								"userProfile": consultor
 							}
 						}
 					}
@@ -722,7 +722,7 @@ describe("Component: consultation/chat_window", () => {
 
 		it("should emit to load previous messages", async() => {
 			const scheduledStartAt = new Date()
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": "10",
 					"kind": "reachable_employee",
@@ -733,7 +733,7 @@ describe("Component: consultation/chat_window", () => {
 			const id = "1"
 			const fakeConsultation = {
 				"actionTaken": null,
-				"consultant": {
+				"consultor": {
 					"data": {
 						"id": "1",
 						"type": "user"
@@ -769,7 +769,7 @@ describe("Component: consultation/chat_window", () => {
 					"provide": {
 						"pageContext": {
 							"pageProps": {
-								"userProfile": consultant
+								"userProfile": consultor
 							}
 						}
 					},
