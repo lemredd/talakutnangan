@@ -6,10 +6,13 @@
 				type="button"
 				class="start btn btn-primary"
 				@click="startConsultation">
-				Start consultation
+				{{ startBtnText }}
 			</button>
-			<span v-if="!willStart" class="will-not-start">
+			<span v-if="!willStart" class="start-btn-message">
 				You can only start this consultation on its scheduled time.
+			</span>
+			<span v-if="mayForceStart" class="start-btn-message">
+				This consultation is urgent.
 			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">
@@ -56,8 +59,8 @@
 		@apply border-t p-3 flex;
 	}
 
-	.will-not-start{
-			@apply text-sm opacity-50;
+	.start-btn-message{
+			@apply text-sm opacity-50 ml-2;
 	}
 
 	.message-box {
@@ -83,15 +86,19 @@
 <script setup lang="ts">
 import { ref, inject, computed, ComputedRef, DeepReadonly } from "vue"
 
+import { DayValues } from "$/types/database"
 import type { TextMessage } from "$/types/message"
 import type { PageContext } from "$/types/renderer"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Fetcher from "$@/fetchers/chat_message"
 import makeSwitch from "$@/helpers/make_switch"
@@ -132,11 +139,37 @@ const {
 } = makeConsultationStates(props)
 
 interface CustomEvents {
-	(eventName: "startConsultation"): void
+	(eventName: "startConsultation", forceStart: boolean): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const startConsultation = () => emit("startConsultation")
+const mayForceStart = computed(() => {
+	let state = false
+	const employeeSchedules
+	= userProfile.data.employeeSchedules as DeserializedEmployeeScheduleListDocument
+	const { scheduledStartAt } = props.consultation
+	const dayOfScheduledStartAt = DayValues[scheduledStartAt.getDay()]
+	const matchingEmployeeSchedules = employeeSchedules.data.filter(
+		schedule => schedule.dayName === dayOfScheduledStartAt
+	)
+	const scheduledStartAtInMinutes
+	= convertTimeToMinutes(`${scheduledStartAt.getHours()}:${scheduledStartAt.getMinutes()}`)
+
+	matchingEmployeeSchedules.forEach(schedule => {
+		if (schedule.scheduleEnd < scheduledStartAtInMinutes) state = true
+	})
+
+	return state
+})
+const startBtnText = computed(() => {
+	let text = "Start Consultation"
+	if (mayForceStart.value) text = "Force Start"
+
+	return text
+})
+function startConsultation() {
+	emit("startConsultation", mayForceStart.value)
+}
 const mayStartConsultation = computed<boolean>(() => {
 	const shouldSoonStart = willSoonStart.value
 	const shouldStart = willStart.value

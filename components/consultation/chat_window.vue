@@ -311,7 +311,7 @@ function registerListeners(resource: DeserializedConsultationResource): void {
 	ConsultationTimerManager.listenConsultationTimeEvent(resource, "finish", finishConsultation)
 }
 
-function startConsultation() {
+function startConsultation(forceStart: boolean) {
 	const newConsultationData: ConsultationAttributes<"serialized"> = {
 		"actionTaken": null,
 		"deletedAt": consultation.value.deletedAt?.toISOString() ?? null,
@@ -337,7 +337,8 @@ function startConsultation() {
 			},
 			"extraUpdateDocumentProps": {
 				"meta": {
-					"doesAllowConflicts": true
+					"doesAllowConflicts": true,
+					"mustForceStart": forceStart
 				}
 			}
 		}
