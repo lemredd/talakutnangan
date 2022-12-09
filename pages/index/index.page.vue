@@ -1,7 +1,11 @@
 <template>
 	<MaintenanceMessage v-if="isInMaintenanceMode"/>
 	<div v-else>
+		<Opening :has-profile="hasProfile"/>
 		<div v-if="hasProfile" class="post-preview">
+			<h1 class="5xl">
+				Recent Posts
+			</h1>
 			<div v-if="hasPosts">
 				<Viewer
 					v-for="(post, i) in posts.data"
@@ -15,7 +19,6 @@
 				There are no posts found in the forum.
 			</p>
 		</div>
-		<Opening v-else/>
 		<Instructions/>
 		<ChangePassword v-if="hasDefaultPassword"/>
 	</div>
