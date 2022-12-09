@@ -266,7 +266,8 @@ describe("Component: post/multiviewer", () => {
 						"end": rangeEnd
 					},
 					"departmentID": departments.data[0].id,
-					"existence": "exists"
+					"existence": "exists",
+					"tagIDs": "*"
 				},
 				"page": {
 					"limit": DEFAULT_LIST_LIMIT,
