@@ -12,41 +12,59 @@
 		</section>
 
 		<section class="details">
-			<h2>
-				Consultor Name:
-			</h2>
-			<h6 id="consultor" class="consultor">
-				{{ consultor.data.name }}
-			</h6>
+			<div class="consultor">
+				<div class="name">
+					<h2>
+						Consultor Name:
+					</h2>
+					<h6 class="consultor-name">
+						{{ consultor.data.name }}
+					</h6>
+				</div>
 
-			<h2>
-				Consultor Role:
-			</h2>
-			<h6 id="consultor-role" class="consultor-role">
-				{{ consultorRole.data.name }}
-			</h6>
+				<div class="role">
+					<h2>
+						Consultor Role:
+					</h2>
+					<h6 class="consultor-role">
+						{{ consultorRole.data.name }}
+					</h6>
+				</div>
+			</div>
 
-			<h2>
-				Consultee(s):
-			</h2>
-			<ul id="consultees" class="consultees">
-				<li
-					v-for="consultee in consultees"
-					:key="consultee.id"
-					class="consultee">
-					{{ consultee.user?.data.name }}
-				</li>
-			</ul>
 
-			<h2>
-				Reason:
-			</h2>
-			<h6 id="reason" class="reason">
-				{{ reason }}
-			</h6>
-			<h6 id="actionTaken" class="actionTaken">
-				{{ actionTaken }}
-			</h6>
+			<div class="consultees">
+				<h2>
+					Consultee(s):
+				</h2>
+				<ul>
+					<li
+						v-for="consultee in consultees"
+						:key="consultee.id"
+						class="consultee">
+						{{ consultee.user?.data.name }}
+					</li>
+				</ul>
+			</div>
+
+			<div class="reason-and-action-taken">
+				<div class="reason">
+					<h2>
+						Reason:
+					</h2>
+					<h6 id="reason" class="reason">
+						{{ reason }}
+					</h6>
+				</div>
+				<div class="action-taken">
+					<h2>
+						Action Taken
+					</h2>
+					<h6 id="actionTaken" class="actionTaken">
+						{{ actionTaken }}
+					</h6>
+				</div>
+			</div>
 
 			<div class="schedules">
 				<div class="col">
@@ -159,7 +177,7 @@
 	}
 
 	h6 {
-		@apply border-b mb-5;
+		@apply border-b border-b-gray-500 mb-5;
 	}
 	.signatures {
 		@apply mt-12;
@@ -167,11 +185,57 @@
 		img { max-width: 120px; }
 	}
 	.schedules{
-		@apply flex justify-between max-w-900px;
+		@apply flex max-w-900px;
+
+		& > *:not(:first-of-type) {
+			@apply ml-4;
+		}
 	}
 
 	.file-message a { text-decoration: underline; }
+
+	.details {
+		.consultor {
+			@apply flex;
+
+			.name, .role {
+				@apply flex-1;
+			}
+
+			.name {
+				@apply mr-4;
+			}
+		}
+
+		.consultees {
+			@apply mb-4;
+			@apply border-b border-b-gray-500;
+
+			ul {
+				li {
+					@apply mr-1;
+				}
+			}
+		}
+
+		.reason-and-action-taken {
+			@apply flex;
+
+			& > * {
+				@apply flex-1;
+
+				&:not(:first-of-type) {
+					@apply ml-4;
+				}
+			}
+		}
+	}
+
 	@media print {
+		.print-btn {
+			display: none;
+		}
+
 		h1 {
 			@apply text-2xl;
 		}
