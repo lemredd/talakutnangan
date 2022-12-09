@@ -20,6 +20,7 @@ import Condition from "%/helpers/condition"
 import Transformer from "%/transformers/post"
 import AttachedRoleManager from "%/managers/attached_role"
 
+import siftByTags from "%/queries/post/sift_by_tags"
 import siftByRange from "%/queries/post/sift_by_range"
 import includeDefaults from "%/queries/post/include_defaults"
 import siftByDepartment from "%/queries/post/sift_by_department"
@@ -58,6 +59,7 @@ export default class extends BaseManager<
 		return [
 			siftByRange,
 			siftByDepartment,
+			siftByTags,
 			includeDefaults,
 			...super.listPipeline
 		]
