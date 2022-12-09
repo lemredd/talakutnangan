@@ -33,7 +33,7 @@ describe("Validator: Is within employee schedule", () => {
 			"request": {} as Request,
 			"source": {
 				"meta": {
-					"mustIgnoreSchedule": "0"
+					"mustIgnoreSchedule": false
 				},
 				"user": {
 					"id": String(user.id)
@@ -71,7 +71,7 @@ describe("Validator: Is within employee schedule", () => {
 			"request": {} as Request,
 			"source": {
 				"meta": {
-					"mustIgnoreSchedule": "1"
+					"mustIgnoreSchedule": true
 				},
 				"user": {
 					"id": String(user.id)
@@ -109,7 +109,7 @@ describe("Validator: Is within employee schedule", () => {
 			"request": {} as Request,
 			"source": {
 				"meta": {
-					"mustIgnoreSchedule": "0"
+					"mustIgnoreSchedule": false
 				},
 				"user": {
 					"id": String(user.id)
