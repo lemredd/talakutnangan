@@ -1,13 +1,13 @@
 import type { OptionalMiddleware } from "!/types/independent"
 
-import { IMAGE_FILE_IDS, DRIVE_LINK } from "!/constants/image_file_ids"
+import { IMAGE_FILE_IDS, IMAGE_FILE_COUNT, DRIVE_LINK } from "!/constants/image_file_ids"
 
 import Policy from "!/bases/policy"
 import Validation from "!/bases/validation"
 import specializePath from "$/helpers/specialize_path"
 import Controller from "!/bases/controller-likes/controller"
 import CommonMiddlewareList from "!/middlewares/common_middleware_list"
-import ForceRedirector from "!/middlewares/miscellaneous/force_redirector"
+import DynamicGatedRedirector from "!/middlewares/miscellaneous/dynamic_gated_redirector"
 
 export default class extends Controller {
 	get filePath(): string { return __filename }
@@ -19,13 +19,13 @@ export default class extends Controller {
 	get validations(): Validation[] { return [] }
 
 	get middlewares(): OptionalMiddleware[] {
-		const link = specializePath(DRIVE_LINK, {
-			"id": IMAGE_FILE_IDS[0]
-		})
-
 		return [
 			...super.middlewares,
-			new ForceRedirector(link)
+			new DynamicGatedRedirector(() => Promise.resolve({
+				"location": specializePath(DRIVE_LINK, {
+					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * IMAGE_FILE_COUNT)]
+				})
+			}))
 		]
 	}
 
