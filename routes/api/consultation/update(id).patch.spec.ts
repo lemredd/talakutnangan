@@ -54,7 +54,54 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": true
+					"doesAllowConflicts": true,
+					"mustForceStart": false
+				}
+			}
+		})
+
+		await requester.runMiddleware(bodyValidationFunction)
+
+		requester.expectSuccess()
+	})
+
+	it("can ignore invalid info", async() => {
+		const controller = new Controller()
+		const { validations } = controller
+		const bodyValidation = validations[BODY_VALIDATION_INDEX]
+		const bodyValidationFunction = bodyValidation.intermediate.bind(bodyValidation)
+		const model = await new Factory().startedAt(() => null).finishedAt(() => null).insertOne()
+		await new EmployeeScheduleFactory()
+		.user(() => Promise.resolve(model.consultant as User))
+		.dayName(() => DayValues[model.scheduledStartAt.getDay() - 1])
+		.scheduleStart(() => convertTimeToMinutes("00:00"))
+		.scheduleEnd(() => convertTimeToMinutes("23:57"))
+		.insertOne()
+		requester.customizeRequest({
+			"body": {
+				"data": {
+					"attributes": {
+						"actionTaken": model.actionTaken,
+						"attachedRoleID": model.attachedRoleID,
+						"finishedAt": model.finishedAt,
+						"reason": model.reason,
+						"scheduledStartAt": model.scheduledStartAt.toJSON(),
+						"startedAt": model.startedAt
+					},
+					"id": String(model.id),
+					"relationships": {
+						"consultant": {
+							"data": {
+								"id": String(model.consultant?.id),
+								"type": "user"
+							}
+						}
+					},
+					"type": "consultation"
+				},
+				"meta": {
+					"doesAllowConflicts": true,
+					"mustForceStart": true
 				}
 			}
 		})
@@ -99,11 +146,11 @@ describe("Controller: PATCH /api/consultation/:id", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": true
+					"doesAllowConflicts": true,
+					"mustForceStart": false
 				}
 			}
 		})
-
 
 		await requester.runMiddleware(bodyValidationFunction)
 
