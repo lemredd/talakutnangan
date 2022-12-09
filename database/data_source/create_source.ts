@@ -20,7 +20,6 @@ import AttachedRole from "%/models/attached_role"
 import StudentDetail from "%/models/student_detail"
 import ProfilePicture from "%/models/profile_picture"
 import PostAttachment from "%/models/post_attachment"
-import ProfanityFilter from "%/models/profanity_filter"
 import createConfiguration from "%/configuration/create"
 import EmployeeSchedule from "%/models/employee_schedule"
 import AsynchronousFile from "%/models/asynchronous_file"
@@ -47,7 +46,6 @@ export default async function(type: SourceType): Promise<Sequelize> {
 		StudentDetail,
 		ProfilePicture,
 		PostAttachment,
-		ProfanityFilter,
 		EmployeeSchedule,
 		AsynchronousFile,
 		AttachedChatFile,
