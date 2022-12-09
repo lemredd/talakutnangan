@@ -69,7 +69,8 @@ describe("Controller: POST /api/consultation", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": false
+					"doesAllowConflicts": false,
+					"mustForceStart": false
 				}
 			}
 		})

@@ -120,7 +120,8 @@ export interface UniqueEmployeeScheduleRuleConstraints {
 
 export interface IsWithinEmployeeScheduleRuleConstraints {
 	isWithinEmployeeSchedule: {
-		userIDPointer: string
+		userIDPointer: string,
+		forceConfirmationPointer: string
 	}
 }
 
@@ -133,8 +134,8 @@ export interface RestorableEmployeeScheduleConstraints extends ManagerBasedRuleC
 export interface ExistWithSameAttributeConstraints extends ManagerBasedRuleConstraints {
 	sameAttribute: {
 		columnName: string,
-		pointer?: string
-		value?: any,
+		pointer?: string,
+		value?: any
 	}
 }
 

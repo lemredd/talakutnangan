@@ -27,6 +27,15 @@ export default async function(
 		throw makeDeveloperError(constraints.field)
 	}
 
+	const isForced = Boolean(
+		accessDeepPath(
+			constraints.source,
+			constraints.isWithinEmployeeSchedule.forceConfirmationPointer
+		)
+	)
+
+	if (isForced) return state
+
 	const manager = new Manager(constraints.request)
 
 	const datetime = state.value
