@@ -29,6 +29,7 @@
 			v-for="(post, i) in posts.data"
 			:key="post.id"
 			v-model="posts.data[i]"
+			:may-have-menu="true"
 			:comment-count="posts.data[i].meta?.commentCount || 0"
 			class="viewer"
 			@archive="archivePost"

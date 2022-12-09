@@ -1,5 +1,5 @@
 <template>
-	<img src="@assets/logo_bg_transparent.svg" alt="logo"/>
+	<img v-if="!hasProfile" src="@assets/logo_bg_transparent.svg" alt="logo"/>
 	<div class="teaser consultation">
 		<Description>
 			<template #header>
@@ -105,4 +105,8 @@ img {
 <script lang="ts" setup>
 import Person from "@/guest_homepage/opening/Person.vue"
 import Description from "@/guest_homepage/opening/Description.vue"
+
+defineProps<{
+	hasProfile: boolean
+}>()
 </script>
