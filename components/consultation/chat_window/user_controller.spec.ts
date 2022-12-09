@@ -108,7 +108,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			expect(rightControls.exists()).toBeFalsy()
 		})
 
-		it("should show forceful start button", () => {
+		it("should show forceful start button", async() => {
 			const employeeSchedules = {
 				"data": [
 					{
@@ -145,7 +145,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"finishedAt": null,
 						"id": "1",
 						"reason": "",
-						"scheduledStartAt": new Date("2022-10-10 10:00"),
+						"scheduledStartAt": new Date("2022-10-10 13:00"),
 						"startedAt": null,
 						"type": "consultation"
 					}
@@ -153,6 +153,10 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			})
 			const startBtn = wrapper.find("button.start")
 			expect(startBtn.text()).toEqual("Force Start")
+
+			await startBtn.trigger("click")
+			const expectedEmission = wrapper.emitted("startConsultation")
+			expect(expectedEmission).toHaveProperty("0.0", true)
 		})
 
 		it("should start upon pressing the button", async() => {
