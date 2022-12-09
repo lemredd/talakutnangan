@@ -254,7 +254,9 @@ const selectableTimes = computed(() => {
 	return availableTimes
 })
 const hasSelectableTimes = computed(() => selectableTimes.value.length)
-const mustShowPastDayError = computed(() => !hasSelectableTimes.value && customDate.value)
+const mustShowPastDayError = computed(
+	() => !hasSelectableTimes.value && (customDate.value || !isCustomDate.value)
+)
 
 const dateAndTimeFieldsClasses = computed(() => ({
 	"has-selected-day": Boolean(chosenDate.value)
