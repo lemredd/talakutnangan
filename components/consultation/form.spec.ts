@@ -15,7 +15,6 @@ import Component from "./form.vue"
 import Stub from "$/singletons/stub"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
-
 jest.useFakeTimers()
 
 describe("Component: consultation/form", () => {

@@ -94,6 +94,39 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			expect(rightControls.exists()).toBeFalsy()
 		})
 
+		it("should show forceful start button", () => {
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" })),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"kind": "reachable_employee"
+									}
+								}
+							}
+						}
+					}
+				},
+				"props": {
+					"consultation": {
+						"actionTaken": null,
+						"deletedAt": null,
+						"finishedAt": null,
+						"id": "1",
+						"reason": "",
+						"scheduledStartAt": new Date("2022-10-04 10:00"),
+						"startedAt": null,
+						"type": "consultation"
+					}
+				}
+			})
+
+			console.log(wrapper.props(), "\n\n\n")
+		})
+
 		it("should start upon pressing the button", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
