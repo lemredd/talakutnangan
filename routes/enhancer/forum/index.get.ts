@@ -2,7 +2,6 @@ import type { Serializable } from "$/types/general"
 import type { DocumentProps } from "$/types/server"
 import type { AuthenticatedRequest } from "!/types/dependent"
 import type { DeserializedUserProfile } from "$/types/documents/user"
-import type { DeserializedPostListDocument } from "$/types/documents/post"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -74,7 +73,7 @@ export default class extends PageMiddleware {
 				"offset": 0
 			},
 			"sort": [ "-createdAt" ]
-		}) as DeserializedPostListDocument<"poster"|"posterRole"|"department">
+		})
 
 		let semesters: Serializable = {
 			"data": [],
