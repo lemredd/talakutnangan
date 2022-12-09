@@ -6,6 +6,7 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { UserListDocument } from "$/types/documents/user"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { CONSULTATION_LINK } from "$/constants/template_links"
 
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -13,6 +14,7 @@ import RequestEnvironment from "$/singletons/request_environment"
 import Component from "./form.vue"
 import Stub from "$/singletons/stub"
 import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+
 
 jest.useFakeTimers()
 
@@ -496,6 +498,21 @@ describe("Component: consultation/form", () => {
 			await submitBtn.trigger("click")
 			await flushPromises()
 
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ unusedRequestForFetchingStudents ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON)
+			.toHaveProperty("data.relationships.consultor.data.id", employees.data[0].id)
+			expect(requestInJSON.data.relationships.participants.data).toHaveLength(3)
+
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
 			expect(previousCalls).toHaveProperty("0.arguments.0", "/consultation")
@@ -616,6 +633,20 @@ describe("Component: consultation/form", () => {
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
 			await flushPromises()
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON)
+			.toHaveProperty("data.relationships.consultor.data.id", employees.data[0].id)
+			expect(requestInJSON.data.relationships.participants.data).toHaveLength(2)
 
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
