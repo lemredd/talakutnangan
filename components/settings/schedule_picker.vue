@@ -1,9 +1,13 @@
 <template>
 	<div class="schedule-picker">
-		<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
+		<ReceivedErrors
+			v-if="receivedErrors.length"
+			:received-errors="receivedErrors"
+			class="status-message-container"/>
 		<ReceivedSuccessMessages
 			v-if="successMessages.length"
-			:received-success-messages="successMessages"/>
+			:received-success-messages="successMessages"
+			class="status-message-container"/>
 
 		<button
 			v-if="!isNew && !isEditing"
@@ -103,7 +107,14 @@
 	@import "@styles/btn.scss";
 	.schedule-picker {
 		@apply flex flex-col;
-		margin: 2em 0;
+		@apply my-8;
+
+		position: relative;
+
+		.status-message-container {
+			margin-top: -40px;
+			position: absolute;
+		}
 	}
 
 	.time-selector{
@@ -244,7 +255,8 @@ function updateTime() {
 		}
 	})
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
+		const customMessage = "Time updated successfully."
+		fillSuccessMessages(receivedErrors, successMessages, customMessage, true)
 		stopEditing()
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(
@@ -274,7 +286,9 @@ function saveNewSchedule() {
 	.then(({ body }) => {
 		const { data } = body
 		emit("pushNewSchedule", data)
-		fillSuccessMessages(receivedErrors, successMessages)
+
+		const customMessage = "New schedule has been saved."
+		fillSuccessMessages(receivedErrors, successMessages, customMessage, true)
 		discard()
 		toggleEditing()
 	})
@@ -288,7 +302,8 @@ function saveNewSchedule() {
 function deleteSchedule() {
 	fetcher.archive([ String(props.scheduleId) ])
 	.then(() => {
-		fillSuccessMessages(receivedErrors, successMessages)
+		const customMessage = "Schedule has been deleted."
+		fillSuccessMessages(receivedErrors, successMessages, customMessage, true)
 		setTimeout(() => assignPath("/settings/profile"), MILLISECOND_IN_A_SECOND)
 	})
 	.catch(responseWithErrors => extractAllErrorDetails(responseWithErrors, receivedErrors))

@@ -25,7 +25,7 @@ import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
 import makeConsultationChatNamespace from "$/namespace_makers/consultation_chat"
 
 export default function(
-	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
+	consultation: Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>,
 	chatMessages: Ref<DeserializedChatMessageListDocument<"user">>,
 	currentChatMessageActivityResource: ComputedRef<
 		DeserializedChatMessageActivityResource<"user"|"consultation">

@@ -60,11 +60,11 @@ export default class Consultation extends Model {
 		attachedRoleID!: number
 
 	@BelongsTo(() => AttachedRole)
-		consultantInfo?: AttachedRole
+		consultorInfo?: AttachedRole
 
-	get consultant(): User|undefined { return this.consultantInfo?.user }
+	get consultor(): User|undefined { return this.consultorInfo?.user }
 
-	get consultantRole(): Role|undefined { return this.consultantInfo?.role }
+	get consultorRole(): Role|undefined { return this.consultorInfo?.role }
 
 	@HasMany(() => ChatMessageActivity)
 		chatMessageActivities?: ChatMessageActivity[]

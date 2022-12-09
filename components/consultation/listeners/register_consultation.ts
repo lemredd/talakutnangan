@@ -13,8 +13,8 @@ import makeConsultationNamespace from "$/namespace_makers/consultation"
 import makeConsultationListOfUserNamespace from "$/namespace_makers/consultation_list_of_user"
 
 export default function(
-	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
-	consultations: Ref<DeserializedConsultationListDocument<"consultant"|"consultantRole">>,
+	consultation: Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>,
+	consultations: Ref<DeserializedConsultationListDocument<"consultor"|"consultorRole">>,
 	userID: string
 ) {
 	function updateConsultation(updatedConsultation: ConsultationResource<"read">): void {
@@ -53,7 +53,7 @@ export default function(
 			"data": [
 				...consultations.value.data,
 				deserializedConsultation.data as unknown as DeserializedConsultationResource<
-					"consultant"|"consultantRole"
+					"consultor"|"consultorRole"
 				>
 			]
 		}

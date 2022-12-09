@@ -1,8 +1,10 @@
+/* eslint-disable vue/sort-keys */
+
 module.exports = {
 	async up(queryInterface, unusedSequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.dropTable("Consultees", { transaction })
+				await queryInterface.dropTable("AsynchronousFiles", { transaction })
 			} catch (err) {
 				await transaction.rollback()
 				throw err
@@ -12,7 +14,8 @@ module.exports = {
 	async down(queryInterface, Sequelize) {
 		await queryInterface.sequelize.transaction(async transaction => {
 			try {
-				await queryInterface.createTable("Consultees", {
+				const HASH_LENGTH = 64
+				await queryInterface.createTable("AsynchronousFiles", {
 					"id": {
 						"allowNull": false,
 						"autoIncrement": true,
@@ -23,21 +26,40 @@ module.exports = {
 						"allowNull": false,
 						"type": Sequelize.BIGINT,
 						"references": {
-							"model": "Users",
+							"model": "Posts",
 							"key": "id"
 						},
 						"onDelete": "cascade",
 						"onUpdate": "cascade"
 					},
-					"consultationID": {
+					"origin": {
 						"allowNull": false,
-						"type": Sequelize.BIGINT,
-						"references": {
-							"model": "Consultations",
-							"key": "id"
-						},
-						"onDelete": "cascade",
-						"onUpdate": "cascade"
+						"type": Sequelize.STRING
+					},
+					"token": {
+						"allowNull": false,
+						"type": Sequelize.STRING(HASH_LENGTH)
+					},
+					"finishedStepCount": {
+						"allowNull": false,
+						"type": Sequelize.INTEGER
+					},
+					"totalStepCount": {
+						"allowNull": false,
+						"type": Sequelize.INTEGER
+					},
+					"hasStopped": {
+						"allowNull": false,
+						"type": Sequelize.BOOLEAN
+					},
+					"extra": {
+						"allowNull": false,
+						"type": Sequelize.JSON
+					},
+					"fileContents": {
+						"allowNull": true,
+						"defaultValue": null,
+						"type": Sequelize.BLOB
 					},
 					"createdAt": {
 						"allowNull": false,
@@ -52,6 +74,13 @@ module.exports = {
 						"type": Sequelize.DATE
 					}
 				}, { transaction })
+
+				await queryInterface.addConstraint("AsynchronousFiles", {
+					"fields": [ "origin", "token" ],
+					"type": "unique",
+					"name": "unique_key_origin_token_constraint",
+					transaction
+				})
 			} catch (err) {
 				await transaction.rollback()
 				throw err

@@ -129,7 +129,7 @@ const {
 	willSoonStart,
 	willStart
 } = makeConsultationStates(props as unknown as {
-	"consultation": DeserializedConsultationResource<"consultant"|"consultantRole">
+	"consultation": DeserializedConsultationResource<"consultor"|"consultorRole">
 })
 const statusBadge = computed(() => {
 	let status = ""

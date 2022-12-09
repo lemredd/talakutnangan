@@ -19,13 +19,21 @@ body {
 		height: 100vh;
 
 		.image {
+			$imageURL: url("/api/user/log_in/image");
+			$redTint: hue-rotate(300deg);
+
 			content: '';
 			position: fixed;
 			inset: 0;
 
-			background-image: url("/api/user/log_in/image");
+			background-image: $imageURL;
 			background-repeat: no-repeat;
 			background-size: cover;
+			filter:
+				sepia(100%)
+				saturate(100%)
+				brightness(80%)
+				$redTint;
 		}
 	}
 

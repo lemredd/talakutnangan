@@ -17,7 +17,7 @@ describe("Listener: Consultation watcher", () => {
 			"id": 1,
 			"startedAt": null,
 			"type": "consultation"
-		}) as unknown as Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>
+		}) as unknown as Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>
 		const registerListeners = jest.fn()
 		listener(consultation, registerListeners)
 
@@ -36,7 +36,7 @@ describe("Listener: Consultation watcher", () => {
 			"id": 1,
 			"startedAt": null,
 			"type": "consultation"
-		}) as unknown as Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>
+		}) as unknown as Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>
 		const finishConsultation = jest.fn()
 		const registerListeners = jest.fn(newConsultation => {
 			ConsultationTimerManager.listenConsultationTimeEvent(
@@ -68,7 +68,7 @@ describe("Listener: Consultation watcher", () => {
 			"id": 1,
 			"startedAt": new Date(),
 			"type": "consultation"
-		}) as unknown as Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>
+		}) as unknown as Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>
 		const finishConsultation = jest.fn()
 		const registerListeners = jest.fn()
 		ConsultationTimerManager.listenConsultationTimeEvent(

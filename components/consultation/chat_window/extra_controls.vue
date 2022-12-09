@@ -66,7 +66,7 @@ import Dropdown from "@/helpers/minor_dropdown.vue"
 
 const props = defineProps<{
 	consultationId: string,
-	isCurrentUserConsultant: boolean,
+	isCurrentUserConsultor: boolean,
 	isHeaderControlDropdownShown: boolean,
 	willSoonStart: boolean
 	willStart: boolean
@@ -98,13 +98,13 @@ function toggleHeaderControlDropdownShown() {
 }
 
 const mayShowFinishButton = computed<boolean>(
-	() => props.isCurrentUserConsultant && props.isOngoing
+	() => props.isCurrentUserConsultor && props.isOngoing
 )
 const mayShowCancelButton = computed<boolean>(
-	() => !props.isCurrentUserConsultant && (props.willSoonStart || props.willStart)
+	() => !props.isCurrentUserConsultor && (props.willSoonStart || props.willStart)
 )
 const mayShowRescheduleButton = computed<boolean>(
-	() => !props.isCurrentUserConsultant && props.willSoonStart
+	() => !props.isCurrentUserConsultor && props.willSoonStart
 )
 function showActionTakenOverlay() {
 	toggleHeaderControlDropdownShown()

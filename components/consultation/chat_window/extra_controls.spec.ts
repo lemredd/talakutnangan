@@ -13,7 +13,7 @@ describe("Component: chat_window/extra_controls", () => {
 			},
 			"props": {
 				"consultationId": "1",
-				"isCurrentUserConsultant": true,
+				"isCurrentUserConsultor": true,
 				"isHeaderControlDropdownShown": true,
 				"isOngoing": true,
 				"willSoonStart": false,
@@ -41,7 +41,7 @@ describe("Component: chat_window/extra_controls", () => {
 			"props": {
 				"consultationId": id,
 				"isConsultationFinishedOrCancelled": false,
-				"isCurrentUserConsultant": true,
+				"isCurrentUserConsultor": true,
 				"isHeaderControlDropdownShown": true,
 				"isOngoing": false,
 				"willSoonStart": false,

@@ -24,21 +24,22 @@
 							:max="castToCompatibleDate(dateInNextMonth)"
 							type="date"/>
 					</div>
+
+					<p v-if="mustShowPastDayError" class="selected-day-is-past">
+						This consultor's schedule for this day has ended.
+					</p>
 				</div>
 
 				<div
 					v-if="chosenDay"
 					class="time-field"
-					:class="selectableTimes.length ? 'required' : ''">
+					:class="hasSelectableTimes ? 'required' : ''">
 					<SelectableOptionsField
-						v-if="selectableTimes.length"
+						v-if="hasSelectableTimes"
 						v-model="chosenTime"
 						class="selectable-time"
 						label="Time:"
 						:options="selectableTimes"/>
-					<p v-else class="selected-day-is-past">
-						This consultor's schedule for this day has ended.
-					</p>
 				</div>
 			</div>
 		</div>
@@ -70,6 +71,7 @@
 			@apply flex flex-col;
 
 			.selected-day-is-past {
+				@apply mt-2;
 				@apply text-red-500;
 			}
 
@@ -81,9 +83,6 @@
 			@screen md {
 				@apply flex-row;
 
-				&.has-selected-day::after {
-					content: "hello";
-				}
 
 				.time-field {
 					@apply ml-4;
@@ -254,6 +253,10 @@ const selectableTimes = computed(() => {
 
 	return availableTimes
 })
+const hasSelectableTimes = computed(() => selectableTimes.value.length)
+const mustShowPastDayError = computed(
+	() => !hasSelectableTimes.value && (customDate.value || !isCustomDate.value)
+)
 
 const dateAndTimeFieldsClasses = computed(() => ({
 	"has-selected-day": Boolean(chosenDate.value)

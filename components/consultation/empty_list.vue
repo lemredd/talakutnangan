@@ -17,6 +17,11 @@
 
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
+
+	.consultations-list {
+		@apply flex flex-col items-center justify-center;
+	}
+
 	.left {
 		@apply dark:bg-dark-700 bg-white;
 		position: fixed;
@@ -49,7 +54,7 @@
 			}
 		}
 
-		.no-consultations{
+		.no-consultations {
 			@apply mx-auto max-w-max;
 		}
 

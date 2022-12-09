@@ -155,7 +155,7 @@ interface CustomEvents {
 
 const emit = defineEmits<CustomEvents>()
 const props = defineProps<{
-	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	consultation: DeserializedConsultationResource<"consultor"|"consultorRole">
 	currentConsultationActivity: DeserializedChatMessageActivityResource[]
 	chatMessages: DeserializedChatMessageListDocument<"user">
 	hasLoadedChatMessages: boolean,
@@ -193,7 +193,7 @@ function toggleConsultationList() {
 	emit("toggleConsultationList")
 }
 
-const consultation = computed<DeserializedConsultationResource<"consultant"|"consultantRole">>(
+const consultation = computed<DeserializedConsultationResource<"consultor"|"consultorRole">>(
 	() => props.consultation
 )
 const {
@@ -272,9 +272,9 @@ function finishConsultation(): void {
 			{
 				"extraDataFields": {
 					"relationships": {
-						"consultant": {
+						"consultor": {
 							"data": {
-								"id": consultation.value.consultant.data.id,
+								"id": consultation.value.consultor.data.id,
 								"type": "user"
 							}
 						}
@@ -327,9 +327,9 @@ function startConsultation() {
 		{
 			"extraDataFields": {
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": consultation.value.consultant.data.id,
+							"id": consultation.value.consultor.data.id,
 							"type": "user"
 						}
 					}
@@ -352,7 +352,7 @@ function startConsultation() {
 		}
 
 		const expectedDeserializedConsultationResource: DeserializedConsultationResource<
-			"consultant"|"consultantRole"
+			"consultor"|"consultorRole"
 		> = {
 			...consultation.value,
 			...deserializedConsultationData

@@ -25,7 +25,7 @@ describe("Controller: POST /api/consultation", () => {
 		.startedAt(() => null)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(model.consultant as User))
+		.user(() => Promise.resolve(model.consultor as User))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:00"))
 		.scheduleEnd(() => convertTimeToMinutes("23:59"))
@@ -41,22 +41,22 @@ describe("Controller: POST /api/consultation", () => {
 						"scheduledStartAt": model.scheduledStartAt.toJSON()
 					},
 					"relationships": {
-						"consultant": {
+						"consultor": {
 							"data": {
-								"id": String(model.consultant?.id),
+								"id": String(model.consultor?.id),
 								"type": "user"
 							}
 						},
-						"consultantRole": {
+						"consultorRole": {
 							"data": {
-								"id": String(model.consultantRole?.id),
+								"id": String(model.consultorRole?.id),
 								"type": "role"
 							}
 						},
 						"participants": {
 							"data": [
 								{
-									"id": String(model.consultant?.id),
+									"id": String(model.consultor?.id),
 									"type": "user"
 								},
 								{
@@ -69,7 +69,8 @@ describe("Controller: POST /api/consultation", () => {
 					"type": "consultation"
 				},
 				"meta": {
-					"doesAllowConflicts": false
+					"doesAllowConflicts": false,
+					"mustForceStart": false
 				}
 			}
 		})
@@ -89,7 +90,7 @@ describe("Controller: POST /api/consultation", () => {
 		.startedAt(() => null)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(model.consultant as User))
+		.user(() => Promise.resolve(model.consultor as User))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:00"))
 		.scheduleEnd(() => convertTimeToMinutes("23:58"))

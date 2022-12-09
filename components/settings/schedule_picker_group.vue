@@ -6,24 +6,26 @@
 			</h3>
 		</div>
 
-		<SchedulePicker
-			v-for="schedule in daySchedules"
-			:key="schedule.id"
-			:disabled="disabled"
-			:schedule-id="schedule.id"
-			:day-name="schedule.dayName"
-			:schedule-start="schedule.scheduleStart"
-			:schedule-end="schedule.scheduleEnd"
-			class="filled-schedule-picker"/>
+		<div class="schedule-pickers">
+			<SchedulePicker
+				v-for="schedule in daySchedules"
+				:key="schedule.id"
+				:disabled="disabled"
+				:schedule-id="schedule.id"
+				:day-name="schedule.dayName"
+				:schedule-start="schedule.scheduleStart"
+				:schedule-end="schedule.scheduleEnd"
+				class="schedule-picker filled-schedule-picker"/>
 
-		<SchedulePicker
-			:is-new="true"
-			:disabled="disabled"
-			:day-name="dayName"
-			:schedule-start="convertTimeToMinutes('00:00')"
-			:schedule-end="convertTimeToMinutes('00:00')"
-			class="new-schedule-picker"
-			@push-new-schedule="pushNewSchedule"/>
+			<SchedulePicker
+				:is-new="true"
+				:disabled="disabled"
+				:day-name="dayName"
+				:schedule-start="convertTimeToMinutes('00:00')"
+				:schedule-end="convertTimeToMinutes('00:00')"
+				class="schedule-picker new-schedule-picker"
+				@push-new-schedule="pushNewSchedule"/>
+		</div>
 	</div>
 </template>
 
@@ -33,14 +35,25 @@
 		@apply mt-4 mb-12;
 		@apply border-b border-b-gray-500;
 
-		.day {
-			@apply text-lg;
+		.schedule-picker-header {
+			@apply flex flex-col justify-between mb-5;
+
+			.day {
+				@apply text-lg;
+			}
+		}
+
+		.schedule-pickers {
+			@apply flex flex-wrap justify-start;
+
+			.schedule-picker {
+				@screen sm {
+					@apply ml-4;
+				}
+			}
 		}
 	}
 
-	.schedule-picker-header {
-		@apply flex flex-col justify-between mb-5;
-	}
 </style>
 
 <script setup lang="ts">

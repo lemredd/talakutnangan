@@ -7,7 +7,7 @@ import calculateMillisecondDifference from "$/time/calculate_millisecond_differe
 
 export default function(
 	props: {
-		"consultation": DeserializedConsultationResource<"consultant"|"consultantRole">
+		"consultation": DeserializedConsultationResource<"consultor"|"consultorRole">
 	}
 ) {
 	const currentTime = ref<Date>(new Date())

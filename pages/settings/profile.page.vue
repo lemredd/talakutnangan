@@ -138,6 +138,12 @@
 			}
 		}
 
+		.pictures {
+			@screen md {
+				@apply flex justify-between;
+			}
+		}
+
 		.consultation-schedules {
 			@apply mt-16;
 		}
@@ -152,10 +158,10 @@
 	}
 
 	.input-profile-picture {
-		@apply flex flex items-center ml-4;
+		@apply flex flex items-center sm:ml-4;
 	}
 	.input-signature {
-		@apply flex flex items-center ml-4 sm: ml-14;
+		@apply flex flex items-center sm:ml-4 sm: ml-14;
 	}
 
 	.upload-btn {

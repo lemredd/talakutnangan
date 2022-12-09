@@ -11,8 +11,6 @@ import MultipartParser from "!/middlewares/body_parser/multipart"
 import AuthenticationBasedPolicy from "!/policies/authentication-based"
 import EmailVerification from "!/middlewares/email_sender/email_verification"
 import NewUserNotification from "!/middlewares/email_sender/new_user_notification"
-import AsynchronousOperationCommitter
-	from "!/middlewares/miscellaneous/asynchronous_operation_committer"
 
 import { user } from "$/permissions/permission_list"
 import AuthorizationError from "$!/errors/authorization"
@@ -59,9 +57,7 @@ function makeList() {
 		"unreachableEmployeeOnlyPolicy": new KindBasedPolicy([ "unreachable_employee" ])
 	}
 
-	const miscellaneuous = {
-		"asynchronousEnder": new AsynchronousOperationCommitter()
-	}
+	const miscellaneuous = {}
 
 	const parsers = {
 		"JSONBody": new JSONBodyParser(),

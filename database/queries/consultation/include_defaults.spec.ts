@@ -16,7 +16,7 @@ describe("Database Pipe: Include defaults", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const user = await new UserFactory().insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.makeOne()
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
@@ -34,13 +34,13 @@ describe("Database Pipe: Include defaults", () => {
 				"chatMessageActivities": undefined,
 				// eslint-disable-next-line no-undefined
 				"chatMessages": undefined,
-				"consultant": {
+				"consultor": {
 					"data": {
 						"id": String(attachedRole.userID),
 						"type": "user"
 					}
 				} as UserIdentifierDocument,
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
 						"id": String(attachedRole.roleID),
 						"type": "role"

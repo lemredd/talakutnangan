@@ -223,13 +223,13 @@ export default class extends DevController {
 			"relationships": {
 				"chatMessageActivities": undefined,
 				"chatMessages": undefined,
-				"consultant": {
+				"consultor": {
 					"data": {
 						"id": previousSecretaryUser.id,
 						"type": "user"
 					}
 				},
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
 						"id": testSecretaryRole.id,
 						"type": "role"

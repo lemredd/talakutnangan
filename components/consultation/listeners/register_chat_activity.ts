@@ -11,7 +11,7 @@ import makeConsultationChatActivityNamespace from "$/namespace_makers/consultati
 
 
 export default function(
-	consultation: Ref<DeserializedConsultationResource<"consultant"|"consultantRole">>,
+	consultation: Ref<DeserializedConsultationResource<"consultor"|"consultorRole">>,
 	chatMessageActivities: Ref<DeserializedChatMessageActivityListDocument<"user"|"consultation">>
 ) {
 	function updateMessageActivity(activity: ChatMessageActivityDocument<"read">): void {

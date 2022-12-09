@@ -60,11 +60,11 @@ extends Attributes<T> {
 
 interface ConsultationRelationshipData<T extends Completeness = "read">
 extends GeneralRelationshipData {
-	consultant: {
+	consultor: {
 		serialized: UserIdentifierDocument,
 		deserialized: DeserializedUserDocument
 	},
-	consultantRole: {
+	consultorRole: {
 		serialized: RoleIdentifierDocument<T extends "create"|"update" ? "attached" : T>,
 		deserialized: DeserializedRoleDocument
 	},
