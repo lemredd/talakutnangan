@@ -16,7 +16,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 jest.useFakeTimers()
 
-describe.skip("Component: consultation/form", () => {
+describe("Component: consultation/form", () => {
 	describe("Fields population", () => {
 		it("can search students", async() => {
 			const students = {
@@ -160,7 +160,8 @@ describe.skip("Component: consultation/form", () => {
 					"stubs": {
 						"Overlay": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
@@ -310,7 +311,8 @@ describe.skip("Component: consultation/form", () => {
 					"stubs": {
 						"Overlay": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
@@ -435,8 +437,10 @@ describe.skip("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
+						"Scheduler": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
@@ -560,8 +564,11 @@ describe.skip("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
+						"Scheduler": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
+
 					}
 				},
 				"props": {
