@@ -6,113 +6,23 @@ import { mount } from "@vue/test-utils"
 import Page from "./form.page.vue"
 
 describe("Page: Consultation/form", () => {
-	it("can display consultation details", () => {
-		const consultant = {
-			"data": {
-				"id": 0,
-				"name": "Consultant Name"
-			}
-		}
-		const consultantRole = {
-			"data": {
-				"name": "Consultant Role"
-			}
-		}
-		const chatMessageActivities = {
-			"data": [
-				{
-					"user": consultant
-				},
-				{
-					"user": {
-						"data": {
-							"id": 1,
-							"name": "Consulter Name"
-						}
-					}
-				}
-			]
-		}
-
-		fetchMock.mockResponseOnce(
-			JSON.stringify({
-				"data": [],
-				"meta": {
-					"count": 0
-				}
-			}),
-			{ "status": RequestEnvironment.status.OK }
-		)
-
-		const wrapper = mount(Page, {
-			"global": {
-				"provide": {
-					"pageContext": {
-						"pageProps": {
-							chatMessageActivities,
-							"chatMessages": {
-								"data": []
-							},
-							"consultation": {
-								"data": {
-									consultant,
-									consultantRole,
-									"reason": "Reason",
-									"scheduledStartAt": new Date("2022-10-04 10:00"),
-									"startedAt": new Date("2022-10-04 10:00")
-								}
-							}
-						}
-					}
-				}
-			}
-		})
-		const consultantNameField = wrapper.find(".consultant")
-		const consultantRoleField = wrapper.find(".consultant-role")
-		const consulterField = wrapper.find(".consulters")
-		const reasonField = wrapper.find(".reason")
-		const scheduledStartAtField = wrapper.find(".scheduled-start")
-		const startedAtField = wrapper.find(".actual-start")
-		const fields = [
-			consultantNameField,
-			consultantRoleField,
-			consulterField,
-			reasonField,
-			scheduledStartAtField,
-			startedAtField
-		]
-
-		fields.forEach(field => {
-			expect(field.exists()).toBeTruthy()
-			expect(field.text()).not.toEqual("")
-		})
-
-		const consulters = consulterField.findAll(".consulter")
-		expect(consulters).not.toHaveLength(0)
-		consulters.forEach((element, index) => {
-			expect(element.exists()).toBeTruthy()
-			expect(element.text()).not.toEqual(consultant.data.name)
-			expect(element.text()).toEqual(chatMessageActivities.data[index + 1].user.data.name)
-		})
-	})
-
 	describe("chat messages", () => {
 		it("can display text messages properly", () => {
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": 0,
-					"name": "Consultant Name"
+					"name": "Consultor Name"
 				}
 			}
-			const consultantRole = {
+			const consultorRole = {
 				"data": {
-					"name": "Consultant Role"
+					"name": "Consultor Role"
 				}
 			}
 			const chatMessageActivities = {
 				"data": [
 					{
-						"user": consultant
+						"user": consultor
 					},
 					{
 						"user": {
@@ -156,8 +66,8 @@ describe("Page: Consultation/form", () => {
 								chatMessages,
 								"consultation": {
 									"data": {
-										consultant,
-										consultantRole,
+										consultor,
+										consultorRole,
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00"),
 										"startedAt": new Date("2022-10-04 10:01")
@@ -177,21 +87,21 @@ describe("Page: Consultation/form", () => {
 		})
 
 		it("can display status messages properly", () => {
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": 0,
-					"name": "Consultant Name"
+					"name": "Consultor Name"
 				}
 			}
-			const consultantRole = {
+			const consultorRole = {
 				"data": {
-					"name": "Consultant Role"
+					"name": "Consultor Role"
 				}
 			}
 			const chatMessageActivities = {
 				"data": [
 					{
-						"user": consultant
+						"user": consultor
 					},
 					{
 						"user": {
@@ -235,8 +145,8 @@ describe("Page: Consultation/form", () => {
 								chatMessages,
 								"consultation": {
 									"data": {
-										consultant,
-										consultantRole,
+										consultor,
+										consultorRole,
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00"),
 										"startedAt": new Date("2022-10-04 10:01")
@@ -258,21 +168,21 @@ describe("Page: Consultation/form", () => {
 		})
 
 		it("can display file messages properly", () => {
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": 0,
-					"name": "Consultant Name"
+					"name": "Consultor Name"
 				}
 			}
-			const consultantRole = {
+			const consultorRole = {
 				"data": {
-					"name": "Consultant Role"
+					"name": "Consultor Role"
 				}
 			}
 			const chatMessageActivities = {
 				"data": [
 					{
-						"user": consultant
+						"user": consultor
 					},
 					{
 						"user": {
@@ -319,8 +229,8 @@ describe("Page: Consultation/form", () => {
 								chatMessages,
 								"consultation": {
 									"data": {
-										consultant,
-										consultantRole,
+										consultor,
+										consultorRole,
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00"),
 										"startedAt": new Date("2022-10-04 10:01")
@@ -346,21 +256,21 @@ describe("Page: Consultation/form", () => {
 
 	describe("printing", () => {
 		it("can print the page on click", async() => {
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": 0,
-					"name": "Consultant Name"
+					"name": "Consultor Name"
 				}
 			}
-			const consultantRole = {
+			const consultorRole = {
 				"data": {
-					"name": "Consultant Role"
+					"name": "Consultor Role"
 				}
 			}
 			const chatMessageActivities = {
 				"data": [
 					{
-						"user": consultant
+						"user": consultor
 					},
 					{
 						"user": {
@@ -394,8 +304,8 @@ describe("Page: Consultation/form", () => {
 								},
 								"consultation": {
 									"data": {
-										consultant,
-										consultantRole,
+										consultor,
+										consultorRole,
 										"finishedAt": new Date("2022-10-04 10:01"),
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00")
@@ -419,10 +329,10 @@ describe("Page: Consultation/form", () => {
 
 	describe("signatures", () => {
 		it("can show signatures if finished", () => {
-			const consultant = {
+			const consultor = {
 				"data": {
 					"id": 0,
-					"name": "Consultant Name",
+					"name": "Consultor Name",
 					"signature": {
 						"data": {
 							"fileContents": "/sample/url"
@@ -430,15 +340,15 @@ describe("Page: Consultation/form", () => {
 					}
 				}
 			}
-			const consultantRole = {
+			const consultorRole = {
 				"data": {
-					"name": "Consultant Role"
+					"name": "Consultor Role"
 				}
 			}
 			const chatMessageActivities = {
 				"data": [
 					{
-						"user": consultant
+						"user": consultor
 					},
 					{
 						"user": {
@@ -477,8 +387,8 @@ describe("Page: Consultation/form", () => {
 								},
 								"consultation": {
 									"data": {
-										consultant,
-										consultantRole,
+										consultor,
+										consultorRole,
 										"finishedAt": new Date("2022-10-04 15:00"),
 										"reason": "Reason",
 										"scheduledStartAt": new Date("2022-10-04 10:00"),
@@ -491,16 +401,16 @@ describe("Page: Consultation/form", () => {
 				}
 			})
 			const signatures = wrapper.find(".signatures")
-			const consultantSignature = signatures.find(".consultant-signature")
-			const consultantSignatureImg = consultantSignature.find("img")
-			const consulterSignature = signatures.find(".consulter-signature")
-			const consulterSignatureImg = consulterSignature.findAll("img")
+			const consultorSignature = signatures.find(".consultor-signature")
+			const consultorSignatureImg = consultorSignature.find("img")
+			const consulteeSignature = signatures.find(".consultee-signature")
+			const consulteeSignatureImg = consulteeSignature.findAll("img")
 
 			expect(signatures.exists()).toBeTruthy()
-			expect(consultantSignature.exists()).toBeTruthy()
-			expect(consulterSignature.exists()).toBeTruthy()
-			expect(consultantSignatureImg.attributes("src")).toBeDefined()
-			consulterSignatureImg.forEach(img => expect(img.attributes("src")).toBeDefined())
+			expect(consultorSignature.exists()).toBeTruthy()
+			expect(consulteeSignature.exists()).toBeTruthy()
+			expect(consultorSignatureImg.attributes("src")).toBeDefined()
+			consulteeSignatureImg.forEach(img => expect(img.attributes("src")).toBeDefined())
 		})
 	})
 })

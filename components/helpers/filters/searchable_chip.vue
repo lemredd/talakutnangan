@@ -43,9 +43,9 @@
 
 	.chip {
 		@apply inline-flex items-center text-sm;
+		@apply bg-gray-100 rounded-md;
 
 		margin: 5px;
-		border-radius: 25px;
 		padding: 0 15px;
 
 		height: 30px;

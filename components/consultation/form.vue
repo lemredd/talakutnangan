@@ -12,27 +12,29 @@
 			<p class="status-messages warning">
 				* Names are case-sensitive.
 			</p>
-			<SearchableChip
-				v-model="selectedConsultants"
-				:current-user="userProfileData"
-				class="consultant required"
-				header="Consultor"
-				:maximum-participants="MAX_CONSULTANTS"
-				text-field-label="Type the employee to add"
-				kind="reachable_employee"/>
+			<div class="consultor-fields" :class="consultorFieldsClasses">
+				<SearchableChip
+					v-model="selectedConsultors"
+					:current-user="userProfileData"
+					class="consultor required"
+					header="Consultor"
+					:maximum-participants="MAX_CONSULTANTS"
+					text-field-label="Type the employee to add"
+					kind="reachable_employee"/>
 
-			<div v-if="selectedConsultants.length" class="required">
-				<SelectableOptionsField
-					v-model="addressConsultantAs"
-					class="consultant-roles"
-					label="Address consultant as:"
-					:options="consultantRoles"/>
+				<div v-if="selectedConsultors.length" class="required">
+					<SelectableOptionsField
+						v-model="addressConsultorAs"
+						class="consultor-roles"
+						label="Address consultor as:"
+						:options="consultorRoles"/>
+				</div>
 			</div>
 
 			<SearchableChip
-				v-model="selectedConsulters"
+				v-model="selectedConsultees"
 				:current-user="userProfileData"
-				class="consulters"
+				class="consultees"
 				header="Consultee(s)"
 				:maximum-participants="MAX_CONSULTERS"
 				text-field-label="Type the students to add"
@@ -54,9 +56,10 @@
 				label="What are the other reasons(s)?"
 				type="text"/>
 			<Scheduler
+				v-if="selectedConsultors.length"
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
-				:consultant-schedules="consultantSchedules"
+				:consultor-schedules="consultorSchedules"
 				class="schedule-selector"/>
 
 			<div class="may-not-start-right-away-msg">
@@ -71,10 +74,6 @@
 					</span>
 				</label>
 			</div>
-			<p v-if="hasConflicts">
-				Other students have schedule with consultant on the same day and same time. Please
-				change the time.
-			</p>
 
 			<div class="signature-message">
 				By submitting, your signatures will be applied on the printable consultation form.
@@ -100,25 +99,45 @@
 </template>
 
 <style lang="scss">
-	@import "@styles/btn.scss";
 	@import "@styles/variables.scss";
-	@import "@styles/status_messages.scss";
 
-	.btn{
-	border: none;
-	color: white;
-	padding: 10px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
+	.btn {
+		border: none;
+		color: white;
+		padding: 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+	}
+
+	@screen md {
+		.overlay .content {
+			margin: 10% 0 !important;
+			max-height: 100vh !important;
+		}
+	}
+
+	.has-selected-consultor .selectable {
+		@apply flex-col items-start;
+
+		@screen md {
+			@apply ml-4;
+		}
+
+		select {
+			@screen md {
+				@apply ml-0 mt-2;
+			}
+		}
 	}
 
 	.selectable {
-		@apply flex justify-between;
+		@apply flex md:items-center;
 
 		select {
 			@apply p-2;
+			@apply rounded-md;
 			@apply dark:bg-transparent dark:text-white;
 
 			option {
@@ -129,9 +148,22 @@
 		max-width: initial !important;
 	}
 
-	.consultation-no-schedules{
-		@apply text-red-500;
+	.required{
+		&::before {
+			@apply text-xs;
+			@apply mb-2;
+
+			display:block;
+			color: $color-primary;
+			content:"* required";
+		}
 	}
+</style>
+
+<style scoped lang="scss">
+	@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
+	@import "@styles/status_messages.scss";
 
 	.signature-message {
 		@apply text-xs;
@@ -148,23 +180,23 @@
 			display:block;
 			color: $color-primary;
 			content:"* required";
-
 		}
 	}
 
-	.consultant-roles {
-		@apply mb-5;
+	.consultor-fields {
+		@apply mb-4;
+		@apply flex flex-col;
+
+		&.has-selected-consultor {
+			@screen md {
+				@apply mb-0;
+				@apply flex-row justify-start;
+			}
+		}
 	}
 
 	.schedule-selector {
 		@apply mt-5;
-		.selectable-day, .selectable-time {
-			margin: 1em 0 1em;
-		}
-	}
-
-	.selected-day-is-past{
-		@apply text-red-500;
 	}
 </style>
 
@@ -220,57 +252,59 @@ const reason = computed<string>(() => {
 	return chosenReason.value
 })
 const forceCreate = ref<boolean>(true)
-const hasConflicts = ref<boolean>(false)
 
 const MAX_CONSULTANTS = 1
-const selectedConsultants = ref<DeserializedUserResource<"roles">[]>([])
-const consultantRoles = computed(() => {
+const selectedConsultors = ref<DeserializedUserResource<"roles">[]>([])
+const consultorRoles = computed(() => {
 	const roleIDs: string[] = []
 	const labels: string[] = []
 
-	if (selectedConsultants.value.length) {
-		const [ consultant ] = selectedConsultants.value
-		consultant.roles.data.forEach(role => roleIDs.push(String(role.id)))
-		consultant.roles.data.forEach(role => labels.push(role.name))
+	if (selectedConsultors.value.length) {
+		const [ consultor ] = selectedConsultors.value
+		consultor.roles.data.forEach(role => roleIDs.push(String(role.id)))
+		consultor.roles.data.forEach(role => labels.push(role.name))
 	}
 
 	return makeOptionInfo(roleIDs, labels) as OptionInfo[]
 })
-const addressConsultantAs = ref("")
+const addressConsultorAs = ref("")
+const consultorFieldsClasses = computed(() => ({
+	"has-selected-consultor": selectedConsultors.value.length
+}))
 
 const MAX_CONSULTERS = 5
-const selectedConsulters = ref<DeserializedUserResource<"studentDetail">[]>([
+const selectedConsultees = ref<DeserializedUserResource<"studentDetail">[]>([
 	userProfileData as DeserializedUserResource<"department" | "roles" | "studentDetail">
 ])
 
 const employeeScheduleFetcher = new EmployeeScheduleFetcher()
-const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
+const consultorSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 	"data": [],
 	"meta": {
 		"count": 0
 	}
 })
-async function fetchConsultantSchedules(selectedConsultant: DeserializedUserResource<"roles">) {
-	await loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
+async function fetchConsultorSchedules(selectedConsultor: DeserializedUserResource<"roles">) {
+	await loadRemainingResource(consultorSchedules, employeeScheduleFetcher, () => ({
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
 			"existence": "exists",
-			"user": selectedConsultant.id
+			"user": selectedConsultor.id
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
-			"offset": consultantSchedules.value.data.length
+			"offset": consultorSchedules.value.data.length
 		},
 		"sort": [ "dayName" ]
 	}))
 }
-watch(selectedConsultants, () => {
-	if (selectedConsultants.value.length) {
-		const [ selectedConsultant ] = selectedConsultants.value
-		fetchConsultantSchedules(selectedConsultant)
+watch(selectedConsultors, () => {
+	if (selectedConsultors.value.length) {
+		const [ selectedConsultor ] = selectedConsultors.value
+		fetchConsultorSchedules(selectedConsultor)
 	} else {
-		consultantSchedules.value = {
+		consultorSchedules.value = {
 			"data": [],
 			"meta": {
 				"count": 0
@@ -293,21 +327,18 @@ const scheduledStartAt = computed<string>(() => {
 
 	return chosenDate.toJSON()
 })
-watch(scheduledStartAt, () => {
-	hasConflicts.value = false
-})
 
 const isRequiredInfoCompleted = computed(
-	() => Boolean(selectedConsultants.value.length)
-		&& Boolean(addressConsultantAs.value)
-		&& Boolean(consultantSchedules.value.data.length)
+	() => Boolean(selectedConsultors.value.length)
+		&& Boolean(addressConsultorAs.value)
+		&& Boolean(consultorSchedules.value.data.length)
 		&& Boolean(reason.value)
 		&& Boolean(chosenTime.value)
 )
 
 function addConsultation(): void {
-	const consultant = {
-		"id": selectedConsultants.value[0]?.id,
+	const consultor = {
+		"id": selectedConsultors.value[0]?.id,
 		"type": "user"
 	}
 
@@ -326,22 +357,22 @@ function addConsultation(): void {
 		"extraCreateDocumentProps": { meta },
 		"extraDataFields": {
 			"relationships": {
-				"consultant": {
-					"data": consultant
+				"consultor": {
+					"data": consultor
 				},
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
-						"id": String(addressConsultantAs.value),
+						"id": String(addressConsultorAs.value),
 						"type": "role"
 					}
 				},
 				"participants": {
 					"data": [
-						...selectedConsulters.value.map(consulter => ({
-							"id": consulter.id,
+						...selectedConsultees.value.map(consultee => ({
+							"id": consultee.id,
 							"type": "user"
 						})),
-						consultant
+						consultor
 					]
 				}
 			}

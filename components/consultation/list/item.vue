@@ -4,7 +4,7 @@
 		class="consultation"
 		:class="{ 'active': mustBeActive }"
 		@click="pickConsultation">
-		<h3 class="consultation-title font-bold mb-3;">
+		<h3 class="consultation-title">
 			<div class="number-and-title">
 				<span class="number-symbol">#{{ consultation.id }}</span>
 				{{ consultation.reason }}
@@ -15,7 +15,6 @@
 				{{ statusBadge }}
 			</small>
 		</h3>
-		<!-- TODO(others): style arrangement of pictures -->
 		<div class="profile-pictures">
 			<span class="participant-label">participants:</span>
 			<ProfilePictureItem
@@ -38,6 +37,7 @@
 
 	.consultation {
 		@apply p-3;
+		cursor: pointer;
 
 		&.active {
 			background-color: hsla(0, 0%, 50%, 0.1)
@@ -45,11 +45,16 @@
 
 		.consultation-title {
 			@apply flex justify-between items-center;
+			@apply font-bold mb-3;
+
 			.status-badge {
 				@apply p-1 text-xs rounded-0.5em;
 				@apply bg-opacity-10;
 				background-color: $color-primary;
 
+				&.canceled {
+					@apply bg-red-700 bg-opacity-100;
+				}
 				&.scheduled {
 					@apply bg-dark-50 bg-opacity-100;
 				}
@@ -104,7 +109,6 @@ import EmptyLastChat from "@/consultation/list/empty_last_chat.vue"
 import ProfilePictureItem from "@/consultation/list/profile_picture_item.vue"
 import makeConsultationStates from "@/consultation/helpers/make_consultation_states"
 
-
 const pageContext = inject("pageContext") as PageContext<"deserialized">
 
 const props = defineProps<{
@@ -118,13 +122,6 @@ const consultationID = computed<string>(() => props.consultation.id)
 const readURL = computed<string>(() => specializePath(READ_CONSULTATION, {
 	"id": consultationID.value
 }))
-const ownedActivities = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
-	const activities = props.chatMessageActivities.data.filter(
-		activity => activity.consultation.data.id === props.consultation.id
-	)
-
-	return activities
-})
 const {
 	isCanceled,
 	isDone,
@@ -152,7 +149,7 @@ const statusBadgeClasses = computed(() => ({
 }))
 
 const profilePictures = computed<DeserializedChatMessageActivityResource<"user">[]>(() => {
-	const activities = makeUniqueBy(ownedActivities.value, "user.data.id")
+	const activities = makeUniqueBy(props.chatMessageActivities.data, "user.data.id")
 
 	return activities
 })
