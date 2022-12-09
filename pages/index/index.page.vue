@@ -3,7 +3,7 @@
 	<div v-else>
 		<Opening :has-profile="hasProfile"/>
 		<div v-if="hasProfile" class="post-preview">
-			<h1 class="5xl">
+			<h1 class="text-3xl">
 				Recent Posts
 			</h1>
 			<div v-if="hasPosts">
@@ -27,6 +27,7 @@
 <style lang="scss" scoped>
 	.post-preview {
 		@apply flex flex-col;
+		@apply border-b-dark-500 dark:border-b-light-500 border-solid border-b-1 mb-3;
 
 		.viewer {
 			@apply flex-1 my-4;
