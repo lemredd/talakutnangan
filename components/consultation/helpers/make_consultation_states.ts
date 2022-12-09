@@ -41,6 +41,8 @@ export default function(
 		const hasTerminated = isAfterScheduledStart.value && !hasDeleted.value
 		return hasTerminated && props.consultation.actionTaken === null
 	})
+	const isUrgent = computed(
+		() => props.consultation.reason.toLocaleLowerCase().includes("urgent:"))
 
 	setInterval(() => {
 		currentTime.value = new Date()
@@ -51,6 +53,7 @@ export default function(
 		isCanceled,
 		isDone,
 		isOngoing,
+		isUrgent,
 		willSoonStart,
 		willStart
 	}
