@@ -118,6 +118,15 @@ export interface DateTimeRangeFilter extends Serializable {
 	}
 }
 
+export interface TagFilter extends Serializable {
+	filter: {
+		/**
+		 * ID of the tags to filter on. If none is provided, it selects any.
+		 */
+		tagIDs: string[]
+	}
+}
+
 export interface ConsultationFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
@@ -242,6 +251,7 @@ export type PostQueryParameters<T extends number|string = string> =
 	& CommonQueryParameters
 	& DateTimeRangeFilter
 	& NullableDepartmentFilter<T>
+	& TagFilter
 
 export type TagQueryParameters =
 	& CommonQueryParameters
