@@ -226,11 +226,6 @@ const mayVote = computed<boolean>(() => {
 	return !hasNotLoaded && mayVoteComment.value && hasRenewedVote.value
 })
 
-const unusedVoteCount = computed<number>(() => {
-	if (isUndefined(props.modelValue.meta)) return 0
-	return props.modelValue.meta.upvoteCount - props.modelValue.meta.downvoteCount
-})
-
 const upvoteCountFetch = computed<number>(() => {
 	if (isUndefined(props.modelValue.meta)) return 0
 	return props.modelValue.meta.upvoteCount
