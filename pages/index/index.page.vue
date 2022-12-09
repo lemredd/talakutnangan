@@ -2,14 +2,19 @@
 	<MaintenanceMessage v-if="isInMaintenanceMode"/>
 	<div v-else>
 		<div v-if="hasProfile" class="post-preview">
-			<Viewer
-				v-for="(post, i) in posts.data"
-				:key="post.id"
-				v-model="posts.data[i]"
-				:comment-count="posts.data[i].meta?.commentCount || 0"
-				class="viewer"
-				@archive="archivePost"
-				@restore="restorePost"/>
+			<div v-if="hasPosts">
+				<Viewer
+					v-for="(post, i) in posts.data"
+					:key="post.id"
+					v-model="posts.data[i]"
+					:comment-count="posts.data[i].meta?.commentCount || 0"
+					class="viewer"
+					@archive="archivePost"
+					@restore="restorePost"/>
+			</div>
+			<p class="empty-post" v-else>
+				There are no posts found in the forum.
+			</p>
 		</div>
 		<Opening v-else/>
 		<Instructions/>
@@ -24,11 +29,15 @@
 		.viewer {
 			@apply flex-1 my-4;
 		}
+
+		.empty-post {
+			@apply my-2 text-center;
+		}
 	}
 </style>
 
 <script lang="ts" setup>
-import { inject, ref } from "vue"
+import { inject, ref, computed } from "vue"
 
 import type { PageContext } from "$/types/renderer"
 import type {
@@ -48,8 +57,10 @@ type RequiredExtraProps = "posts"
 const { pageProps } = inject("pageContext") as PageContext<"deserialized", RequiredExtraProps>
 const { userProfile, isInMaintenanceMode } = pageProps
 
-const hasProfile = Boolean(userProfile)
 const posts = ref<DeserializedPostListDocument>(pageProps.posts)
+const hasPosts = computed<boolean>(() => (posts.value?.data?.length ?? 0) > 0)
+
+const hasProfile = Boolean(userProfile)
 
 const hasDefaultPassword = hasProfile
 	&& !isUndefined(userProfile.meta.hasDefaultPassword)
