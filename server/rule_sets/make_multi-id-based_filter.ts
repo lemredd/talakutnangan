@@ -1,5 +1,5 @@
 import type { BaseManagerClass } from "!/types/dependent"
-import type { Pipe, Rules, FieldRules } from "!/types/validation"
+import type { Pipe, RuleContraints, Rules, FieldRules } from "!/types/validation"
 
 import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
@@ -15,11 +15,13 @@ export default function(
 	{
 		postIDRules = { "pipes": [] },
 		initialPipes = [ nullable ],
+		initialConstraints = {},
 		multipleIDKey = "IDs",
 		mustCast = false
 	}: Partial<{
 		postIDRules: Rules,
 		initialPipes: Pipe[],
+		initialConstraints: RuleContraints,
 		multipleIDKey: string,
 		mustCast: boolean
 	}> = {}
@@ -30,6 +32,7 @@ export default function(
 	return {
 		[multipleIDKey]: {
 			"constraints": {
+				...initialConstraints,
 				"array": {
 					"constraints": {
 						"integer": { mustCast },

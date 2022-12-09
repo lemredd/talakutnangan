@@ -2,7 +2,6 @@ import ControllerLike from "!/bases/controller-likes/controller"
 
 import { controllers as semesterControllers } from "!%/api/semester/router"
 import { controllers as auditTrailControllers } from "!%/api/audit_trail/router"
-import { controllers as asynchronousFileControllers } from "!%/api/asynchronous_file/router"
 
 import { controllers as tagControllers } from "!%/api/tag/router"
 import { controllers as postControllers } from "!%/api/post/router"
@@ -10,7 +9,6 @@ import { controllers as commentControllers } from "!%/api/comment/router"
 import { controllers as boundPostControllers } from "!%/api/post(id)/router"
 import { controllers as commentVoteControllers } from "!%/api/comment_vote/router"
 import { controllers as postAttachmentControllers } from "!%/api/post_attachment/router"
-import { controllers as profanityFilterControllers } from "!%/api/profanity_filter/router"
 
 import { controllers as userControllers } from "!%/api/user/router"
 import { controllers as roleControllers } from "!%/api/role/router"
@@ -52,14 +50,12 @@ const forumRelatedControllers = [
 	...commentControllers,
 	...boundPostControllers,
 	...postAttachmentControllers,
-	...profanityFilterControllers,
 	...commentVoteControllers
 ]
 
 const miscelleneousControllers = [
 	...semesterControllers,
-	...auditTrailControllers,
-	...asynchronousFileControllers
+	...auditTrailControllers
 ]
 
 export const controllers: (new() => ControllerLike)[] = [

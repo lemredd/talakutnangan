@@ -66,7 +66,8 @@ export default class extends PageMiddleware {
 					"end": rangeEnd
 				},
 				"departmentID": department,
-				"existence": "exists"
+				"existence": "exists",
+				"tagIDs": "*"
 			},
 			"page": {
 				"limit": DEFAULT_LIST_LIMIT,

@@ -84,7 +84,8 @@ describe("POST /api/consultation", () => {
 				"type": "consultation"
 			},
 			"meta": {
-				"doesAllowConflicts": true
+				"doesAllowConflicts": true,
+				"mustForceStart": false
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)
@@ -169,7 +170,8 @@ describe("POST /api/consultation", () => {
 				"type": "consultation"
 			},
 			"meta": {
-				"doesAllowConflicts": true
+				"doesAllowConflicts": true,
+				"mustForceStart": false
 			}
 		})
 		.type(JSON_API_MEDIA_TYPE)

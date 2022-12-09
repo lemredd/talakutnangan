@@ -127,7 +127,8 @@ export default class extends DoubleBoundJSONController {
 						"pointer": "data.attributes.startedAt"
 					},
 					"isWithinEmployeeSchedule": {
-						"userIDPointer": "data.relationships.consultor.data.id"
+						"forceConfirmationPointer": "meta.mustForceStart",
+						"userIDPointer": "data.relationships.consultant.data.id"
 					},
 					"uniqueConsultationSchedule": {
 						"conflictConfirmationPointer": "meta.doesAllowConflicts",
@@ -179,6 +180,14 @@ export default class extends DoubleBoundJSONController {
 				"constraints": {
 					"object": {
 						"doesAllowConflicts": {
+							"constraints": {
+								"boolean": {
+									"loose": false
+								}
+							},
+							"pipes": [ required, boolean ]
+						},
+						"mustForceStart": {
 							"constraints": {
 								"boolean": {
 									"loose": false
