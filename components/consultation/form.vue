@@ -40,13 +40,26 @@
 				text-field-label="Type the students to add"
 				kind="student"/>
 
-			<div class="required">
-				<SelectableOptionsField
-					v-model="chosenReason"
-					class="reason"
-					label="Kind of Reason: "
-					placeholder="Choose your reason"
-					:options="reasonOptions"/>
+			<div class="reason-and-urgency">
+				<div class="required">
+					<SelectableOptionsField
+						v-model="chosenReason"
+						class="reason"
+						label="Kind of Reason: "
+						placeholder="Choose your reason"
+						:options="reasonOptions"/>
+				</div>
+
+				<label
+					class="is-urgent-checkbox-container"
+					for="is-urgent-checkbox">
+					<input
+						id="is-urgent-checkbox"
+						v-model="isUrgent"
+						type="checkbox"
+						class="is-urgent-checkbox"/>
+					This is an urgent concern.
+				</label>
 			</div>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<NonSensitiveTextField
@@ -195,6 +208,16 @@
 		}
 	}
 
+	.reason-and-urgency {
+		@apply flex flex-row flex-wrap items-center justify-between;
+
+		.is-urgent-checkbox-container {
+			@apply mt-4;
+
+			display: block;
+		}
+	}
+
 	.schedule-selector {
 		@apply mt-5;
 	}
@@ -251,6 +274,7 @@ const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
+const isUrgent = ref(false)
 const forceCreate = ref<boolean>(true)
 
 const MAX_CONSULTORS = 1
@@ -343,7 +367,8 @@ function addConsultation(): void {
 	}
 
 	const meta = {
-		"doesAllowConflicts": forceCreate.value
+		"doesAllowConflicts": forceCreate.value,
+		"mustForceStart": isUrgent.value
 	}
 
 	fetcher.create({
