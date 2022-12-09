@@ -30,6 +30,20 @@ describe("Database Manager: Department read operations", () => {
 		expect(counts).toHaveProperty("data.0.meta.userCount", 2)
 	})
 
+	it("cannot count single archived model", async() => {
+		const manager = new Manager()
+		const model = await new Factory().insertOne()
+		await new UserFactory().in(model).insertOne()
+		const lastUser = await new UserFactory().in(model).insertOne()
+		await lastUser.destroy({ "force": false })
+
+		const counts = await manager.countUsers([ model.id ])
+
+		expect(counts).toHaveProperty("data.0.id", String(model.id))
+		expect(counts).toHaveProperty("data.0.type", "department")
+		expect(counts).toHaveProperty("data.0.meta.userCount", 1)
+	})
+
 	it("can count single model with zero users", async() => {
 		const manager = new Manager()
 		const model = await new Factory().insertOne()

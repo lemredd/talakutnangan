@@ -49,6 +49,20 @@
 		</Suspensible>
 	</form>
 
+	<div
+		v-if="hasEmployeeSchedules"
+		class="user-data-form">
+		<h1 class="user-data-form-header">
+			Consultation Schedules
+		</h1>
+		<SchedulePickerGroup
+			v-for="day in DayValues"
+			:key="day"
+			:disabled="!mayUpdateUser"
+			:day-name="day"
+			:schedules="schedules"/>
+	</div>
+
 	<form
 		v-if="mayUpdateAttachedRoles"
 		class="user-data-form"
@@ -163,6 +177,7 @@ import {
 	onMounted
 } from "vue"
 
+import { DayValues } from "$/types/database"
 import type { FieldStatus } from "@/fields/types"
 import type { PageContext } from "$/types/renderer"
 import type { OptionInfo } from "$@/types/component"
@@ -170,6 +185,7 @@ import type { UserManagementInfo } from "$@/types/independent"
 import type { DeserializedUserDocument } from "$/types/documents/user"
 import type { DeserializedRoleListDocument } from "$/types/documents/role"
 import type { DeserializedDepartmentListDocument } from "$/types/documents/department"
+import type { DeserializedEmployeeScheduleResource } from "$/types/documents/employee_schedule"
 
 import Fetcher from "$@/fetchers/user"
 import RoleFetcher from "$@/fetchers/role"
@@ -185,6 +201,7 @@ import Suspensible from "@/helpers/suspensible.vue"
 import ListRedirector from "@/helpers/list_redirector.vue"
 import NonSensitiveTextField from "@/fields/non-sensitive_text.vue"
 import SelectableOptionsField from "@/fields/selectable_options.vue"
+import SchedulePickerGroup from "@/settings/schedule_picker_group.vue"
 import ReceivedErrors from "@/helpers/message_handlers/received_errors.vue"
 import MultiSelectableOptionsField from "@/fields/multi-selectable_options.vue"
 import ReceivedSuccessMessages from "@/helpers/message_handlers/received_success_messages.vue"
@@ -229,6 +246,8 @@ const managementInfo = computed<UserManagementInfo>(
 	() => makeManagementInfo(userProfile, user.value.data)
 )
 
+const hasEmployeeSchedules = computed<boolean>(() => Boolean(userProfile.data.employeeSchedules))
+
 const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
 const mayUpdateUser = computed<boolean>(() => managementInfo.value.mayUpdateUser)
 
@@ -263,6 +282,8 @@ const studentNumber = computed<string>(() => {
 	return ""
 })
 const hasSubmittedUser = ref<boolean>(true)
+
+const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])

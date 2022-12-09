@@ -48,9 +48,12 @@ export default class extends BaseManager<
 					User.sequelize.getQueryInterface().queryGenerator.selectQuery(
 						User.tableName, {
 							"attributes": [ User.sequelize.fn("count", "*") ],
-							"where": new Condition().equal(
-								"departmentID",
-								User.sequelize.col(`${Model.tableName}.id`)
+							"where": new Condition().and(
+								new Condition().equal(
+									"departmentID",
+									User.sequelize.col(`${Model.tableName}.id`)
+								),
+								new Condition().is("deletedAt", null)
 							)
 							.build()
 						}

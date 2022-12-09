@@ -119,7 +119,7 @@ export default class extends PageMiddleware {
 		const chatMessageActivityManager = new ChatMessageActivityManager(request)
 		const chatMessageActivities = await chatMessageActivityManager.list({
 			"filter": {
-				"consultationIDs": [ Number(consultation.data.id) ],
+				"consultationIDs": allConsultationIDs,
 				"existence": "*"
 			},
 			"page": {
