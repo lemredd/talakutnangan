@@ -32,7 +32,7 @@
 				</div>
 
 				<div
-					v-if="chosenDay"
+					v-if="mustShowTimeField"
 					class="time-field"
 					:class="hasSelectableTimes ? 'required' : ''">
 					<SelectableOptionsField
@@ -208,6 +208,7 @@ const chosenDate = computed<string>({
 const isCustomDate = computed<boolean>(() => chosenDate.value === CUSTOM_DAY)
 const customDate = ref("")
 
+const mustShowTimeField = computed(() => props.chosenDay && !props.isUrgent)
 const chosenTime = computed({
 	get() { return props.chosenTime },
 	set(newValue: string) { emit("update:chosenTime", newValue) }
