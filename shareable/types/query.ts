@@ -121,9 +121,9 @@ export interface DateTimeRangeFilter extends Serializable {
 export interface TagFilter<T extends number|string = string> extends Serializable {
 	filter: {
 		/**
-		 * ID of the tags to filter on. If none is provided, it selects any.
+		 * ID of the tags to filter on. If asterisks is provided, it matches any.
 		 */
-		tagIDs: T[]
+		tagIDs: "*"|T[]
 	}
 }
 
