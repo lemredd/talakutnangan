@@ -59,8 +59,8 @@ export default class extends BaseManager<
 		return [
 			siftByRange,
 			siftByDepartment,
-			siftByTags,
 			includeDefaults,
+			siftByTags,
 			...super.listPipeline
 		]
 	}
