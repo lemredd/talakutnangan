@@ -106,12 +106,12 @@ const { pageProps } = pageContext
 
 const { userProfile } = pageProps
 
-const consultation = ref<DeserializedConsultationResource<"consultant"|"consultantRole">>(
-	pageProps.consultation.data as DeserializedConsultationResource<"consultant"|"consultantRole">
+const consultation = ref<DeserializedConsultationResource<"consultor"|"consultorRole">>(
+	pageProps.consultation.data as DeserializedConsultationResource<"consultor"|"consultorRole">
 )
 
-const consultations = ref<DeserializedConsultationListDocument<"consultant"|"consultantRole">>(
-	pageProps.consultations as DeserializedConsultationListDocument<"consultant"|"consultantRole">
+const consultations = ref<DeserializedConsultationListDocument<"consultor"|"consultorRole">>(
+	pageProps.consultations as DeserializedConsultationListDocument<"consultor"|"consultorRole">
 )
 
 const previewMessages = ref<DeserializedChatMessageListDocument<"user"|"consultation">>(
@@ -236,7 +236,7 @@ async function loadConsultations(): Promise<void> {
 	const { data, meta } = body
 
 	if (meta?.count ?? data.length > 0) {
-		const castData = data as DeserializedConsultationResource<"consultant"|"consultantRole">[]
+		const castData = data as DeserializedConsultationResource<"consultor"|"consultorRole">[]
 
 		consultations.value.data = [
 			...consultations.value.data,

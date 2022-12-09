@@ -34,7 +34,7 @@
 				<section>
 					<div>
 						<div class="text-8xl">
-							{{ totalNumberOfConsulters }}
+							{{ totalNumberOfConsultees }}
 						</div>
 					</div>
 					<small> Number of consultees interacted </small>
@@ -53,13 +53,13 @@
 						:title="convertToFullTimeString(totalNumberOfConsumedMilliseconds)">
 						<div class="hours">
 							<p>
-								{{ readableWeeklyAverageHoursPerConsulter }}
+								{{ readableWeeklyAverageHoursPerConsultee }}
 							</p>
 							<p>
-								{{ readableWeeklyAverageMinutesPerConsulter }}
+								{{ readableWeeklyAverageMinutesPerConsultee }}
 							</p>
 							<p>
-								{{ readableWeeklyAverageSecondsPerConsulter }}
+								{{ readableWeeklyAverageSecondsPerConsultee }}
 							</p>
 						</div>
 					</div>
@@ -235,7 +235,7 @@ const totalNumberOfConsumedMilliseconds = computed<number>(() => weeklySummary.v
 	(totalMilliseconds, summary) => totalMilliseconds + summary.totalMillisecondsConsumed,
 	0
 ))
-const totalNumberOfConsulters = computed<number>(
+const totalNumberOfConsultees = computed<number>(
 	() => makeUnique(weeklySummary.value.map(summary => summary.userIDs).flat()).length
 )
 const totalNumberOfConsultations = computed<number>(
@@ -249,7 +249,7 @@ const readableTotalHours = computed<string>(() => readableTotalTime.value.hourSt
 const readableTotalMinutes = computed<string>(() => readableTotalTime.value.minuteString)
 const readableTotalSeconds = computed<string>(() => readableTotalTime.value.secondString)
 
-const weeklyAveragePerConsulters = computed<number>(() => {
+const weeklyAveragePerConsultees = computed<number>(() => {
 	const subtotals = weeklySummary.value.map(summary => ({
 		"count": summary.userIDs.length,
 		"totalMillisecondsConsumed": summary.totalMillisecondsConsumed
@@ -265,17 +265,17 @@ const weeklyAveragePerConsulters = computed<number>(() => {
 	const total = weightedData.reduce((previousTotal, subtotal) => previousTotal + subtotal, 0)
 	return total / Math.max(totalWeeklyCount, 1)
 })
-const readableWeeklyAverageTimePerConsulter = computed<RawFullTimeString>(
-	() => convertToRawFullTime(weeklyAveragePerConsulters.value)
+const readableWeeklyAverageTimePerConsultee = computed<RawFullTimeString>(
+	() => convertToRawFullTime(weeklyAveragePerConsultees.value)
 )
-const readableWeeklyAverageHoursPerConsulter = computed<string>(
-	() => readableWeeklyAverageTimePerConsulter.value.hourString
+const readableWeeklyAverageHoursPerConsultee = computed<string>(
+	() => readableWeeklyAverageTimePerConsultee.value.hourString
 )
-const readableWeeklyAverageMinutesPerConsulter = computed<string>(
-	() => readableWeeklyAverageTimePerConsulter.value.minuteString
+const readableWeeklyAverageMinutesPerConsultee = computed<string>(
+	() => readableWeeklyAverageTimePerConsultee.value.minuteString
 )
-const readableWeeklyAverageSecondsPerConsulter = computed<string>(
-	() => readableWeeklyAverageTimePerConsulter.value.secondString
+const readableWeeklyAverageSecondsPerConsultee = computed<string>(
+	() => readableWeeklyAverageTimePerConsultee.value.secondString
 )
 
 const weeklyAveragePerConsultations = computed<number>(() => {

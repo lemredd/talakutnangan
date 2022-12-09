@@ -63,11 +63,11 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const consulterBox = wrapper.find(".consulters")
-			const consulterSearchField = consulterBox.findComponent({
+			const consulteeBox = wrapper.find(".consultees")
+			const consulteeSearchField = consulteeBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consulterSearchField.vm.$emit("update:modelValue", students.data[0].attributes.name)
+			await consulteeSearchField.vm.$emit("update:modelValue", students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			await nextTick()
 
@@ -168,11 +168,11 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const consultantBox = wrapper.find(".consultant")
-			const consultantSearchField = consultantBox.findComponent({
+			const consultorBox = wrapper.find(".consultor")
+			const consultorSearchField = consultorBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
 			const castFetch = fetch as jest.Mock<any, any>
@@ -201,10 +201,10 @@ describe.skip("Component: consultation/form", () => {
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
 
-			const selectableConsultantRoles = wrapper.find(".consultant-roles")
-			const selectableConsultantRolesOptions = selectableConsultantRoles.findAll("option")
-			expect(selectableConsultantRoles.exists()).toBeTruthy()
-			expect(selectableConsultantRolesOptions[1].element.value).toEqual(String(roles.data[0].id))
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesOptions = selectableConsultorRoles.findAll("option")
+			expect(selectableConsultorRoles.exists()).toBeTruthy()
+			expect(selectableConsultorRolesOptions[1].element.value).toEqual(String(roles.data[0].id))
 		})
 
 		it("should show text field when reason selected is 'others'", async() => {
@@ -308,18 +308,18 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const consultantBox = wrapper.find(".consultant")
-			const consultantSearchField = consultantBox.findComponent({
+			const consultorBox = wrapper.find(".consultor")
+			const consultorSearchField = consultorBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
 			fetchMock.mockResponseOnce(
 				JSON.stringify(schedules),
 				{ "status": RequestEnvironment.status.OK }
 			)
-			// Display consultant chip
+			// Display consultor chip
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
@@ -423,22 +423,22 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const [ consultantSearchField ] = wrapper.findAllComponents({
+			const [ consultorSearchField ] = wrapper.findAllComponents({
 				"name": "NonSensitiveTextField"
 			})
 			const submitBtn = wrapper.find(".submit-btn")
 
-			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			// Display consultant
+			// Display consultor
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
-			const selectableConsultantRoles = wrapper.find(".consultant-roles")
-			const selectableConsultantRolesField = selectableConsultantRoles.find("select")
-			await selectableConsultantRolesField.setValue(String(roles.data[0].id))
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
+			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
 			// Load selectable days and its options
@@ -454,7 +454,7 @@ describe.skip("Component: consultation/form", () => {
 			expect(submitBtn.attributes("disabled")).toBeFalsy()
 		})
 
-		it("should submit with other consulters", async() => {
+		it("should submit with other consultees", async() => {
 			const roles = {
 				"data": [
 					{
@@ -549,20 +549,20 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const [ consultantSearchField, consulterSearchField ] = wrapper.findAllComponents({
+			const [ consultorSearchField, consulteeSearchField ] = wrapper.findAllComponents({
 				"name": "NonSensitiveTextField"
 			})
 
-			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
-			// Display consultant
+			// Display consultor
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
-			const selectableConsultantRoles = wrapper.find(".consultant-roles")
-			const selectableConsultantRolesField = selectableConsultantRoles.find("select")
-			await selectableConsultantRolesField.setValue(String(roles.data[0].id))
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
+			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
 
 			// Load selectable days and its options
 			await flushPromises()
@@ -580,7 +580,7 @@ describe.skip("Component: consultation/form", () => {
 			const selectableTimeField = selectableTime.find("select")
 			await selectableTimeField.setValue(timeOptions[1].attributes("value"))
 
-			await consulterSearchField.setValue(students.data[0].attributes.name)
+			await consulteeSearchField.setValue(students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			await flushPromises()
 			const studentChip = wrapper.find(".chip")
@@ -597,7 +597,7 @@ describe.skip("Component: consultation/form", () => {
 			expect(previousCalls).not.toHaveProperty("0.arguments.1")
 		})
 
-		it("should submit without other consulters", async() => {
+		it("should submit without other consultees", async() => {
 			const roles = {
 				"data": [
 					{
@@ -674,20 +674,20 @@ describe.skip("Component: consultation/form", () => {
 				}
 			})
 
-			const consultantBox = wrapper.find(".consultant")
-			const consultantSearchField = consultantBox.findComponent({
+			const consultorBox = wrapper.find(".consultor")
+			const consultorSearchField = consultorBox.findComponent({
 				"name": "NonSensitiveTextField"
 			})
-			await consultantSearchField.setValue(employees.data[0].attributes.name)
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 
-			// Display consultant
+			// Display consultor
 			await flushPromises()
 			const employeeChip = wrapper.find(".chip")
 			await employeeChip.trigger("click")
-			const selectableConsultantRoles = wrapper.find(".consultant-roles")
-			const selectableConsultantRolesField = selectableConsultantRoles.find("select")
-			await selectableConsultantRolesField.setValue(String(roles.data[0].id))
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
+			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
 
 			// Load selectable days and its options
 			await flushPromises()

@@ -15,7 +15,7 @@
 			<Scheduler
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
-				:consultant-schedules="consultantSchedules"/>
+				:consultor-schedules="consultorSchedules"/>
 		</template>
 
 		<template #footer>
@@ -85,20 +85,20 @@ const scheduledStartAt = computed<string>(() => {
 	return chosenDate.toJSON()
 })
 
-const consultantSchedules = ref<DeserializedEmployeeScheduleListDocument>({
+const consultorSchedules = ref<DeserializedEmployeeScheduleListDocument>({
 	"data": [],
 	"meta": {
 		"count": 0
 	}
 })
-function fetchConsultantSchedules() {
-	const consultant = consultation.data.consultant as DeserializedUserDocument
-	loadRemainingResource(consultantSchedules, employeeScheduleFetcher, () => ({
+function fetchConsultorSchedules() {
+	const consultor = consultation.data.consultor as DeserializedUserDocument
+	loadRemainingResource(consultorSchedules, employeeScheduleFetcher, () => ({
 		"filter": {
 			"day": "*",
 			"employeeScheduleRange": "*",
 			"existence": "exists",
-			"user": consultant?.data.id
+			"user": consultor?.data.id
 		},
 		"page": {
 			"limit": DEFAULT_LIST_LIMIT,
@@ -127,12 +127,12 @@ function rescheduleConsultation() {
 	}, {
 		"extraDataFields": {
 			"relationships": {
-				"consultant": {
-					"data": consultation.data.consultant?.data
+				"consultor": {
+					"data": consultation.data.consultor?.data
 				},
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
-						"id": consultation.data.consultant?.data.id as string,
+						"id": consultation.data.consultor?.data.id as string,
 						"type": "role"
 					}
 				}
@@ -155,6 +155,6 @@ function rescheduleConsultation() {
 }
 
 onMounted(() => {
-	fetchConsultantSchedules()
+	fetchConsultorSchedules()
 })
 </script>

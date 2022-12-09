@@ -1,6 +1,5 @@
 <!-- eslint-disable max-len -->
 <template>
-	<!-- TODO: Refactor all WindiCSS inline classes using @apply directive -->
 	<button
 		class="print-btn material-icons fixed top-5 right-0 hover:bg-true-gray-500 p-2 hover:text-white"
 		@click="printPage">
@@ -112,7 +111,7 @@
 			</div>
 			<div
 				class="consultee-signature mt-5">
-				<h2>Consulter/s</h2>
+				<h2>Consultee/s</h2>
 				<div
 					v-for="consultee in consultees"
 					:key="consultee.id">

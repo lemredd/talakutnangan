@@ -10,27 +10,27 @@ import ChatMessageTransformer from "%/transformers/chat_message"
 import ChatMessageActivityTransformer from "%/transformers/chat_message_activity"
 
 type Relationships =
-	|"consultant"
-	|"consultantRole"
+	|"consultor"
+	|"consultorRole"
 	|"chatMessageActivities"
 	|"chatMessages"
 
 export default class extends Transformer<Consultation, void> {
 	constructor(
 		{ included }: IncludedRelationships<Relationships> = {
-			"included": [ "consultant", "consultantRole", "chatMessageActivities", "chatMessages" ]
+			"included": [ "consultor", "consultorRole", "chatMessageActivities", "chatMessages" ]
 		}
 	) {
 		super("consultation", [
-			included.indexOf("consultant") > -1
+			included.indexOf("consultor") > -1
 				? {
-					"attribute": "consultant",
+					"attribute": "consultor",
 					"transformer": new UserTransformer()
 				}
 				: null,
-			included.indexOf("consultantRole") > -1
+			included.indexOf("consultorRole") > -1
 				? {
-					"attribute": "consultantRole",
+					"attribute": "consultorRole",
 					"transformer": new RoleTransformer()
 				}
 				: null,

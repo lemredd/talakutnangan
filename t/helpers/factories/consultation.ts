@@ -34,7 +34,7 @@ export default class ConsultationFactory extends BaseFactory<
 	DeserializedConsultationDocument,
 	DeserializedConsultationListDocument
 > {
-	#consultantInfoGenerator: () => Promise<AttachedRole>
+	#consultorInfoGenerator: () => Promise<AttachedRole>
 		= async() => {
 			const attachedRole = await new AttachedRoleFactory()
 			.user(() => new UserFactory().beReachableEmployee().insertOne())
@@ -63,7 +63,7 @@ export default class ConsultationFactory extends BaseFactory<
 	async generate(): GeneratedData<Consultation> {
 		return {
 			"actionTaken": this.#actionTakenGenerator(),
-			"attachedRoleID": (await this.#consultantInfoGenerator()).id,
+			"attachedRoleID": (await this.#consultorInfoGenerator()).id,
 			"deletedAt": null,
 			"finishedAt": this.#finishedAtGenerator(),
 			"reason": this.#reasonGenerator(),
@@ -73,11 +73,11 @@ export default class ConsultationFactory extends BaseFactory<
 	}
 
 	async attachRelatedModels(model: Consultation): Promise<Consultation> {
-		const consultantInfo = await AttachedRole.findByPk(model.attachedRoleID, {
+		const consultorInfo = await AttachedRole.findByPk(model.attachedRoleID, {
 			"include": [ User, Role ]
 		}) as AttachedRole
 
-		model.consultantInfo = consultantInfo
+		model.consultorInfo = consultorInfo
 
 		return model
 	}
@@ -107,8 +107,8 @@ export default class ConsultationFactory extends BaseFactory<
 		return this
 	}
 
-	consultantInfo(generator: () => Promise<AttachedRole>): ConsultationFactory {
-		this.#consultantInfoGenerator = generator
+	consultorInfo(generator: () => Promise<AttachedRole>): ConsultationFactory {
+		this.#consultorInfoGenerator = generator
 		return this
 	}
 }

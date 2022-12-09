@@ -109,7 +109,7 @@ const currentChatMessageActivity = inject(
 ) as DeepReadonly<ComputedRef<DeserializedChatMessageActivityResource>>
 
 const props = defineProps<{
-	consultation: DeserializedConsultationResource<"consultant"|"consultantRole">
+	consultation: DeserializedConsultationResource<"consultor"|"consultorRole">
 }>()
 
 const textInput = ref<string>("")

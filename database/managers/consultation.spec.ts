@@ -37,7 +37,7 @@ describe("Database Manager: Consultation read operations", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -54,12 +54,12 @@ describe("Database Manager: Consultation read operations", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 		await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
 		.finishedAt(() => new Date())
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => null)
 		.finishedAt(() => null)
 		.insertOne()
@@ -76,12 +76,12 @@ describe("Database Manager: Consultation read operations", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
 		.finishedAt(() => null)
 		.insertOne()
 		await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => null)
 		.insertOne()
 
@@ -97,11 +97,11 @@ describe("Database Manager: Consultation read operations", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => null)
 		.insertOne()
 		await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
 		.finishedAt(() => null)
 		.insertOne()
@@ -118,7 +118,7 @@ describe("Database Manager: Consultation read operations", () => {
 		.user(() => Promise.resolve(user))
 		.insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.startedAt(() => new Date())
 		.finishedAt(() => new Date())
 		.insertOne()
@@ -130,26 +130,26 @@ describe("Database Manager: Consultation read operations", () => {
 
 	it("can sum time by students", async() => {
 		const manager = new Manager()
-		const consultant = await new UserFactory().insertOne()
-		const consulter = await new UserFactory().insertOne()
+		const consultor = await new UserFactory().insertOne()
+		const consultee = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 		const consultations = [
 			await new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date("2022-09-01T08:00:00"))
 			.finishedAt(() => new Date("2022-09-01T08:10:00"))
 			.insertOne(),
 			await new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date("2022-09-02T08:00:00"))
 			.finishedAt(() => new Date("2022-09-02T08:05:30"))
 			.insertOne()
 		]
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(consulter))
+		.user(() => Promise.resolve(consultee))
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
@@ -160,7 +160,7 @@ describe("Database Manager: Consultation read operations", () => {
 					"end": new Date("2022-09-30T11:59:59")
 				},
 				"existence": "exists",
-				"user": consultant.id
+				"user": consultor.id
 			},
 			"page": {
 				"limit": 10,
@@ -174,17 +174,17 @@ describe("Database Manager: Consultation read operations", () => {
 				{
 					"attributes": {
 						"deletedAt": null,
-						"email": consulter.email,
-						"emailVerifiedAt": consulter.emailVerifiedAt,
+						"email": consultee.email,
+						"emailVerifiedAt": consultee.emailVerifiedAt,
 						"kind": "student",
-						"name": consulter.name
+						"name": consultee.name
 					},
-					"id": String(consulter.id),
+					"id": String(consultee.id),
 					"meta": {
 						"consultations": await new Factory().deserialize(
 							consultations.map(consultation => {
 								// eslint-disable-next-line no-undefined
-								consultation.consultantInfo = undefined
+								consultation.consultorInfo = undefined
 								return consultation
 							})
 						),
@@ -198,31 +198,31 @@ describe("Database Manager: Consultation read operations", () => {
 
 	it("can sum some times by students", async() => {
 		const manager = new Manager()
-		const consultant = await new UserFactory().insertOne()
-		const consulter = await new UserFactory().insertOne()
+		const consultor = await new UserFactory().insertOne()
+		const consultee = await new UserFactory().insertOne()
 		const attachedRole = await new AttachedRoleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.insertOne()
 		const consultations = [
 			await new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date("2022-09-03T08:10:00"))
 			.finishedAt(() => new Date("2022-09-03T08:11:00"))
 			.insertOne(),
 			await new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date("2022-10-01T08:02:00"))
 			.finishedAt(() => new Date("2022-10-01T08:04:00"))
 			.insertOne(),
 			await new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date("2022-09-04T08:00:00"))
 			.finishedAt(() => new Date("2022-09-04T08:04:45"))
 			.insertOne()
 		]
 		const consultationIterator = consultations.values()
 		await new ChatMessageActivityFactory()
-		.user(() => Promise.resolve(consulter))
+		.user(() => Promise.resolve(consultee))
 		.consultation(() => Promise.resolve(consultationIterator.next().value))
 		.insertMany(consultations.length)
 
@@ -234,7 +234,7 @@ describe("Database Manager: Consultation read operations", () => {
 			"filter": {
 				dateTimeRange,
 				"existence": "exists",
-				"user": consultant.id
+				"user": consultor.id
 			},
 			"page": {
 				"limit": 10,
@@ -248,12 +248,12 @@ describe("Database Manager: Consultation read operations", () => {
 				{
 					"attributes": {
 						"deletedAt": null,
-						"email": consulter.email,
-						"emailVerifiedAt": consulter.emailVerifiedAt,
+						"email": consultee.email,
+						"emailVerifiedAt": consultee.emailVerifiedAt,
 						"kind": "student",
-						"name": consulter.name
+						"name": consultee.name
 					},
-					"id": String(consulter.id),
+					"id": String(consultee.id),
 					"meta": {
 						"consultations": await new Factory().deserialize(
 							consultations.filter(consultation => {
@@ -266,7 +266,7 @@ describe("Database Manager: Consultation read operations", () => {
 								return isWithinRange
 							}).map(consultation => {
 								// eslint-disable-next-line no-undefined
-								consultation.consultantInfo = undefined
+								consultation.consultorInfo = undefined
 								return consultation
 							})
 						),
@@ -288,7 +288,7 @@ describe("Database Manager: Consultation read operations", () => {
 		const datesOfFebruary = [ 1, 2, 10, 11, 19, 20, 27, 28 ]
 		const consultations = await Promise.all(datesOfFebruary.map(
 			date => new Factory()
-			.consultantInfo(() => Promise.resolve(attachedRole))
+			.consultorInfo(() => Promise.resolve(attachedRole))
 			.startedAt(() => new Date(`2015-02-${twoDigits(date)}T08:00:00`))
 			.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T08:10:00`))
 			.insertOne()
@@ -333,7 +333,7 @@ describe("Database Manager: Consultation read operations", () => {
 								return isWithinRange
 							}).map(consultation => {
 								// eslint-disable-next-line no-undefined
-								consultation.consultantInfo = undefined
+								consultation.consultorInfo = undefined
 								return consultation
 							})
 						),
@@ -356,25 +356,25 @@ describe("Database Manager: Consultation read operations", () => {
 		const consultations = await Promise.all(datesOfFebruary.map(
 			date => [
 				new Factory()
-				.consultantInfo(() => Promise.resolve(attachedRole))
+				.consultorInfo(() => Promise.resolve(attachedRole))
 				.startedAt(() => new Date(`2015-02-${twoDigits(date)}T08:00:00`))
 				.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T08:10:00`))
 				.insertOne(),
 				new Factory()
-				.consultantInfo(() => Promise.resolve(attachedRole))
+				.consultorInfo(() => Promise.resolve(attachedRole))
 				.startedAt(() => new Date(`2015-02-${twoDigits(date)}T10:05:00`))
 				.finishedAt(() => new Date(`2015-02-${twoDigits(date)}T10:10:00`))
 				.insertOne()
 			]
 		).flat())
-		const consultationIteratorForConsultant = consultations.values()
+		const consultationIteratorForConsultor = consultations.values()
 		await new ChatMessageActivityFactory()
 		.user(() => Promise.resolve(user))
-		.consultation(() => Promise.resolve(consultationIteratorForConsultant.next().value))
+		.consultation(() => Promise.resolve(consultationIteratorForConsultor.next().value))
 		.insertMany(consultations.length)
-		const consultationIteratorForConsulters = consultations.values()
+		const consultationIteratorForConsultees = consultations.values()
 		await new ChatMessageActivityFactory()
-		.consultation(() => Promise.resolve(consultationIteratorForConsulters.next().value))
+		.consultation(() => Promise.resolve(consultationIteratorForConsultees.next().value))
 		.insertMany(consultations.length)
 
 		const times = await manager.sumTimeForConsolidation({
@@ -440,7 +440,7 @@ describe("Database Manager: Consultation create operations", () => {
 		const attachedRole = await new AttachedRoleFactory().insertOne()
 		const user = await new UserFactory().insertOne()
 		const model = await new Factory()
-		.consultantInfo(() => Promise.resolve(attachedRole))
+		.consultorInfo(() => Promise.resolve(attachedRole))
 		.makeOne()
 		const resource: ConsultationResource<"create"> = {
 			"attributes": {
@@ -458,13 +458,13 @@ describe("Database Manager: Consultation create operations", () => {
 				"chatMessageActivities": undefined,
 				// eslint-disable-next-line no-undefined
 				"chatMessages": undefined,
-				"consultant": {
+				"consultor": {
 					"data": {
 						"id": String(attachedRole.userID),
 						"type": "user"
 					}
 				} as UserIdentifierDocument,
-				"consultantRole": {
+				"consultorRole": {
 					"data": {
 						"id": String(attachedRole.roleID),
 						"type": "role"
@@ -494,9 +494,9 @@ describe("Database Manager: Consultation create operations", () => {
 		expect(await ChatMessageActivity.count()).toBe(2)
 		expect(createdData).toHaveProperty("data.attributes.actionTaken", model.actionTaken)
 		expect(createdData).toHaveProperty("data.attributes.reason", model.reason)
-		expect(createdData).toHaveProperty("data.relationships.consultant")
+		expect(createdData).toHaveProperty("data.relationships.consultor")
 		expect(createdData).toHaveProperty("data.relationships.chatMessages")
-		expect(createdData).toHaveProperty("data.relationships.consultantRole")
+		expect(createdData).toHaveProperty("data.relationships.consultorRole")
 		expect(createdData).toHaveProperty("data.relationships.chatMessageActivities")
 	})
 })

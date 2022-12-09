@@ -28,7 +28,7 @@ describe("Page: Consultation/form", () => {
 						"user": {
 							"data": {
 								"id": 1,
-								"name": "Consulter Name"
+								"name": "Consultee Name"
 							}
 						}
 					}
@@ -107,7 +107,7 @@ describe("Page: Consultation/form", () => {
 						"user": {
 							"data": {
 								"id": 1,
-								"name": "Consulter Name"
+								"name": "Consultee Name"
 							}
 						}
 					}
@@ -188,7 +188,7 @@ describe("Page: Consultation/form", () => {
 						"user": {
 							"data": {
 								"id": 1,
-								"name": "Consulter Name"
+								"name": "Consultee Name"
 							}
 						}
 					}
@@ -276,7 +276,7 @@ describe("Page: Consultation/form", () => {
 						"user": {
 							"data": {
 								"id": 1,
-								"name": "Consulter Name"
+								"name": "Consultee Name"
 							}
 						}
 					}
@@ -354,7 +354,7 @@ describe("Page: Consultation/form", () => {
 						"user": {
 							"data": {
 								"id": 1,
-								"name": "Consulter Name",
+								"name": "Consultee Name",
 								"signature": {
 									"data": {
 										"fileContents": "/sample/url"

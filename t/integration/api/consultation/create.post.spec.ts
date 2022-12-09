@@ -26,7 +26,7 @@ describe("POST /api/consultation", () => {
 		const { user, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beStudent())
-		const consultant = await new UserFactory()
+		const consultor = await new UserFactory()
 		.beReachableEmployee()
 		.attach(normalRole)
 		.insertOne()
@@ -35,7 +35,7 @@ describe("POST /api/consultation", () => {
 		.finishedAt(() => null)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:59"))
@@ -56,13 +56,13 @@ describe("POST /api/consultation", () => {
 					"scheduledStartAt": model.scheduledStartAt.toJSON()
 				},
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": String(consultant.id),
+							"id": String(consultor.id),
 							"type": "user"
 						}
 					},
-					"consultantRole": {
+					"consultorRole": {
 						"data": {
 							"id": String(normalRole.id),
 							"type": "role"
@@ -71,7 +71,7 @@ describe("POST /api/consultation", () => {
 					"participants": {
 						"data": [
 							{
-								"id": String(consultant.id),
+								"id": String(consultor.id),
 								"type": "user"
 							},
 							{
@@ -98,7 +98,7 @@ describe("POST /api/consultation", () => {
 		expect(previousCalls[0].arguments).toHaveProperty("eventName", "create")
 		expect(previousCalls[0].arguments).toHaveProperty(
 			"namespace",
-			makeConsultationListOfUserNamespace(String(consultant.id))
+			makeConsultationListOfUserNamespace(String(consultor.id))
 		)
 		expect(previousCalls[0].arguments).toHaveProperty("data.0.data.type", "consultation")
 		expect(previousCalls[1].functionName).toBe("emitToClients")
@@ -110,12 +110,12 @@ describe("POST /api/consultation", () => {
 		expect(previousCalls[1].arguments).toHaveProperty("data.0.data.type", "consultation")
 	})
 
-	it("cannot create with missing consultant in participants", async() => {
+	it("cannot create with missing consultor in participants", async() => {
 		const normalRole = await new RoleFactory().insertOne()
 		const { user, cookie } = await App.makeAuthenticatedCookie(
 			normalRole,
 			userFactory => userFactory.beStudent())
-		const consultant = await new UserFactory()
+		const consultor = await new UserFactory()
 		.beReachableEmployee()
 		.attach(normalRole)
 		.insertOne()
@@ -124,7 +124,7 @@ describe("POST /api/consultation", () => {
 		.finishedAt(() => null)
 		.makeOne()
 		await new EmployeeScheduleFactory()
-		.user(() => Promise.resolve(consultant))
+		.user(() => Promise.resolve(consultor))
 		.dayName(() => DayValues[model.scheduledStartAt.getDay()])
 		.scheduleStart(() => convertTimeToMinutes("00:01"))
 		.scheduleEnd(() => convertTimeToMinutes("23:58"))
@@ -145,13 +145,13 @@ describe("POST /api/consultation", () => {
 					"scheduledStartAt": model.scheduledStartAt.toJSON()
 				},
 				"relationships": {
-					"consultant": {
+					"consultor": {
 						"data": {
-							"id": String(consultant.id),
+							"id": String(consultor.id),
 							"type": "user"
 						}
 					},
-					"consultantRole": {
+					"consultorRole": {
 						"data": {
 							"id": String(normalRole.id),
 							"type": "role"
@@ -178,7 +178,7 @@ describe("POST /api/consultation", () => {
 		expect(response.statusCode).toBe(RequestEnvironment.status.BAD_REQUEST)
 		expect(response.body).toHaveProperty(
 			"errors.0.source.pointer",
-			"data.relationships.consultant.data.id"
+			"data.relationships.consultor.data.id"
 		)
 	})
 })
