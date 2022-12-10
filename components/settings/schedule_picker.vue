@@ -109,8 +109,6 @@
 		@apply flex flex-col;
 		@apply my-8;
 
-		position: relative;
-
 		.buttons {
 			@apply flex flex-col;
 
@@ -121,7 +119,6 @@
 
 		.status-message-container {
 			margin-top: -40px;
-			position: absolute;
 		}
 	}
 
@@ -182,6 +179,17 @@ type CustomEvents = {
 const props = defineProps<Props>()
 const emit = defineEmits<CustomEvents>()
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+function clearMessages(messageList?: Ref<string[]>) {
+	if (messageList) {
+		messageList.value = []
+	} else {
+		receivedErrors.value = []
+		successMessages.value = []
+	}
+}
+
 const {
 	"state": isEditing,
 	"toggle": toggleEditing,
@@ -195,11 +203,7 @@ const {
 function toggleAdding() {
 	toggleEditing()
 	rawToggleAdding()
-}
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
-function clearMessages(messageList: Ref<string[]>) {
-	messageList.value = []
+	clearMessages()
 }
 
 const availableTimeObjects = generateTimeRange().map(
@@ -224,10 +228,7 @@ watch([
 	endTime,
 	startMidDay,
 	endMidDay
-], () => {
-	if (receivedErrors.value.length) clearMessages(receivedErrors)
-	if (successMessages.value.length) clearMessages(successMessages)
-})
+], () => clearMessages())
 
 function discard() {
 	// Restore the previous values
