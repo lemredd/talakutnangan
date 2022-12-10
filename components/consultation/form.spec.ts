@@ -7,6 +7,7 @@ import type { UserListDocument } from "$/types/documents/user"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
 import { CONSULTATION_LINK } from "$/constants/template_links"
+import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
 
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -272,6 +273,8 @@ describe("Component: consultation/form", () => {
 
 			expect(castWrapper.chosenDay).toBeTruthy()
 			expect(castWrapper.chosenTime).toBeTruthy()
+			expect(new Date(castWrapper.scheduledStartAt).getMilliseconds())
+			.toEqual(CUSTOM_MILLISECONDS_IF_URGENT)
 		})
 	})
 
