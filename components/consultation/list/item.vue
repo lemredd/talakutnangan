@@ -7,20 +7,13 @@
 		<h3 class="consultation-title">
 			<div class="number-and-title">
 				<span class="number-symbol">#{{ consultation.id }}</span>
-				{{ consultationReason }}
+				{{ consultation.reason }}
 			</div>
-			<div class="badges">
-				<small
-					v-if="isUrgent"
-					class="badge urgent-badge">
-					urgent
-				</small>
-				<small
-					class="badge status-badge"
-					:class="statusBadgeClasses">
-					{{ statusBadge }}
-				</small>
-			</div>
+			<small
+				class="status-badge btn btn-primary"
+				:class="statusBadgeClasses">
+				{{ statusBadge }}
+			</small>
 		</h3>
 		<div class="profile-pictures">
 			<span class="participant-label">participants:</span>
@@ -51,45 +44,25 @@
 		}
 
 		.consultation-title {
-			@apply flex flex-col flex-wrap;
+			@apply flex justify-between items-center;
 			@apply font-bold mb-3;
 
-			@screen sm {
-				@apply flex-row justify-between items-center;
-			}
+			.status-badge {
+				@apply p-1 text-xs rounded-0.5em;
+				@apply bg-opacity-10;
+				background-color: $color-primary;
 
-			.badges {
-				& > :not(:first-child) {
-					@apply ml-2;
+				&.canceled {
+					@apply bg-red-700 bg-opacity-100;
 				}
-
-				.badge {
-					@apply p-1 text-xs rounded-0.5em;
-					@apply bg-opacity-10;
-					text-transform: uppercase;
-					font-size: small;
-					color: white;
-
-					&.urgent-badge {
-						@apply bg-yellow-500;
-					}
+				&.scheduled {
+					@apply bg-dark-50 bg-opacity-100;
 				}
-
-				.status-badge {
-					background-color: $color-primary;
-
-					&.canceled {
-						@apply bg-red-700 bg-opacity-100;
-					}
-					&.scheduled {
-						@apply bg-dark-50 bg-opacity-100;
-					}
-					&.ongoing {
-						@apply bg-green-500 bg-opacity-100;
-					}
-					&.finished {
-						@apply bg-blue-500 bg-opacity-100;
-					}
+				&.ongoing {
+					@apply bg-green-500 bg-opacity-100;
+				}
+				&.finished {
+					@apply bg-blue-500 bg-opacity-100;
 				}
 			}
 		}
@@ -153,15 +126,11 @@ const {
 	isCanceled,
 	isDone,
 	isOngoing,
-	isUrgent,
 	willSoonStart,
 	willStart
 } = makeConsultationStates(props as unknown as {
 	"consultation": DeserializedConsultationResource<"consultor"|"consultorRole">
 })
-const consultationReason = isUrgent.value
-	? props.consultation.reason.split("Urgent: ")[1]
-	: props.consultation.reason
 const statusBadge = computed(() => {
 	let status = ""
 
