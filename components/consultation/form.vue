@@ -61,6 +61,7 @@
 					This is an urgent concern.
 				</label>
 			</div>
+			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<NonSensitiveTextField
 				v-if="hasChosenOtherReason"
 				v-model="otherReason"
@@ -212,7 +213,7 @@
 		@apply flex flex-row flex-wrap items-center justify-between;
 
 		.is-urgent-checkbox-container {
-			@apply my-4;
+			@apply mt-4;
 
 			display: block;
 		}
@@ -240,6 +241,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import Overlay from "@/helpers/overlay.vue"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -257,11 +259,6 @@ const { isShown } = defineProps<{ isShown: boolean }>()
 const { pageProps } = inject("pageContext") as PageContext<"deserialized", "consultations">
 const { "userProfile": { "data": userProfileData } } = pageProps
 
-const emit = defineEmits([ "close" ])
-function emitClose() {
-	emit("close")
-}
-
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
@@ -269,8 +266,13 @@ const successMessages = ref<string[]>([])
 const reasonOptions = reasons.map(reason => ({ "value": reason }))
 const chosenReason = ref<typeof reasons[number]>("Grade-related")
 const hasChosenOtherReason = computed<boolean>(() => chosenReason.value === "Others")
+const emit = defineEmits([ "close" ])
+function emitClose() {
+	emit("close")
+}
+
 const otherReason = ref<string>("")
-const rawReason = computed<string>(() => {
+const reason = computed<string>(() => {
 	if (hasChosenOtherReason.value) return otherReason.value
 	return chosenReason.value
 })
@@ -355,14 +357,11 @@ const isUrgent = ref(false)
 watch(isUrgent, newValue => {
 	if (newValue) {
 		const currentDate = new Date()
+		chosenTime.value
+		= String(convertTimeToMinutes(`${currentDate.getHours()}:${currentDate.getMinutes()}`))
+
 		currentDate.setHours(0, 0, 0, 0)
-		chosenTime.value = "0"
 		chosenDay.value = currentDate.toJSON()
-		chosenReason.value = "Others"
-		otherReason.value = "Urgent: "
-	} else {
-		chosenTime.value = ""
-		otherReason.value = ""
 	}
 })
 
@@ -371,12 +370,10 @@ const isRequiredInfoCompleted = computed(
 	() => Boolean(selectedConsultors.value.length)
 		&& Boolean(addressConsultorAs.value)
 		&& Boolean(consultorSchedules.value.data.length)
-		&& Boolean(rawReason.value)
+		&& Boolean(reason.value)
 		&& Boolean(chosenTime.value || isUrgent.value)
 )
 function addConsultation(): void {
-	receivedErrors.value = []
-
 	const consultor = {
 		"id": selectedConsultors.value[0]?.id,
 		"type": "user"
@@ -387,16 +384,11 @@ function addConsultation(): void {
 		"mustForceStart": isUrgent.value
 	}
 
-	const hasUrgentKeyword = rawReason.value.toLocaleLowerCase().includes("urgent:")
-	const reason = isUrgent.value && !hasUrgentKeyword
-		? `Urgent: ${rawReason.value}`
-		: rawReason.value
-
 	fetcher.create({
 		"actionTaken": null,
 		"deletedAt": null,
 		"finishedAt": null,
-		reason,
+		"reason": reason.value,
 		"scheduledStartAt": scheduledStartAt.value,
 		"startedAt": null
 	}, {
