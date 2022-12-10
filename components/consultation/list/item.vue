@@ -9,11 +9,19 @@
 				<span class="number-symbol">#{{ consultation.id }}</span>
 				{{ consultation.reason }}
 			</div>
-			<small
-				class="status-badge btn btn-primary"
-				:class="statusBadgeClasses">
-				{{ statusBadge }}
-			</small>
+			<div class="badges">
+				<small
+					v-if="isUrgent"
+					class="badge urgent-badge"
+					:class="statusBadgeClasses">
+					urgent
+				</small>
+				<small
+					class="badge status-badge"
+					:class="statusBadgeClasses">
+					{{ statusBadge }}
+				</small>
+			</div>
 		</h3>
 		<div class="profile-pictures">
 			<span class="participant-label">participants:</span>
@@ -33,7 +41,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@styles/btn.scss";
+	@import "@styles/variables.scss";
 
 	.consultation {
 		@apply p-3;
@@ -44,25 +52,43 @@
 		}
 
 		.consultation-title {
-			@apply flex justify-between items-center;
+			@apply flex flex-col;
 			@apply font-bold mb-3;
 
-			.status-badge {
-				@apply p-1 text-xs rounded-0.5em;
-				@apply bg-opacity-10;
-				background-color: $color-primary;
+			@screen sm {
+				@apply flex-row flex-wrap justify-between items-center;
+			}
 
-				&.canceled {
-					@apply bg-red-700 bg-opacity-100;
+			.badges {
+				& > :not(:first-child) {
+					@apply ml-1;
 				}
-				&.scheduled {
-					@apply bg-dark-50 bg-opacity-100;
-				}
-				&.ongoing {
-					@apply bg-green-500 bg-opacity-100;
-				}
-				&.finished {
-					@apply bg-blue-500 bg-opacity-100;
+
+				.badge {
+					@apply p-1 text-xs rounded-0.5em;
+					@apply bg-opacity-10;
+					@apply text-white uppercase;
+
+					&.urgent-badge {
+						@apply bg-yellow-500;
+					}
+
+					&.status-badge {
+						background-color: $color-primary;
+
+						&.canceled {
+							@apply bg-red-700 bg-opacity-100;
+						}
+						&.scheduled {
+							@apply bg-dark-50 bg-opacity-100;
+						}
+						&.ongoing {
+							@apply bg-green-500 bg-opacity-100;
+						}
+						&.finished {
+							@apply bg-blue-500 bg-opacity-100;
+						}
+					}
 				}
 			}
 		}
@@ -126,6 +152,7 @@ const {
 	isCanceled,
 	isDone,
 	isOngoing,
+	isUrgent,
 	willSoonStart,
 	willStart
 } = makeConsultationStates(props as unknown as {
