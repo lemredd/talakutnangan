@@ -135,7 +135,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { computed, inject, Ref, ref, watch } from "vue"
 
 import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
@@ -196,6 +196,11 @@ function toggleAdding() {
 	toggleEditing()
 	rawToggleAdding()
 }
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+function clearMessages(messageList: Ref<string[]>) {
+	messageList.value = []
+}
 
 const availableTimeObjects = generateTimeRange().map(
 	timeInMinutes => convertMinutesToTimeObject(timeInMinutes)
@@ -214,6 +219,15 @@ const endTime = ref(convertToTimeString(
 ))
 const startMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleStart, "midday") as "AM"|"PM")
 const endMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleEnd, "midday") as "AM"|"PM")
+watch([
+	startTime,
+	endTime,
+	startMidDay,
+	endMidDay
+], () => {
+	if (receivedErrors.value.length) clearMessages(receivedErrors)
+	if (successMessages.value.length) clearMessages(successMessages)
+})
 
 function discard() {
 	// Restore the previous values
@@ -243,8 +257,6 @@ const endTime24Hours = computed(() => {
 })
 
 const fetcher = new EmployeeScheduleFetcher()
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
 function updateTime() {
 	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
