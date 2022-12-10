@@ -306,9 +306,6 @@ function saveNewSchedule() {
 	.then(({ body }) => {
 		const { data } = body
 		emit("pushNewSchedule", data)
-
-		const customMessage = "New schedule has been saved."
-		fillSuccessMessages(receivedErrors, successMessages, customMessage, true)
 		discard()
 		toggleEditing()
 	})
