@@ -11,7 +11,7 @@
 			<span v-if="!willStart" class="start-btn-message">
 				You can only start this consultation on its scheduled time.
 			</span>
-			<span v-if="isUrgent" class="start-btn-message">
+			<span v-if="mayForceStart" class="start-btn-message">
 				This consultation is urgent.
 			</span>
 		</div>
@@ -86,15 +86,19 @@
 <script setup lang="ts">
 import { ref, inject, computed, ComputedRef, DeepReadonly } from "vue"
 
+import { DayValues } from "$/types/database"
 import type { TextMessage } from "$/types/message"
 import type { PageContext } from "$/types/renderer"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
+import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 import Fetcher from "$@/fetchers/chat_message"
 import makeSwitch from "$@/helpers/make_switch"
@@ -131,8 +135,7 @@ const {
 const {
 	willSoonStart,
 	willStart,
-	isOngoing,
-	isUrgent
+	isOngoing
 } = makeConsultationStates(props)
 
 interface CustomEvents {
@@ -140,14 +143,32 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
+const mayForceStart = computed(() => {
+	let state = false
+	const employeeSchedules
+	= userProfile.data.employeeSchedules as DeserializedEmployeeScheduleListDocument
+	const { scheduledStartAt } = props.consultation
+	const dayOfScheduledStartAt = DayValues[scheduledStartAt.getDay()]
+	const matchingEmployeeSchedules = employeeSchedules.data.filter(
+		schedule => schedule.dayName === dayOfScheduledStartAt
+	)
+	const scheduledStartAtInMinutes
+	= convertTimeToMinutes(`${scheduledStartAt.getHours()}:${scheduledStartAt.getMinutes()}`)
+
+	matchingEmployeeSchedules.forEach(schedule => {
+		if (schedule.scheduleEnd < scheduledStartAtInMinutes) state = true
+	})
+
+	return state
+})
 const startBtnText = computed(() => {
 	let text = "Start Consultation"
-	if (isUrgent.value) text = "Force Start"
+	if (mayForceStart.value) text = "Force Start"
 
 	return text
 })
 function startConsultation() {
-	emit("startConsultation", isUrgent.value)
+	emit("startConsultation", mayForceStart.value)
 }
 const mayStartConsultation = computed<boolean>(() => {
 	const shouldSoonStart = willSoonStart.value

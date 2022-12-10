@@ -109,6 +109,19 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		})
 
 		it("should show forceful start button", async() => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -117,6 +130,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
@@ -130,7 +144,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 						"deletedAt": null,
 						"finishedAt": null,
 						"id": "1",
-						"reason": "urgent:",
+						"reason": "",
 						"scheduledStartAt": new Date("2022-10-10 13:00"),
 						"startedAt": null,
 						"type": "consultation"
