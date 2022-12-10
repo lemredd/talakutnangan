@@ -233,7 +233,7 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 
 import { reasons } from "$@/constants/options"
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { CUSTOM_MILLISECONDS_IF_URGENT, DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
@@ -344,7 +344,6 @@ const chosenTime = ref<string>("")
 const isUrgent = ref(false)
 const scheduledStartAt = computed<string>(() => {
 	const chosenDate = new Date(chosenDay.value)
-	const CUSTOM_MILLISECONDS_IF_URGENT = 16
 
 	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
