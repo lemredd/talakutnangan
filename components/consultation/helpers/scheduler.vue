@@ -265,6 +265,13 @@ const mustShowPastDayError = computed(
 	&& !props.isUrgent
 )
 
+watch(customDate, newValue => {
+	if (!newValue) {
+		chosenDate.value = ""
+		chosenTime.value = ""
+	}
+})
+
 const dateAndTimeFieldsClasses = computed(() => ({
 	"has-selected-day": Boolean(chosenDate.value)
 }))
