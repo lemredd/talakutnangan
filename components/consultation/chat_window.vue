@@ -283,8 +283,7 @@ function finishConsultation(): void {
 				},
 				"extraUpdateDocumentProps": {
 					"meta": {
-						"doesAllowConflicts": true,
-						"mustForceStart": isUrgent.value
+						"doesAllowConflicts": true
 					}
 				}
 			}
