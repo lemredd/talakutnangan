@@ -272,8 +272,6 @@ describe("Component: consultation/form", () => {
 
 			expect(castWrapper.chosenDay).toBeTruthy()
 			expect(castWrapper.chosenTime).toBeTruthy()
-			expect(castWrapper.chosenReason).toEqual("Others")
-			expect(castWrapper.otherReason).toContain("Urgent: ")
 		})
 	})
 
