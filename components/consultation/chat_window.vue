@@ -32,7 +32,7 @@
 					<li>Ticket: {{ consultationID }}</li>
 					<li>Status: {{ consultationStatus }}</li>
 					<li class="scheduled-at">
-						Scheduled at: {{ readableScheduledAt() }}
+						Scheduled at: {{ readableScheduledAt }}
 					</li>
 
 					<li>
@@ -200,7 +200,6 @@ const {
 	willSoonStart,
 	willStart,
 	isOngoing,
-	isUrgent,
 	isAutoTerminated,
 	isCanceled,
 	isDone
@@ -369,16 +368,7 @@ function startConsultation(forceStart: boolean) {
 
 watchConsultation(consultation, registerListeners)
 
-function readableScheduledAt() {
-	let formattedReadableTime = formatToReadableTime(consultation.value.scheduledStartAt)
-
-	if (isUrgent.value) {
-		const [ dayAndDate ] = formattedReadableTime.split(" at ")
-		formattedReadableTime = `${dayAndDate} (URGENT)`
-	}
-
-	return formattedReadableTime
-}
+const readableScheduledAt = formatToReadableTime(consultation.value.scheduledStartAt)
 
 const linkToPrintableForm = computed<string>(() => specializePath(CONSULTATION_FORM_PRINT, {
 	"id": consultationID.value
