@@ -81,11 +81,13 @@ describe("Component: consultation/list", () => {
 					"data": [
 						{
 							"id": "1",
-							"reason": "Reason A"
+							"reason": "Reason A",
+							"scheduledStartAt": new Date()
 						},
 						{
 							"id": "2",
-							"reason": "Reason B"
+							"reason": "Reason B",
+							"scheduledStartAt": new Date()
 						}
 					]
 				},
@@ -184,11 +186,13 @@ describe("Component: consultation/list", () => {
 					"data": [
 						{
 							"id": "1",
-							"reason": "Reason A"
+							"reason": "Reason A",
+							"scheduledStartAt": new Date()
 						},
 						{
 							"id": "2",
-							"reason": "Reason B"
+							"reason": "Reason B",
+							"scheduledStartAt": new Date()
 						}
 					]
 				},
