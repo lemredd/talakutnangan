@@ -192,7 +192,7 @@ function clearMessages(messageList?: Ref<string[]>) {
 
 const {
 	"state": isEditing,
-	"toggle": toggleEditing,
+	"toggle": toggleEditingState,
 	"off": stopEditing
 } = makeSwitch(false)
 const {
@@ -200,8 +200,12 @@ const {
 	"toggle": rawToggleAdding
 } = makeSwitch(false)
 
+function toggleEditing() {
+	toggleEditingState()
+	clearMessages()
+}
 function toggleAdding() {
-	toggleEditing()
+	toggleEditingState()
 	rawToggleAdding()
 	clearMessages()
 }
