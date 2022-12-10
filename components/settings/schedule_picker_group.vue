@@ -35,6 +35,7 @@
 		@apply mt-4 mb-12 p-4;
 		@apply border border-gray-300 rounded-md;
 		max-height: 640px;
+		max-width: 300px;
 		overflow-y: scroll;
 
 		.schedule-picker-header {
