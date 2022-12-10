@@ -341,26 +341,26 @@ watch(selectedConsultors, () => {
 const chosenDay = ref<string>("")
 const chosenTime = ref<string>("")
 
+const isUrgent = ref(false)
 const scheduledStartAt = computed<string>(() => {
 	const chosenDate = new Date(chosenDay.value)
+	const CUSTOM_MILLISECONDS_IF_URGENT = 16
 
 	const timeObject = convertMinutesToTimeObject(Number(chosenTime.value))
 	chosenDate.setHours(timeObject.hours)
 	chosenDate.setMinutes(timeObject.minutes)
 	chosenDate.setSeconds(0)
-	chosenDate.setMilliseconds(0)
+	if (isUrgent.value) chosenDate.setMilliseconds(CUSTOM_MILLISECONDS_IF_URGENT)
+	else chosenDate.setMilliseconds(0)
 
 	return chosenDate.toJSON()
 })
-
-const isUrgent = ref(false)
 watch(isUrgent, newValue => {
 	if (newValue) {
 		const currentDate = new Date()
 		chosenTime.value
 		= String(convertTimeToMinutes(`${currentDate.getHours()}:${currentDate.getMinutes()}`))
 
-		currentDate.setHours(0, 0, 0, 0)
 		chosenDay.value = currentDate.toJSON()
 	}
 })
