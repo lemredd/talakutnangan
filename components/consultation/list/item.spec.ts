@@ -34,7 +34,8 @@ describe("Component: consultation/list/item", () => {
 				},
 				"consultation": {
 					id,
-					"reason": "Reason A"
+					"reason": "Reason A",
+					"scheduledStartAt": new Date()
 				},
 				"previewMessages": {
 					"data": []
@@ -110,7 +111,8 @@ describe("Component: consultation/list/item", () => {
 				},
 				"consultation": {
 					"id": "1",
-					"reason": "Reason A"
+					"reason": "Reason A",
+					"scheduledStartAt": new Date()
 				},
 				"previewMessages": {
 					"data": []

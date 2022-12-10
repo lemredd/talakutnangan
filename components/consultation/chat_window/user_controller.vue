@@ -6,10 +6,13 @@
 				type="button"
 				class="start btn btn-primary"
 				@click="startConsultation">
-				Start consultation
+				{{ startBtnText }}
 			</button>
-			<span v-if="!willStart" class="will-not-start">
+			<span v-if="!willStart" class="start-btn-message">
 				You can only start this consultation on its scheduled time.
+			</span>
+			<span v-if="isUrgent" class="start-btn-message">
+				This consultation is urgent.
 			</span>
 		</div>
 		<div v-if="isOngoing" class="left-controls">
@@ -56,8 +59,8 @@
 		@apply border-t p-3 flex;
 	}
 
-	.will-not-start{
-			@apply text-sm opacity-50;
+	.start-btn-message{
+			@apply text-sm opacity-50 ml-2;
 	}
 
 	.message-box {
@@ -128,15 +131,24 @@ const {
 const {
 	willSoonStart,
 	willStart,
-	isOngoing
+	isOngoing,
+	isUrgent
 } = makeConsultationStates(props)
 
 interface CustomEvents {
-	(eventName: "startConsultation"): void
+	(eventName: "startConsultation", forceStart: boolean): void
 }
 const emit = defineEmits<CustomEvents>()
 
-const startConsultation = () => emit("startConsultation")
+const startBtnText = computed(() => {
+	let text = "Start Consultation"
+	if (isUrgent.value) text = "Force Start"
+
+	return text
+})
+function startConsultation() {
+	emit("startConsultation", isUrgent.value)
+}
 const mayStartConsultation = computed<boolean>(() => {
 	const shouldSoonStart = willSoonStart.value
 	const shouldStart = willStart.value

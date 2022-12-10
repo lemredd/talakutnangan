@@ -175,4 +175,54 @@ describe("Component: consultation/helpers/scheduler", () => {
 		expect(emitted).toHaveProperty("update:chosenDay.0.0", defaultDay.toJSON())
 		expect(emitted).toHaveProperty("update:chosenTime.0.0", chosenTime)
 	})
+
+	it("can determine if consultor is not available for the selected day", async() => {
+		const currentTime = new Date()
+		const currentHour = 10
+		currentTime.setHours(currentHour)
+		currentTime.setMinutes(0)
+		currentTime.setSeconds(0)
+		currentTime.setMilliseconds(0)
+
+		const schedules = {
+			"data": [
+				{
+					"dayName": DayValues[currentTime.getDay()],
+					"id": "1",
+					"scheduleEnd": convertTimeToMinutes("09:00"),
+					"scheduleStart": convertTimeToMinutes("08:00"),
+					"type": "employee_schedule"
+				}
+			],
+			"meta": {
+				"count": 1
+			}
+		} as any
+
+		const defaultDay = new Date(currentTime)
+		defaultDay.setHours(0)
+
+		const wrapper = shallowMount(Component, {
+			"props": {
+				"chosenDay": defaultDay.toJSON(),
+				"chosenTime": "",
+				"consultorSchedules": schedules
+			}
+		})
+
+		// Load selectable days and its options
+		const castWrapper = wrapper.vm as any
+		castWrapper.dateToday = currentTime
+
+		const selectableDay = wrapper
+		.find(".selectable-day")
+		.findComponent({ "name": "SelectableOptionsField" })
+		await selectableDay.vm.$emit("update:modelValue", defaultDay.toJSON())
+		await wrapper.setProps({
+			"chosenDay": defaultDay.toJSON()
+		})
+
+		const selectedDayIsPast = wrapper.find(".selected-day-is-past")
+		expect(selectedDayIsPast.exists()).toBeTruthy()
+	})
 })

@@ -2,6 +2,8 @@ import { ref, computed } from "vue"
 
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
+import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
+
 import convertTimeToMilliseconds from "$/time/convert_time_to_milliseconds"
 import calculateMillisecondDifference from "$/time/calculate_millisecond_difference"
 
@@ -41,6 +43,12 @@ export default function(
 		const hasTerminated = isAfterScheduledStart.value && !hasDeleted.value
 		return hasTerminated && props.consultation.actionTaken === null
 	})
+	const isUrgent = computed(() => {
+		const doesMatchCustomMillisecondsIfUrgent
+		= props.consultation.scheduledStartAt.getMilliseconds() === CUSTOM_MILLISECONDS_IF_URGENT
+
+		return doesMatchCustomMillisecondsIfUrgent
+	})
 
 	setInterval(() => {
 		currentTime.value = new Date()
@@ -51,6 +59,7 @@ export default function(
 		isCanceled,
 		isDone,
 		isOngoing,
+		isUrgent,
 		willSoonStart,
 		willStart
 	}

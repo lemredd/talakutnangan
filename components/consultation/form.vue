@@ -40,13 +40,26 @@
 				text-field-label="Type the students to add"
 				kind="student"/>
 
-			<div class="required">
-				<SelectableOptionsField
-					v-model="chosenReason"
-					class="reason"
-					label="Kind of Reason: "
-					placeholder="Choose your reason"
-					:options="reasonOptions"/>
+			<div class="reason-and-urgency">
+				<div class="required">
+					<SelectableOptionsField
+						v-model="chosenReason"
+						class="reason"
+						label="Kind of Reason: "
+						placeholder="Choose your reason"
+						:options="reasonOptions"/>
+				</div>
+
+				<label
+					class="is-urgent-checkbox-container"
+					for="is-urgent-checkbox">
+					<input
+						id="is-urgent-checkbox"
+						v-model="isUrgent"
+						type="checkbox"
+						class="is-urgent-checkbox"/>
+					This is an urgent concern.
+				</label>
 			</div>
 			<ReceivedErrors v-if="receivedErrors.length" :received-errors="receivedErrors"/>
 			<NonSensitiveTextField
@@ -60,6 +73,7 @@
 				v-model:chosen-day="chosenDay"
 				v-model:chosen-time="chosenTime"
 				:consultor-schedules="consultorSchedules"
+				:is-urgent="isUrgent"
 				class="schedule-selector"/>
 
 			<div class="may-not-start-right-away-msg">
@@ -195,6 +209,16 @@
 		}
 	}
 
+	.reason-and-urgency {
+		@apply flex flex-row flex-wrap items-center justify-between;
+
+		.is-urgent-checkbox-container {
+			@apply mt-4;
+
+			display: block;
+		}
+	}
+
 	.schedule-selector {
 		@apply mt-5;
 	}
@@ -209,7 +233,7 @@ import type { DeserializedUserResource } from "$/types/documents/user"
 import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 
 import { reasons } from "$@/constants/options"
-import { DEFAULT_LIST_LIMIT } from "$/constants/numerical"
+import { CUSTOM_MILLISECONDS_IF_URGENT, DEFAULT_LIST_LIMIT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/consultation"
 import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
@@ -217,6 +241,7 @@ import EmployeeScheduleFetcher from "$@/fetchers/employee_schedule"
 import Overlay from "@/helpers/overlay.vue"
 import assignPath from "$@/external/assign_path"
 import makeOptionInfo from "$@/helpers/make_option_info"
+import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 import fillSuccessMessages from "$@/helpers/fill_success_messages"
 import loadRemainingResource from "$@/helpers/load_remaining_resource"
 import extractAllErrorDetails from "$@/helpers/extract_all_error_details"
@@ -316,6 +341,7 @@ watch(selectedConsultors, () => {
 const chosenDay = ref<string>("")
 const chosenTime = ref<string>("")
 
+const isUrgent = ref(false)
 const scheduledStartAt = computed<string>(() => {
 	const chosenDate = new Date(chosenDay.value)
 
@@ -323,19 +349,29 @@ const scheduledStartAt = computed<string>(() => {
 	chosenDate.setHours(timeObject.hours)
 	chosenDate.setMinutes(timeObject.minutes)
 	chosenDate.setSeconds(0)
-	chosenDate.setMilliseconds(0)
+	if (isUrgent.value) chosenDate.setMilliseconds(CUSTOM_MILLISECONDS_IF_URGENT)
+	else chosenDate.setMilliseconds(0)
 
 	return chosenDate.toJSON()
 })
+watch(isUrgent, newValue => {
+	if (newValue) {
+		const currentDate = new Date()
+		chosenTime.value
+		= String(convertTimeToMinutes(`${currentDate.getHours()}:${currentDate.getMinutes()}`))
+
+		chosenDay.value = currentDate.toJSON()
+	}
+})
+
 
 const isRequiredInfoCompleted = computed(
 	() => Boolean(selectedConsultors.value.length)
 		&& Boolean(addressConsultorAs.value)
 		&& Boolean(consultorSchedules.value.data.length)
 		&& Boolean(reason.value)
-		&& Boolean(chosenTime.value)
+		&& Boolean(chosenTime.value || isUrgent.value)
 )
-
 function addConsultation(): void {
 	const consultor = {
 		"id": selectedConsultors.value[0]?.id,
@@ -343,7 +379,8 @@ function addConsultation(): void {
 	}
 
 	const meta = {
-		"doesAllowConflicts": forceCreate.value
+		"doesAllowConflicts": forceCreate.value,
+		"mustForceStart": isUrgent.value
 	}
 
 	fetcher.create({

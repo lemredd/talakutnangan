@@ -20,7 +20,6 @@ body {
 
 		.image {
 			$imageURL: url("/api/user/log_in/image");
-			$redTint: hue-rotate(300deg);
 
 			content: '';
 			position: fixed;
@@ -29,11 +28,17 @@ body {
 			background-image: $imageURL;
 			background-repeat: no-repeat;
 			background-size: cover;
+
 			filter:
 				sepia(100%)
 				saturate(100%)
 				brightness(80%)
-				$redTint;
+				hue-rotate(300deg);
+			-webkit-filter:
+				sepia(100%)
+				saturate(100%)
+				brightness(80%)
+				hue-rotate(300deg);
 		}
 	}
 

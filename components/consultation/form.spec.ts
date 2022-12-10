@@ -6,6 +6,8 @@ import { JSON_API_MEDIA_TYPE } from "$/types/server"
 import type { UserListDocument } from "$/types/documents/user"
 
 import { DEBOUNCED_WAIT_DURATION } from "$@/constants/time"
+import { CONSULTATION_LINK } from "$/constants/template_links"
+import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
 
 import stringifyQuery from "$@/fetchers/stringify_query"
 import RequestEnvironment from "$/singletons/request_environment"
@@ -16,7 +18,7 @@ import convertTimeToMinutes from "$/time/convert_time_to_minutes"
 
 jest.useFakeTimers()
 
-describe.skip("Component: consultation/form", () => {
+describe("Component: consultation/form", () => {
 	describe("Fields population", () => {
 		it("can search students", async() => {
 			const students = {
@@ -160,7 +162,8 @@ describe.skip("Component: consultation/form", () => {
 					"stubs": {
 						"Overlay": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
@@ -239,50 +242,7 @@ describe.skip("Component: consultation/form", () => {
 			expect(otherReasonField.exists()).toBeTruthy()
 		})
 
-		it("should eliminate time options", async() => {
-			const roles = {
-				"data": [
-					{
-						"id": 0,
-						"name": "Role A"
-					}
-				]
-			}
-			const employees = {
-				"data": [
-					{
-						"attributes": {
-							"email": "",
-							"kind": "reachable_employee",
-							"name": "Employee A",
-							roles
-						},
-						"id": "2",
-						"type": "user"
-					}
-				]
-			}
-			fetchMock.mockResponseOnce(
-				JSON.stringify(employees),
-				{ "status": RequestEnvironment.status.OK }
-			)
-			const schedules = {
-				"data": [
-					{
-						"attributes": {
-							"dayName": "monday",
-							"scheduleEnd": convertTimeToMinutes("09:00"),
-							"scheduleStart": convertTimeToMinutes("08:00")
-						},
-						"id": "1",
-						"type": "employee_schedule"
-					}
-				],
-				"meta": {
-					"count": 1
-				}
-			}
-
+		it("should fill date and time if consultation is urgent", async() => {
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -299,49 +259,22 @@ describe.skip("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
-						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SearchableChip": false
 					}
 				},
 				"props": {
 					"isShown": true
 				}
 			})
+			const isUrgentCheckbox = wrapper.find(".is-urgent-checkbox")
+			const castWrapper = wrapper.vm as any
 
-			const consultorBox = wrapper.find(".consultor")
-			const consultorSearchField = consultorBox.findComponent({
-				"name": "NonSensitiveTextField"
-			})
-			await consultorSearchField.setValue(employees.data[0].attributes.name)
-			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+			await isUrgentCheckbox.setValue(true)
 
-			fetchMock.mockResponseOnce(
-				JSON.stringify(schedules),
-				{ "status": RequestEnvironment.status.OK }
-			)
-			// Display consultor chip
-			await flushPromises()
-			const employeeChip = wrapper.find(".chip")
-			await employeeChip.trigger("click")
-
-			// Load selectable days and its options
-			await flushPromises()
-			const selectableDay = wrapper.find(".selectable-day")
-			expect(selectableDay.exists()).toBeTruthy()
-			const dayOptions = selectableDay.findAll("option")
-			expect(dayOptions).toHaveLength(3)
-
-			// Load selectable times and its options
-			const castedWrapper = wrapper.vm as any
-			castedWrapper.dateToday = new Date(dayOptions[1].attributes("value") as string)
-			castedWrapper.dateToday.setHours(21)
-			await flushPromises()
-			const selectableDayField = selectableDay.find("select")
-			await selectableDayField.setValue(dayOptions[1].attributes("value"))
-			const selectedDayIsPast = wrapper.find(".selected-day-is-past")
-
-			// Eliminate options that are after the current hour
-			expect(selectedDayIsPast.exists()).toBeTruthy()
+			expect(castWrapper.chosenDay).toBeTruthy()
+			expect(castWrapper.chosenTime).toBeTruthy()
+			expect(new Date(castWrapper.scheduledStartAt).getMilliseconds())
+			.toEqual(CUSTOM_MILLISECONDS_IF_URGENT)
 		})
 	})
 
@@ -415,13 +348,22 @@ describe.skip("Component: consultation/form", () => {
 					"stubs": {
 						"Overlay": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
 					"isShown": true
 				}
 			})
+			const castWrapper = wrapper.vm as any
+			const currentTime = new Date()
+			const currentHour = 8
+			currentTime.setHours(currentHour)
+			currentTime.setMinutes(0)
+			currentTime.setSeconds(0)
+			currentTime.setMilliseconds(0)
+			castWrapper.dateToday = currentTime
 
 			const [ consultorSearchField ] = wrapper.findAllComponents({
 				"name": "NonSensitiveTextField"
@@ -441,17 +383,16 @@ describe.skip("Component: consultation/form", () => {
 			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			// Load selectable days and its options
-			await flushPromises()
-			const selectableDay = wrapper.find(".selectable-day")
-			const dayOptions = selectableDay.findAll("option")
+			const scheduler = wrapper.findComponent({ "name": "Scheduler" })
+			const chosenDay = new Date().toJSON()
+			scheduler.vm.$emit("update:chosenDay", chosenDay)
+			await nextTick()
 			expect(submitBtn.attributes("disabled")).toBeDefined()
 
-			// Load selectable times and its options
-			await flushPromises()
-			const selectableDayField = selectableDay.find("select")
-			await selectableDayField.setValue(dayOptions[1].attributes("value"))
-			expect(submitBtn.attributes("disabled")).toBeFalsy()
+
+			scheduler.vm.$emit("update:chosenTime", String(convertTimeToMinutes("08:00")))
+			await nextTick()
+			expect(submitBtn.attributes("disabled")).toBeUndefined()
 		})
 
 		it("should submit with other consultees", async() => {
@@ -540,8 +481,10 @@ describe.skip("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
+						"Scheduler": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
 					}
 				},
 				"props": {
@@ -558,7 +501,7 @@ describe.skip("Component: consultation/form", () => {
 
 			// Display consultor
 			await flushPromises()
-			const employeeChip = wrapper.find(".chip")
+			const employeeChip = wrapper.find(".consultor-fields .chip")
 			await employeeChip.trigger("click")
 			const selectableConsultorRoles = wrapper.find(".consultor-roles")
 			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
@@ -583,13 +526,27 @@ describe.skip("Component: consultation/form", () => {
 			await consulteeSearchField.setValue(students.data[0].attributes.name)
 			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
 			await flushPromises()
-			const studentChip = wrapper.find(".chip")
+			const studentChip = wrapper.find(".consultees .chip.unselected")
 			await studentChip.trigger("click")
-			await nextTick()
 
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
 			await flushPromises()
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ unusedRequestForFetchingStudents ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON)
+			.toHaveProperty("data.relationships.consultor.data.id", employees.data[0].id)
+			expect(requestInJSON.data.relationships.participants.data).toHaveLength(3)
 
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
@@ -665,8 +622,11 @@ describe.skip("Component: consultation/form", () => {
 					},
 					"stubs": {
 						"Overlay": false,
+						"Scheduler": false,
 						"SearchableChip": false,
-						"SelectableOptionsField": false
+						"SelectableOptionsField": false,
+						"Suspensible": false
+
 					}
 				},
 				"props": {
@@ -708,6 +668,156 @@ describe.skip("Component: consultation/form", () => {
 			const submitBtn = wrapper.find(".submit-btn")
 			await submitBtn.trigger("click")
 			await flushPromises()
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON)
+			.toHaveProperty("data.relationships.consultor.data.id", employees.data[0].id)
+			expect(requestInJSON.data.relationships.participants.data).toHaveLength(2)
+
+			const previousCalls = Stub.consumePreviousCalls()
+			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")
+			expect(previousCalls).toHaveProperty("0.arguments.0", "/consultation")
+			expect(previousCalls).not.toHaveProperty("0.arguments.1")
+		})
+
+		it("should submit as urgent", async() => {
+			const roles = {
+				"data": [
+					{
+						"id": 1,
+						"name": "role"
+					}
+				]
+			}
+			const employees = {
+				"data": [
+					{
+						"attributes": {
+							"email": "",
+							"kind": "reachable_employee",
+							"name": "Employee A",
+							roles
+						},
+						"id": "2",
+						"type": "user"
+					}
+				]
+			}
+			const schedules = {
+				"data": [
+					{
+						"attributes": {
+							"dayName": "monday",
+							"scheduleEnd": convertTimeToMinutes("09:00"),
+							"scheduleStart": convertTimeToMinutes("08:00")
+						},
+						"id": "1",
+						"type": "employee_schedule"
+					}
+				],
+				"meta": {
+					"count": 1
+				}
+			}
+			fetchMock.mockResponseOnce(
+				JSON.stringify(employees),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				JSON.stringify(schedules),
+				{ "status": RequestEnvironment.status.OK }
+			)
+			fetchMock.mockResponseOnce(
+				"",
+				{ "status": RequestEnvironment.status.NO_CONTENT }
+			)
+
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										"id": "1",
+										"type": "user"
+									}
+								}
+							}
+						}
+					},
+					"stubs": {
+						"Overlay": false,
+						"Scheduler": false,
+						"SearchableChip": false,
+						"SelectableOptionsField": false,
+						"Suspensible": false
+
+					}
+				},
+				"props": {
+					"isShown": true
+				}
+			})
+
+			const consultorBox = wrapper.find(".consultor")
+			const consultorSearchField = consultorBox.findComponent({
+				"name": "NonSensitiveTextField"
+			})
+			await consultorSearchField.setValue(employees.data[0].attributes.name)
+			jest.advanceTimersByTime(DEBOUNCED_WAIT_DURATION)
+
+			// Display consultor
+			await flushPromises()
+			const employeeChip = wrapper.find(".chip")
+			await employeeChip.trigger("click")
+			const selectableConsultorRoles = wrapper.find(".consultor-roles")
+			const selectableConsultorRolesField = selectableConsultorRoles.find("select")
+			await selectableConsultorRolesField.setValue(String(roles.data[0].id))
+
+			// Load selectable days and its options
+			await flushPromises()
+			const selectableDay = wrapper.find(".selectable-day")
+			const dayOptions = selectableDay.findAll("option")
+
+			// Load selectable times and its options
+			const castedWrapper = wrapper.vm as any
+			castedWrapper.dateToday = new Date().setHours(7)
+			await flushPromises()
+			const selectableDayField = selectableDay.find("select")
+			await selectableDayField.setValue(dayOptions[1].attributes("value"))
+			const selectableTime = wrapper.find(".selectable-time")
+			const timeOptions = selectableTime.findAll("option")
+			const selectableTimeField = selectableTime.find("select")
+			await selectableTimeField.setValue(timeOptions[1].attributes("value"))
+
+			const isUrgentCheckbox = wrapper.find(".is-urgent-checkbox")
+			await isUrgentCheckbox.setValue(true)
+
+			const submitBtn = wrapper.find(".submit-btn")
+			await submitBtn.trigger("click")
+			await flushPromises()
+
+			const castFetch = fetch as jest.Mock<any, any>
+			const [
+				[ unusedRequestForFetchingEmployees ],
+				[ unusedRequestForFetchingSchedules ],
+				[ requestForCreatingConsultation ]
+			] = castFetch.mock.calls
+
+			expect(requestForCreatingConsultation).toHaveProperty("method", "POST")
+			expect(requestForCreatingConsultation).toHaveProperty("url", CONSULTATION_LINK.unbound)
+			const requestInJSON = await requestForCreatingConsultation.json()
+			expect(requestInJSON.meta.mustForceStart).toBeTruthy()
 
 			const previousCalls = Stub.consumePreviousCalls()
 			expect(previousCalls).toHaveProperty("0.functionName", "assignPath")

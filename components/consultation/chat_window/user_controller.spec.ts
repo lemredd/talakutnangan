@@ -4,6 +4,7 @@ import { shallowMount, flushPromises } from "@vue/test-utils"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
+import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
 
 import RequestEnvironment from "$/singletons/request_environment"
 import ConsultationTimerManager from "$@/helpers/consultation_timer_manager"
@@ -54,6 +55,19 @@ describe("Component: consultation/chat_window/user_controller", () => {
 		})
 
 		it("should show start button if consultation will start", () => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -62,6 +76,7 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
@@ -94,7 +109,9 @@ describe("Component: consultation/chat_window/user_controller", () => {
 			expect(rightControls.exists()).toBeFalsy()
 		})
 
-		it("should start upon pressing the button", async() => {
+		it("should show forceful start button", async() => {
+			const scheduledStartAt = new Date("2022-10-10 13:00")
+			scheduledStartAt.setMilliseconds(CUSTOM_MILLISECONDS_IF_URGENT)
 			const wrapper = shallowMount<any>(Component, {
 				"global": {
 					"provide": {
@@ -103,6 +120,57 @@ describe("Component: consultation/chat_window/user_controller", () => {
 							"pageProps": {
 								"userProfile": {
 									"data": {
+										"kind": "reachable_employee"
+									}
+								}
+							}
+						}
+					}
+				},
+				"props": {
+					"consultation": {
+						"actionTaken": null,
+						"deletedAt": null,
+						"finishedAt": null,
+						"id": "1",
+						"reason": "",
+						scheduledStartAt,
+						"startedAt": null,
+						"type": "consultation"
+					}
+				}
+			})
+			const startBtn = wrapper.find("button.start")
+			expect(startBtn.text()).toEqual("Force Start")
+
+			await startBtn.trigger("click")
+			const expectedEmission = wrapper.emitted("startConsultation")
+			expect(expectedEmission).toHaveProperty("0.0", true)
+		})
+
+		it("should start upon pressing the button", async() => {
+			const employeeSchedules = {
+				"data": [
+					{
+						"dayName": "monday",
+						"id": "1",
+						"scheduleEnd": 720,
+						"scheduleStart": 480,
+						"type": "employee_schedule"
+
+					}
+				]
+			}
+
+			const wrapper = shallowMount<any>(Component, {
+				"global": {
+					"provide": {
+						[CHAT_MESSAGE_ACTIVITY]: readonly(ref({ "id": "1" })),
+						"pageContext": {
+							"pageProps": {
+								"userProfile": {
+									"data": {
+										employeeSchedules,
 										"kind": "reachable_employee"
 									}
 								}
