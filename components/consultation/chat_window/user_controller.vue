@@ -11,7 +11,7 @@
 			<span v-if="!willStart" class="start-btn-message">
 				You can only start this consultation on its scheduled time.
 			</span>
-			<span v-if="mayForceStart" class="start-btn-message">
+			<span v-if="isUrgent" class="start-btn-message">
 				This consultation is urgent.
 			</span>
 		</div>
@@ -95,7 +95,6 @@ import type {
 } from "$/types/documents/chat_message_activity"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
-import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/chat_message"
 import makeSwitch from "$@/helpers/make_switch"
@@ -132,7 +131,8 @@ const {
 const {
 	willSoonStart,
 	willStart,
-	isOngoing
+	isOngoing,
+	isUrgent
 } = makeConsultationStates(props)
 
 interface CustomEvents {
@@ -140,20 +140,14 @@ interface CustomEvents {
 }
 const emit = defineEmits<CustomEvents>()
 
-const mayForceStart = computed(() => {
-	const doesMatchCustomMillisecondsIfUrgent
-	= props.consultation.scheduledStartAt.getMilliseconds() === CUSTOM_MILLISECONDS_IF_URGENT
-
-	return doesMatchCustomMillisecondsIfUrgent
-})
 const startBtnText = computed(() => {
 	let text = "Start Consultation"
-	if (mayForceStart.value) text = "Force Start"
+	if (isUrgent.value) text = "Force Start"
 
 	return text
 })
 function startConsultation() {
-	emit("startConsultation", mayForceStart.value)
+	emit("startConsultation", isUrgent.value)
 }
 const mayStartConsultation = computed<boolean>(() => {
 	const shouldSoonStart = willSoonStart.value
