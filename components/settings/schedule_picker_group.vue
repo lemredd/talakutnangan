@@ -32,8 +32,11 @@
 <style scoped lang="scss">
 	@import "@styles/btn.scss";
 	.schedule-picker-group {
-		@apply mt-4 mb-12;
-		@apply border-b border-b-gray-500;
+		@apply mt-4 mb-12 p-4;
+		@apply border border-gray-300 rounded-md;
+		scrollbar-width: none;
+		max-width: 280px;
+		overflow-y: scroll;
 
 		.schedule-picker-header {
 			@apply flex flex-col justify-between mb-5;
@@ -44,13 +47,7 @@
 		}
 
 		.schedule-pickers {
-			@apply flex flex-wrap justify-start;
-
-			.schedule-picker {
-				@screen sm {
-					@apply ml-4;
-				}
-			}
+			@apply flex flex-col justify-start;
 		}
 	}
 
