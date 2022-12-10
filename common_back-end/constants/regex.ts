@@ -19,9 +19,9 @@ export const departmentFullNameDescription
 export const departmentAcronym = /([A-Z][a-z]*)+/u
 export const departmentAcronymDescription = "be an uppercased alphetic name with one or more spaces"
 
-export const consultationReason = /^[a-zA-Z0-9!?:. -]+$/u
+export const consultationReason = /^[a-zA-Z0-9!?. -]+$/u
 export const consultationReasonDescription
-= "contain at least one or more alphaumeric characters, whitespaces, or one of the following special characters (!, ?, :, ., -)"
+= "contain at least one or more alphaumeric characters, or special characters (!?. -)"
 
 export const studentNumber = /^\d+-\d+$/u
 export const studentNumberDescription = "have numbers and dash in the middle"
