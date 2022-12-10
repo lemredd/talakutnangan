@@ -200,6 +200,7 @@ const {
 	willSoonStart,
 	willStart,
 	isOngoing,
+	isUrgent,
 	isAutoTerminated,
 	isCanceled,
 	isDone
@@ -282,7 +283,8 @@ function finishConsultation(): void {
 				},
 				"extraUpdateDocumentProps": {
 					"meta": {
-						"doesAllowConflicts": true
+						"doesAllowConflicts": true,
+						"mustForceStart": isUrgent.value
 					}
 				}
 			}
