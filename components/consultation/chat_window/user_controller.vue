@@ -86,19 +86,16 @@
 <script setup lang="ts">
 import { ref, inject, computed, ComputedRef, DeepReadonly } from "vue"
 
-import { DayValues } from "$/types/database"
 import type { TextMessage } from "$/types/message"
 import type { PageContext } from "$/types/renderer"
 import type { ChatMessageRelationships } from "$/types/documents/chat_message"
 import type { DeserializedConsultationResource } from "$/types/documents/consultation"
-import type { DeserializedEmployeeScheduleListDocument } from "$/types/documents/employee_schedule"
 import type {
 	DeserializedChatMessageActivityResource
 } from "$/types/documents/chat_message_activity"
 
 import { CHAT_MESSAGE_ACTIVITY } from "$@/constants/provided_keys"
-
-import convertTimeToMinutes from "$/time/convert_time_to_minutes"
+import { CUSTOM_MILLISECONDS_IF_URGENT } from "$/constants/numerical"
 
 import Fetcher from "$@/fetchers/chat_message"
 import makeSwitch from "$@/helpers/make_switch"
@@ -144,22 +141,10 @@ interface CustomEvents {
 const emit = defineEmits<CustomEvents>()
 
 const mayForceStart = computed(() => {
-	let state = false
-	const employeeSchedules
-	= userProfile.data.employeeSchedules as DeserializedEmployeeScheduleListDocument
-	const { scheduledStartAt } = props.consultation
-	const dayOfScheduledStartAt = DayValues[scheduledStartAt.getDay()]
-	const matchingEmployeeSchedules = employeeSchedules.data.filter(
-		schedule => schedule.dayName === dayOfScheduledStartAt
-	)
-	const scheduledStartAtInMinutes
-	= convertTimeToMinutes(`${scheduledStartAt.getHours()}:${scheduledStartAt.getMinutes()}`)
+	const doesMatchCustomMillisecondsIfUrgent
+	= props.consultation.scheduledStartAt.getMilliseconds() === CUSTOM_MILLISECONDS_IF_URGENT
 
-	matchingEmployeeSchedules.forEach(schedule => {
-		if (schedule.scheduleEnd < scheduledStartAtInMinutes) state = true
-	})
-
-	return state
+	return doesMatchCustomMillisecondsIfUrgent
 })
 const startBtnText = computed(() => {
 	let text = "Start Consultation"
