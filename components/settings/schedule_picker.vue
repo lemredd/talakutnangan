@@ -12,7 +12,7 @@
 		<button
 			v-if="!isNew && !isEditing"
 			id="edit-btn"
-			class="btn btn-primary w-[max-content]"
+			class="btn btn-primary"
 			:disabled="disabled"
 			@click="toggleEditing">
 			edit
@@ -28,13 +28,13 @@
 			</button>
 			<button
 				id="discard-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="discard">
 				Discard
 			</button>
 			<button
 				id="delete-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="deleteSchedule">
 				Delete
 			</button>
@@ -42,7 +42,7 @@
 		<button
 			v-if="isNew && !isAdding"
 			id="add-btn"
-			class="btn btn-primary w-[max-content]"
+			class="btn btn-primary"
 			:disabled="disabled"
 			@click="toggleAdding">
 			Add
@@ -58,7 +58,7 @@
 			</button>
 			<button
 				id="discard-new-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="toggleAdding">
 				Discard
 			</button>
@@ -110,6 +110,14 @@
 		@apply my-8;
 
 		position: relative;
+
+		.buttons {
+			@apply flex flex-col;
+
+			.btn {
+				@apply my-2;
+			}
+		}
 
 		.status-message-container {
 			margin-top: -40px;
