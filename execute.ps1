@@ -485,6 +485,8 @@ if ($Log) {
 	Rename-Item -Path ./changelogs/CHANGELOG.md -NewName CHANGELOG_v1.$($previousVersion).md
 	Set-Content -Path changelogs/CHANGELOG.md -Value $cleanedContents
 
+	& npm install
+
 	& git add .
 	& git commit -m $("Update current version to v$version")
 	& git tag -s $("v$version")
@@ -493,6 +495,8 @@ if ($Log) {
 	$newPackageConfiguration = ConvertTo-Json $packageConfiguration
 	$newPackageConfiguration = $newPackageConfiguration.replace("  ", "	")
 	Set-Content -Path package.json -Value $newPackageConfiguration
+
+	& npm install
 
 	& git add .
 	& git commit -m $("Update current version to v1.$nextVersion.0-dev")
