@@ -65,56 +65,58 @@
 		</div>
 	</div>
 
-	<form
-		v-if="mayUpdateAttachedRoles"
-		class="user-data-form"
-		@submit.prevent="updateRoles">
-		<h1 class="user-data-form-header">
-			Attached Roles
-		</h1>
-		<div class="roles">
-			<MultiSelectableOptionsField
-				v-model="userRoleIDs"
-				class="selectable-roles"
-				:disabled="isDeleted"
-				label="Roles"
-				:options="selectableRoles"/>
-		</div>
-		<Suspensible :is-loaded="hasSubmittedRole">
-			<button
-				v-if="mayUpdateUser"
-				type="submit"
-				class="update-roles-btn btn btn-primary"
-				@click="updateRoles">
-				update roles
-			</button>
-		</Suspensible>
-	</form>
+	<div class="related-data">
+		<form
+			v-if="mayUpdateAttachedRoles"
+			class="user-data-form"
+			@submit.prevent="updateRoles">
+			<h1 class="user-data-form-header">
+				Attached Roles
+			</h1>
+			<div class="roles">
+				<MultiSelectableOptionsField
+					v-model="userRoleIDs"
+					class="selectable-roles"
+					:disabled="isDeleted"
+					label="Roles"
+					:options="selectableRoles"/>
+			</div>
+			<Suspensible :is-loaded="hasSubmittedRole">
+				<button
+					v-if="mayUpdateUser"
+					type="submit"
+					class="update-roles-btn btn btn-primary"
+					@click="updateRoles">
+					update roles
+				</button>
+			</Suspensible>
+		</form>
 
-	<form
-		class="user-data-form"
-		@submit.prevent="updateDepartment">
-		<h1 class="user-data-form-header">
-			Department
-		</h1>
-		<div class="department">
-			<SelectableOptionsField
-				v-model="userDepartment"
-				class="selectable-department"
-				:disabled="isDeleted"
-				label="Department"
-				:options="selectableDepartments"/>
-		</div>
-		<Suspensible :is-loaded="hasSubmittedDepartment">
-			<button
-				v-if="mayUpdateUser"
-				type="submit"
-				class="update-department-btn btn btn-primary"
-				@click="updateDepartment">
-				update department
-			</button>
-		</Suspensible>
-	</form>
+		<form
+			class="user-data-form"
+			@submit.prevent="updateDepartment">
+			<h1 class="user-data-form-header">
+				Department
+			</h1>
+			<div class="department">
+				<SelectableOptionsField
+					v-model="userDepartment"
+					class="selectable-department"
+					:disabled="isDeleted"
+					label="Department"
+					:options="selectableDepartments"/>
+			</div>
+			<Suspensible :is-loaded="hasSubmittedDepartment">
+				<button
+					v-if="mayUpdateUser"
+					type="submit"
+					class="update-department-btn btn btn-primary"
+					@click="updateDepartment">
+					update department
+				</button>
+			</Suspensible>
+		</form>
+	</div>
 
 	<Suspensible :is-loaded="hasPerformedWholeChange">
 		<div class="controls flex justify-between mt-3">
@@ -176,6 +178,21 @@
 		> * {
 			@apply flex-1 mx-2;
 			flex-basis: calc(100% / 3 - 1rem);
+		}
+	}
+
+	.related-data {
+		@apply flex flex-row flex-wrap;
+
+		> .user-data-form {
+			@apply flex-1 mx-2;
+			flex-basis: calc(50% - 1rem);
+
+			@screen md {
+				& {
+					width: calc(50% - 1rem);
+				}
+			}
 		}
 	}
 </style>
