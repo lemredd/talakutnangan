@@ -12,7 +12,7 @@
 		<button
 			v-if="!isNew && !isEditing"
 			id="edit-btn"
-			class="btn btn-primary w-[max-content]"
+			class="btn btn-primary"
 			:disabled="disabled"
 			@click="toggleEditing">
 			edit
@@ -28,13 +28,13 @@
 			</button>
 			<button
 				id="discard-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="discard">
 				Discard
 			</button>
 			<button
 				id="delete-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="deleteSchedule">
 				Delete
 			</button>
@@ -42,7 +42,7 @@
 		<button
 			v-if="isNew && !isAdding"
 			id="add-btn"
-			class="btn btn-primary w-[max-content]"
+			class="btn btn-primary"
 			:disabled="disabled"
 			@click="toggleAdding">
 			Add
@@ -58,7 +58,7 @@
 			</button>
 			<button
 				id="discard-new-btn"
-				class="btn ml-5"
+				class="btn"
 				@click="toggleAdding">
 				Discard
 			</button>
@@ -109,11 +109,16 @@
 		@apply flex flex-col;
 		@apply my-8;
 
-		position: relative;
+		.buttons {
+			@apply flex flex-col;
+
+			.btn {
+				@apply my-2;
+			}
+		}
 
 		.status-message-container {
 			margin-top: -40px;
-			position: absolute;
 		}
 	}
 
@@ -127,7 +132,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, inject, ref } from "vue"
+import { computed, inject, Ref, ref, watch } from "vue"
 
 import type { Day } from "$/types/database"
 import type { OptionInfo } from "$@/types/component"
@@ -174,9 +179,20 @@ type CustomEvents = {
 const props = defineProps<Props>()
 const emit = defineEmits<CustomEvents>()
 
+const receivedErrors = ref<string[]>([])
+const successMessages = ref<string[]>([])
+function clearMessages(messageList?: Ref<string[]>) {
+	if (messageList) {
+		messageList.value = []
+	} else {
+		receivedErrors.value = []
+		successMessages.value = []
+	}
+}
+
 const {
 	"state": isEditing,
-	"toggle": toggleEditing,
+	"toggle": toggleEditingState,
 	"off": stopEditing
 } = makeSwitch(false)
 const {
@@ -184,9 +200,14 @@ const {
 	"toggle": rawToggleAdding
 } = makeSwitch(false)
 
+function toggleEditing() {
+	toggleEditingState()
+	clearMessages()
+}
 function toggleAdding() {
-	toggleEditing()
+	toggleEditingState()
 	rawToggleAdding()
+	clearMessages()
 }
 
 const availableTimeObjects = generateTimeRange().map(
@@ -206,6 +227,12 @@ const endTime = ref(convertToTimeString(
 ))
 const startMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleStart, "midday") as "AM"|"PM")
 const endMidDay = ref<"AM"|"PM">(getTimePart(props.scheduleEnd, "midday") as "AM"|"PM")
+watch([
+	startTime,
+	endTime,
+	startMidDay,
+	endMidDay
+], () => clearMessages())
 
 function discard() {
 	// Restore the previous values
@@ -235,8 +262,6 @@ const endTime24Hours = computed(() => {
 })
 
 const fetcher = new EmployeeScheduleFetcher()
-const receivedErrors = ref<string[]>([])
-const successMessages = ref<string[]>([])
 function updateTime() {
 	fetcher.update(String(props.scheduleId), {
 		"dayName": props.dayName as Day,
@@ -286,9 +311,6 @@ function saveNewSchedule() {
 	.then(({ body }) => {
 		const { data } = body
 		emit("pushNewSchedule", data)
-
-		const customMessage = "New schedule has been saved."
-		fillSuccessMessages(receivedErrors, successMessages, customMessage, true)
 		discard()
 		toggleEditing()
 	})

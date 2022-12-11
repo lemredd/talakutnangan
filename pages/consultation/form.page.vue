@@ -7,95 +7,125 @@
 	</button>
 
 	<article class="form-page">
-		<section class="header">
-			<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
-		</section>
+		<div class="main">
+			<section class="header">
+				<h1>Consultation Ticket #{{ consultation.data.id }}</h1>
+			</section>
 
-		<section class="details">
-			<div class="consultor">
-				<div class="name">
-					<h2>
-						Consultor Name:
-					</h2>
-					<h6 class="consultor-name">
-						{{ consultor.data.name }}
-					</h6>
+			<section class="details">
+				<div class="consultor">
+					<div class="name">
+						<h2>
+							Consultor Name:
+						</h2>
+						<h6 class="consultor-name">
+							{{ consultor.data.name }}
+						</h6>
+					</div>
+
+					<div class="role">
+						<h2>
+							Consultor Role:
+						</h2>
+						<h6 class="consultor-role">
+							{{ consultorRole.data.name }}
+						</h6>
+					</div>
 				</div>
 
-				<div class="role">
+
+				<div class="consultees">
 					<h2>
-						Consultor Role:
+						Consultee(s):
 					</h2>
-					<h6 class="consultor-role">
-						{{ consultorRole.data.name }}
-					</h6>
+					<ul>
+						<li
+							v-for="consultee in consultees"
+							:key="consultee.id"
+							class="consultee">
+							{{ consultee.user?.data.name }}
+						</li>
+					</ul>
 				</div>
-			</div>
 
+				<div class="reason-and-action-taken">
+					<div class="reason">
+						<h2>
+							Reason:
+						</h2>
+						<h6 id="reason" class="reason">
+							{{ reason }}
+						</h6>
+					</div>
+					<div class="action-taken">
+						<h2>
+							Action Taken
+						</h2>
+						<h6 id="actionTaken" class="actionTaken">
+							{{ actionTaken }}
+						</h6>
+					</div>
+				</div>
 
-			<div class="consultees">
-				<h2>
-					Consultee(s):
-				</h2>
-				<ul>
-					<li
+				<div class="schedules">
+					<div class="col">
+						<h2>
+							Scheduled Start:
+						</h2>
+						<h6 id="scheduled-start" class="scheduled-start">
+							{{ scheduledStartAt }}
+						</h6>
+					</div>
+
+					<div class="col">
+						<h2>
+							Started At:
+						</h2>
+						<h6 id="actual-start" class="actual-start">
+							{{ startedAt }}
+						</h6>
+					</div>
+
+					<div class="col">
+						<h2>
+							Finished At:
+						</h2>
+						<h6 id="actual-finish" class="actual-finish">
+							{{ finishedAt }}
+						</h6>
+					</div>
+				</div>
+			</section>
+
+			<section
+				v-if="consultation.data.finishedAt"
+				class="signatures">
+				<h1>Signatures</h1>
+				<div class="consultor-signature">
+					<h2>Consultor</h2>
+					<img :src="consultor.data.signature?.data.fileContents"/>
+					<small>{{ consultor.data.name }}</small>
+				</div>
+				<div
+					class="consultee-signature mt-5">
+					<h2>Consultee/s</h2>
+					<div
 						v-for="consultee in consultees"
-						:key="consultee.id"
-						class="consultee">
-						{{ consultee.user?.data.name }}
-					</li>
-				</ul>
-			</div>
+						:key="consultee.id">
+						<img :src="consultee.user?.data.signature?.data.fileContents"/>
+						<small>{{ consultee.user?.data.name }}</small>
+					</div>
+				</div>
+			</section>
 
-			<div class="reason-and-action-taken">
-				<div class="reason">
-					<h2>
-						Reason:
-					</h2>
-					<h6 id="reason" class="reason">
-						{{ reason }}
-					</h6>
-				</div>
-				<div class="action-taken">
-					<h2>
-						Action Taken
-					</h2>
-					<h6 id="actionTaken" class="actionTaken">
-						{{ actionTaken }}
-					</h6>
-				</div>
-			</div>
+			<section v-else class="signatures not-finished">
+				<span class="status-messages warning">
+					Signatures will show here once the consultation has been finished.
+				</span>
+			</section>
+		</div>
 
-			<div class="schedules">
-				<div class="col">
-					<h2>
-						Scheduled Start:
-					</h2>
-					<h6 id="scheduled-start" class="scheduled-start">
-						{{ scheduledStartAt }}
-					</h6>
-				</div>
-
-				<div class="col">
-					<h2>
-						Started At:
-					</h2>
-					<h6 id="actual-start" class="actual-start">
-						{{ startedAt }}
-					</h6>
-				</div>
-
-				<div class="col">
-					<h2>
-						Finished At:
-					</h2>
-					<h6 id="actual-finish" class="actual-finish">
-						{{ finishedAt }}
-					</h6>
-				</div>
-			</div>
-		</section>
-		<ul class="chat-messages mt-15">
+		<ul class="chat-messages">
 			<h1>Chat Messages</h1>
 			<li
 				v-for="chatMessage in chatMessages.data"
@@ -117,33 +147,6 @@
 				</span>
 			</li>
 		</ul>
-
-		<section
-			v-if="consultation.data.finishedAt"
-			class="signatures mt-15">
-			<h1>Signatures</h1>
-			<div class="consultor-signature">
-				<h2>Consultor</h2>
-				<img :src="consultor.data.signature?.data.fileContents"/>
-				<small>{{ consultor.data.name }}</small>
-			</div>
-			<div
-				class="consultee-signature mt-5">
-				<h2>Consultee/s</h2>
-				<div
-					v-for="consultee in consultees"
-					:key="consultee.id">
-					<img :src="consultee.user?.data.signature?.data.fileContents"/>
-					<small>{{ consultee.user?.data.name }}</small>
-				</div>
-			</div>
-		</section>
-
-		<section v-else class="signatures not-finished">
-			<span class="status-messages warning">
-				Signatures will show here once the consultation has been finished.
-			</span>
-		</section>
 	</article>
 </template>
 
@@ -151,21 +154,23 @@
 	body, #app {
 		min-height: 100vh;
 	}
-
-	#app {
-		@apply py-8 px-8;
-	}
 </style>
 
 <style scoped lang="scss">
 	@import "@styles/status_messages.scss";
 
 	@page {
-		margin: 0;
+		margin: 1in;
 	}
 
 	.form-page {
-		@apply flex flex-col;
+		@apply flex flex-col flex-nowrap;
+
+		.main {
+			@apply flex-1 flex flex-col;
+			overflow-y: visible;
+			height: 6.5in;
+		}
 	}
 
 	h1 {
@@ -184,8 +189,8 @@
 
 		img { max-width: 120px; }
 	}
-	.schedules{
-		@apply flex max-w-900px;
+	.schedules {
+		@apply flex;
 
 		& > *:not(:first-of-type) {
 			@apply ml-4;
@@ -244,20 +249,14 @@
 			@apply text-lg;
 		}
 
+		.main {
+			display: block;
+		}
+
 		.form-page {
-			.header {
-				@apply order-1;
-			}
-			.details {
-				@apply order-2;
-			}
-			.chat-messages {
-				@apply order-4;
-			}
+			break-inside: auto;
 
 			.signatures {
-				@apply order-3;
-
 				page-break-after: always;
 				-moz-page-break-after: always;
 				break-after: page;
@@ -267,10 +266,6 @@
 		h6 {
 			border-bottom: 1px solid black;
 			@apply border-b mb-5;
-		}
-
-		.signatures {
-			@apply order-1;
 		}
 
 		.file-message a { text-decoration: underline; }

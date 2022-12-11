@@ -194,6 +194,7 @@ const chosenDate = computed<string>({
 		if (selectableDays.value.find(day => day.value === props.chosenDay)) {
 			return props.chosenDay
 		}
+		if (props.isUrgent) return selectableDays.value[0].value
 
 		return CUSTOM_DAY
 	},
@@ -201,7 +202,8 @@ const chosenDate = computed<string>({
 		if (newValue === CUSTOM_DAY) {
 			emit("update:chosenDay", new Date(castToCompatibleDate(new Date())).toJSON())
 		} else {
-			emit("update:chosenDay", newValue)
+			const valueToPass = props.isUrgent ? selectableDays.value[0].value : newValue
+			emit("update:chosenDay", valueToPass)
 		}
 	}
 })
@@ -262,6 +264,13 @@ const mustShowPastDayError = computed(
 	&& (customDate.value || !isCustomDate.value)
 	&& !props.isUrgent
 )
+
+watch(customDate, newValue => {
+	if (!newValue) {
+		chosenDate.value = ""
+		chosenTime.value = ""
+	}
+})
 
 const dateAndTimeFieldsClasses = computed(() => ({
 	"has-selected-day": Boolean(chosenDate.value)
