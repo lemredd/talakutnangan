@@ -151,6 +151,11 @@
 
 			.days {
 				@apply flex flex-wrap justify-between;
+
+				> * {
+					@apply flex-1 mx-4;
+					flex-basis: calc(33% - 2rem);
+				}
 			}
 		}
 	}
