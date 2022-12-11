@@ -101,12 +101,14 @@
 			<h3>
 				Consultation Schedules
 			</h3>
-			<SchedulePickerGroup
-				v-for="day in DayValues"
-				:key="day"
-				:disabled="!mayEditProfile"
-				:day-name="day"
-				:schedules="schedules"/>
+			<div class="days">
+				<SchedulePickerGroup
+					v-for="day in DayValues"
+					:key="day"
+					:disabled="!mayEditProfile"
+					:day-name="day"
+					:schedules="schedules"/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -146,6 +148,10 @@
 
 		.consultation-schedules {
 			@apply mt-16;
+
+			.days {
+				@apply flex flex-wrap justify-between;
+			}
 		}
 	}
 
