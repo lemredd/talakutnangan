@@ -249,7 +249,13 @@
 			@apply text-lg;
 		}
 
+		.main {
+			display: block;
+		}
+
 		.form-page {
+			break-inside: auto;
+
 			.signatures {
 				page-break-after: always;
 				-moz-page-break-after: always;
