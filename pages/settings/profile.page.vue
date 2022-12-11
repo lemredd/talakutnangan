@@ -272,7 +272,7 @@ const mayEditProfile = computed<boolean>(() => {
 	return isPermitted
 })
 
-const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "locked" : "disabled")
+const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "enabled" : "disabled")
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])
