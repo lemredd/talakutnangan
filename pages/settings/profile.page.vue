@@ -150,11 +150,11 @@
 			@apply mt-16;
 
 			.days {
-				@apply flex flex-wrap justify-between;
+				@apply flex flex-wrap justify-center;
 
 				> * {
-					@apply flex-1 mx-4;
-					flex-basis: calc(33% - 2rem);
+					@apply flex-1 mx-2;
+					flex-basis: calc(100% / 3 - 1rem);
 				}
 			}
 		}
