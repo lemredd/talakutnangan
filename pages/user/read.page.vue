@@ -55,12 +55,14 @@
 		<h1 class="user-data-form-header">
 			Consultation Schedules
 		</h1>
-		<SchedulePickerGroup
-			v-for="day in DayValues"
-			:key="day"
-			:disabled="!mayUpdateUser"
-			:day-name="day"
-			:schedules="schedules"/>
+		<div class="days">
+			<SchedulePickerGroup
+				v-for="day in DayValues"
+				:key="day"
+				:disabled="!mayUpdateUser"
+				:day-name="day"
+				:schedules="schedules"/>
+		</div>
 	</div>
 
 	<form
@@ -165,6 +167,15 @@
 
 		.btn {
 			@apply mt-8;
+		}
+	}
+
+	.days {
+		@apply flex flex-wrap justify-center;
+
+		> * {
+			@apply flex-1 mx-2;
+			flex-basis: calc(100% / 3 - 1rem);
 		}
 	}
 </style>
