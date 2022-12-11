@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.8.1
+
+### 🚀 Enhancements
+- **user:** Change the variant of name field (6475cdf1)
+
+### 🩹 Fixes
+- **post:** Allow menu to be shown (3793cc43)
+- **user:** Add random ID to prevent caching (116ae9fb)
+
+### 🎨 Styles
+- **user:** Add basis for schedule picker group (d82e796b)
+- **user:** Ensure correct spacing of schedules (8f6916e6)
+
+### ❤️  Contributors
+- Kenneth Trecy Tobias
+
 ## v1.8.0
 
 ### 🚀 Enhancements
