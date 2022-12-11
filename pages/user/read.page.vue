@@ -50,7 +50,7 @@
 	</form>
 
 	<div
-		v-if="hasEmployeeSchedules"
+		v-if="isReachableEmployee"
 		class="user-data-form">
 		<h1 class="user-data-form-header">
 			Consultation Schedules
@@ -257,7 +257,9 @@ const managementInfo = computed<UserManagementInfo>(
 	() => makeManagementInfo(userProfile, user.value.data)
 )
 
-const hasEmployeeSchedules = computed<boolean>(() => Boolean(userProfile.data.employeeSchedules))
+const isReachableEmployee = computed<boolean>(
+	() => userProfile.data.kind === "reachable_employee"
+)
 
 const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
 const mayUpdateUser = computed<boolean>(() => managementInfo.value.mayUpdateUser)
