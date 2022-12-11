@@ -150,7 +150,12 @@
 			@apply mt-16;
 
 			.days {
-				@apply flex flex-wrap justify-between;
+				@apply flex flex-wrap justify-center;
+
+				> * {
+					@apply flex-1 mx-2;
+					flex-basis: calc(100% / 3 - 1rem);
+				}
 			}
 		}
 	}
@@ -272,7 +277,7 @@ const mayEditProfile = computed<boolean>(() => {
 	return isPermitted
 })
 
-const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "locked" : "disabled")
+const nameFieldStatus = ref<FieldStatus>(mayEditProfile.value ? "enabled" : "disabled")
 
 const receivedErrors = ref<string[]>([])
 const successMessages = ref<string[]>([])

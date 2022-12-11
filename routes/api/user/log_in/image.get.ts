@@ -3,6 +3,7 @@ import type { OptionalMiddleware } from "!/types/independent"
 import { IMAGE_FILE_IDS, IMAGE_FILE_COUNT, DRIVE_LINK } from "!/constants/image_file_ids"
 
 import Policy from "!/bases/policy"
+import digest from "$!/helpers/digest"
 import Validation from "!/bases/validation"
 import specializePath from "$/helpers/specialize_path"
 import Controller from "!/bases/controller-likes/controller"
@@ -21,11 +22,14 @@ export default class extends Controller {
 	get middlewares(): OptionalMiddleware[] {
 		return [
 			...super.middlewares,
-			new DynamicGatedRedirector(() => Promise.resolve({
+			new DynamicGatedRedirector(() => digest(
+				Buffer.from(String(Math.random()))
+			).then(randomID => ({
 				"location": specializePath(DRIVE_LINK, {
-					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * IMAGE_FILE_COUNT)]
+					"id": IMAGE_FILE_IDS[Math.floor(Math.random() * IMAGE_FILE_COUNT)],
+					randomID
 				})
-			}))
+			})))
 		]
 	}
 

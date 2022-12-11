@@ -692,4 +692,4 @@ export const IMAGE_FILE_IDS = [
 
 export const IMAGE_FILE_COUNT = IMAGE_FILE_IDS.length
 
-export const DRIVE_LINK = "https://drive.google.com/uc?id=:id"
+export const DRIVE_LINK = "https://drive.google.com/uc?id=:id&rand=:randomID"

@@ -8,6 +8,7 @@
 		</Redirector>
 		<Viewer
 			v-model="post"
+			:may-have-menu="true"
 			:comment-count="commentCount"/>
 		<div class="comments">
 			<CreateCommentField
