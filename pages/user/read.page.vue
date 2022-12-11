@@ -258,7 +258,7 @@ const managementInfo = computed<UserManagementInfo>(
 )
 
 const isReachableEmployee = computed<boolean>(
-	() => userProfile.data.kind === "reachable_employee"
+	() => user.value.data.kind === "reachable_employee"
 )
 
 const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
