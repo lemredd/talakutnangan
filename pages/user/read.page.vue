@@ -50,69 +50,73 @@
 	</form>
 
 	<div
-		v-if="hasEmployeeSchedules"
+		v-if="isReachableEmployee"
 		class="user-data-form">
 		<h1 class="user-data-form-header">
 			Consultation Schedules
 		</h1>
-		<SchedulePickerGroup
-			v-for="day in DayValues"
-			:key="day"
-			:disabled="!mayUpdateUser"
-			:day-name="day"
-			:schedules="schedules"/>
+		<div class="days">
+			<SchedulePickerGroup
+				v-for="day in DayValues"
+				:key="day"
+				:disabled="!mayUpdateUser"
+				:day-name="day"
+				:schedules="schedules"/>
+		</div>
 	</div>
 
-	<form
-		v-if="mayUpdateAttachedRoles"
-		class="user-data-form"
-		@submit.prevent="updateRoles">
-		<h1 class="user-data-form-header">
-			Attached Roles
-		</h1>
-		<div class="roles">
-			<MultiSelectableOptionsField
-				v-model="userRoleIDs"
-				class="selectable-roles"
-				:disabled="isDeleted"
-				label="Roles"
-				:options="selectableRoles"/>
-		</div>
-		<Suspensible :is-loaded="hasSubmittedRole">
-			<button
-				v-if="mayUpdateUser"
-				type="submit"
-				class="update-roles-btn btn btn-primary"
-				@click="updateRoles">
-				update roles
-			</button>
-		</Suspensible>
-	</form>
+	<div class="related-data">
+		<form
+			v-if="mayUpdateAttachedRoles"
+			class="user-data-form"
+			@submit.prevent="updateRoles">
+			<h1 class="user-data-form-header">
+				Attached Roles
+			</h1>
+			<div class="roles">
+				<MultiSelectableOptionsField
+					v-model="userRoleIDs"
+					class="selectable-roles"
+					:disabled="isDeleted"
+					label="Roles"
+					:options="selectableRoles"/>
+			</div>
+			<Suspensible :is-loaded="hasSubmittedRole">
+				<button
+					v-if="mayUpdateUser"
+					type="submit"
+					class="update-roles-btn btn btn-primary"
+					@click="updateRoles">
+					update roles
+				</button>
+			</Suspensible>
+		</form>
 
-	<form
-		class="user-data-form"
-		@submit.prevent="updateDepartment">
-		<h1 class="user-data-form-header">
-			Department
-		</h1>
-		<div class="department">
-			<SelectableOptionsField
-				v-model="userDepartment"
-				class="selectable-department"
-				:disabled="isDeleted"
-				label="Department"
-				:options="selectableDepartments"/>
-		</div>
-		<Suspensible :is-loaded="hasSubmittedDepartment">
-			<button
-				v-if="mayUpdateUser"
-				type="submit"
-				class="update-department-btn btn btn-primary"
-				@click="updateDepartment">
-				update department
-			</button>
-		</Suspensible>
-	</form>
+		<form
+			class="user-data-form"
+			@submit.prevent="updateDepartment">
+			<h1 class="user-data-form-header">
+				Department
+			</h1>
+			<div class="department">
+				<SelectableOptionsField
+					v-model="userDepartment"
+					class="selectable-department"
+					:disabled="isDeleted"
+					label="Department"
+					:options="selectableDepartments"/>
+			</div>
+			<Suspensible :is-loaded="hasSubmittedDepartment">
+				<button
+					v-if="mayUpdateUser"
+					type="submit"
+					class="update-department-btn btn btn-primary"
+					@click="updateDepartment">
+					update department
+				</button>
+			</Suspensible>
+		</form>
+	</div>
 
 	<Suspensible :is-loaded="hasPerformedWholeChange">
 		<div class="controls flex justify-between mt-3">
@@ -165,6 +169,30 @@
 
 		.btn {
 			@apply mt-8;
+		}
+	}
+
+	.days {
+		@apply flex flex-wrap justify-center;
+
+		> * {
+			@apply flex-1 mx-2;
+			flex-basis: calc(100% / 3 - 1rem);
+		}
+	}
+
+	.related-data {
+		@apply flex flex-row flex-wrap;
+
+		> .user-data-form {
+			@apply flex-1 mx-2;
+			flex-basis: calc(50% - 1rem);
+
+			@screen md {
+				& {
+					width: calc(50% - 1rem);
+				}
+			}
 		}
 	}
 </style>
@@ -246,7 +274,9 @@ const managementInfo = computed<UserManagementInfo>(
 	() => makeManagementInfo(userProfile, user.value.data)
 )
 
-const hasEmployeeSchedules = computed<boolean>(() => Boolean(userProfile.data.employeeSchedules))
+const isReachableEmployee = computed<boolean>(
+	() => user.value.data.kind === "reachable_employee"
+)
 
 const isDeleted = computed<boolean>(() => managementInfo.value.isDeleted)
 const mayUpdateUser = computed<boolean>(() => managementInfo.value.mayUpdateUser)
@@ -283,7 +313,9 @@ const studentNumber = computed<string>(() => {
 })
 const hasSubmittedUser = ref<boolean>(true)
 
-const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
+const schedules = (
+	user.value.data.employeeSchedules?.data ?? []
+) as DeserializedEmployeeScheduleResource[]
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])

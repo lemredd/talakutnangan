@@ -46,6 +46,9 @@ describe("Page: user/read", () => {
 		const user = {
 			"data": {
 				"department": userDepartment,
+				"employeeSchedules": {
+					"data": []
+				},
 				"kind": "reachable_employee",
 				"name": "Sample User",
 				"roles": userRoles
@@ -163,6 +166,9 @@ describe("Page: user/read", () => {
 		const user = {
 			"data": {
 				"department": userDepartment,
+				"employeeSchedules": {
+					"data": []
+				},
 				"id": "1",
 				"kind": "reachable_employee",
 				"name": "Sample User",
@@ -213,7 +219,7 @@ describe("Page: user/read", () => {
 				}
 			}
 		}
-		console.log(wrapper.html(), "wrapper \n\n\n")
+
 		await userNameInput.setValue("New Name")
 		await updateUserBtn.trigger("click")
 		await flushPromises()
