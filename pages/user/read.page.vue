@@ -313,7 +313,9 @@ const studentNumber = computed<string>(() => {
 })
 const hasSubmittedUser = ref<boolean>(true)
 
-const schedules = userProfile.data.employeeSchedules?.data as DeserializedEmployeeScheduleResource[]
+const schedules = (
+	user.value.data.employeeSchedules?.data ?? []
+) as DeserializedEmployeeScheduleResource[]
 
 const fetcher = new Fetcher()
 const receivedErrors = ref<string[]>([])
