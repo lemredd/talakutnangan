@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.2
+
+### 🩹 Fixes
+- **user:** Show schedules if reachable employee (c55cdb49)
+- **user:** Use the user being read (cb467af9)
+- **user:** Ensure to use the schedules of read user (a7d1a4c4)
+
+### 🎨 Styles
+- **user:** Layout the schedules properly (e4e5cd3d)
+- **user:** Compress the layout of read user page (eb5d3a40)
+
+### ❤️  Contributors
+- Kenneth Trecy Tobias
+
 ## v1.8.1
 
 ### 🚀 Enhancements
